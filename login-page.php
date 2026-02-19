@@ -13,7 +13,7 @@
     
         <form>
             
-            <h1>
+            <h1 class="uema">
                 <img src=assets/img/uema-logo.png  class="logo">
                 <img src=assets/img/Proexae.png  class="logo">
                 
@@ -32,7 +32,9 @@
 
             <div class="create">
 
-            <p>Não tem uma conta? <a href="#" >Cadastre-se</a></p>
+            <p> <a href="#" >Cadastre-se</a></p>
+            <p> <a href="#" >Redefinir senha </a></p>
+
 
             </div>
 
