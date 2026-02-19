@@ -38,7 +38,8 @@ body::before {
 
 
 .container {
-    width: 420px;
+    width: 500px;
+    
     background-color: transparent;
     border: 2px solid;
     border-radius: 10px;
