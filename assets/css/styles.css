@@ -55,6 +55,7 @@ body::before {
     display: block;
     margin: 0 auto 20px auto;
     background: url(uema-logo.png) no-repeat center;
+    background: url(Proexae.png) no-repeat center;
 }
 
 .input-box {
