@@ -14,7 +14,9 @@
         <form>
             
             <h1>
-            <img src=assets/img/uema-logo.png  class="logo">
+                <img src=assets/img/uema-logo.png  class="logo">
+                <img src=assets/img/Proexae.png  class="logo">
+                
            </h1>
 
             <div class="input-box">
