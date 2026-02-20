@@ -32,7 +32,7 @@
 
             <div class="create">
 
-            <p> <a href="#" >Cadastre-se</a></p>
+        
             <p> <a href="#" >Redefinir senha </a></p>
 
 
