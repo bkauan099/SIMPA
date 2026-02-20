@@ -11,29 +11,37 @@
     
     <main class="container">
     
-        <form>
+        <form action="processa_login.php" method="POST">
+            <h1>
+                
+                <img src=assets/img/uema-logo.png class="logo">
             
-            <h1 class="uema">
-                <img src=assets/img/uema-logo.png  class="logo">
-                <img src=assets/img/Proexae.png  class="logo">
-                
-           </h1>
+            </h1>
+
+            <?php if (isset($_GET['erro'])): ?>
+
+                <div class="alert alert-danger" role="alert" style="color: red; margin-bottom: 15px;">
+                    Usuário ou senha incorretos!
+                </div>
+
+            <?php endif; ?>
 
             <div class="input-box">
-                <input placeholder="Usuário" type="email" required min="5" max="150" autocomplete="">
-                
+                <input placeholder="Usuário" type="email" name="email">
+
             </div>
 
             <div class="input-box">
-                <input placeholder="Senha" type="password" required min="5" max="150">
+                <input placeholder="Senha" type="password" name="senha">
             </div>
 
-            <button type="submit" class="login"  href="aluno-page.html"><a href="aluno-page.html">Entrar</a></button>
+                <button type="submit" class="login">Entrar</button>
 
             <div class="create">
 
-        
-            <p> <a href="#" >Redefinir senha </a></p>
+
+
+                <p> <a href="#" >Redefinir senha </a><p>
 
 
             </div>
