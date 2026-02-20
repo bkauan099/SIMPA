@@ -12,11 +12,11 @@
     <main class="container">
     
         <form action="processa_login.php" method="POST">
-            <h1>
+           <h1 class="uema">
+                <img src=assets/img/uema-logo.png  class="logo">
+                <img src=assets/img/Proexae.png  class="logo">
                 
-                <img src=assets/img/uema-logo.png class="logo">
-            
-            </h1>
+           </h1>
 
             <?php if (isset($_GET['erro'])): ?>
 
