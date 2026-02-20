@@ -6,7 +6,7 @@ if($usuario == "admin@gmail.com" && $senha == "123456"){
     header("Location: teste.php");
     exit();
 }else{
-    header("Location: index.php?erro=1");
+    header("Location: login-page.php?erro=1");
     exit();
 }
 
