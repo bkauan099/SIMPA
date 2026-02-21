@@ -28,12 +28,22 @@
 
             <div class="input-box">
                 <input id="email" placeholder="Usuário" type="email" name="email">
-                <span id="erro-email" class="erro" style="display: none; color: #e74c3c; font-size: 0.9em;">Preencha o e-mail</span>
+                <span id="erro-email" class="erro">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#e74c3c" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm.75 14.25h-1.5v-1.5h1.5v1.5zm0-3h-1.5v-6h1.5v6z"/>
+                </svg>
+                Preencha o e-mail
+            </span>
             </div>
 
             <div class="input-box">
                 <input id="senha" placeholder="Senha" type="password" name="senha">
-                <span id="erro-senha" class="erro" style="display: none; color: #e74c3c; font-size: 0.9em;">Preencha a senha</span>
+                <span id="erro-senha" class="erro">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#e74c3c" d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm.75 14.25h-1.5v-1.5h1.5v1.5zm0-3h-1.5v-6h1.5v6z"/>
+                </svg>
+                Preencha a senha
+            </span>
             </div>
 
                 <button type="submit" class="login">Entrar</button>

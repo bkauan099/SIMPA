@@ -13,21 +13,21 @@ form.addEventListener('submit', function(event) {
     // 2. Validação do Usuário (E-mail)
     if (email.value.trim() === "") {
         email.style.border = "2px solid #e74c3c";
-        erroEmail.style.display = "block";
+        erroEmail.classList.add('show');
         valido = false;
     } else {
         email.style.border = "1px solid #ccc";
-        erroEmail.style.display = "none";
+        erroEmail.classList.remove('show');
     }
 
     // 3. Validação da Senha
     if (senha.value.trim() === "") {
         senha.style.border = "2px solid #e74c3c";
-        erroSenha.style.display = "block";
+        erroSenha.classList.add('show');
         valido = false;
     } else {
         senha.style.border = "1px solid #ccc";
-        erroSenha.style.display = "none";
+        erroSenha.classList.remove('show');
     }
 
     // 4. Se algum campo estiver vazio, cancela o evento de envio

@@ -143,8 +143,46 @@ body::before {
 
 /* global error message styling for login validation */
 .erro {
-    display: block;
+    position: absolute;
+    top: -42px;              /* moved further above field */
+    left: 12px;
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    background: rgba(231, 76, 60, 0.1);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
     color: #e74c3c;
-    font-size: 0.9em;
-    margin-top: 5px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    transform-origin: bottom left;
+    transform: scale(0.95) translateY(4px);
 }
+.erro svg {
+    width: 18px;
+    height: 18px;
+    margin-right: 6px;
+    flex-shrink: 0;
+}
+.erro::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 14px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: #e74c3c transparent transparent transparent;
+}
+.erro.show {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+/* ensure input-box remains relative for absolutely positioned errors */
+.input-box {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 50px 0; /* increased top margin for more space */
+} 
