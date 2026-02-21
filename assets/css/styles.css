@@ -140,3 +140,11 @@ body::before {
     transition: 0.3s;
 
 }
+
+/* global error message styling for login validation */
+.erro {
+    display: block;
+    color: #e74c3c;
+    font-size: 0.9em;
+    margin-top: 5px;
+}

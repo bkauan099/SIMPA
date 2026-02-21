@@ -27,12 +27,13 @@
             <?php endif; ?>
 
             <div class="input-box">
-                <input placeholder="Usuário" type="email" name="email">
-
+                <input id="email" placeholder="Usuário" type="email" name="email">
+                <span id="erro-email" class="erro" style="display: none; color: #e74c3c; font-size: 0.9em;">Preencha o e-mail</span>
             </div>
 
             <div class="input-box">
-                <input placeholder="Senha" type="password" name="senha">
+                <input id="senha" placeholder="Senha" type="password" name="senha">
+                <span id="erro-senha" class="erro" style="display: none; color: #e74c3c; font-size: 0.9em;">Preencha a senha</span>
             </div>
 
                 <button type="submit" class="login">Entrar</button>
@@ -49,7 +50,6 @@
         </form>
 
     </main>
-
-
+    <script src="assets/js/verificacaologin.js"></script>
 </body>
 </html>
