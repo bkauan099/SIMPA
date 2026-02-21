@@ -12,21 +12,17 @@ form.addEventListener('submit', function(event) {
 
     // 2. Validação do Usuário (E-mail)
     if (email.value.trim() === "") {
-        email.style.border = "2px solid #e74c3c";
         erroEmail.classList.add('show');
         valido = false;
     } else {
-        email.style.border = "1px solid #ccc";
         erroEmail.classList.remove('show');
     }
 
     // 3. Validação da Senha
     if (senha.value.trim() === "") {
-        senha.style.border = "2px solid #e74c3c";
         erroSenha.classList.add('show');
         valido = false;
     } else {
-        senha.style.border = "1px solid #ccc";
         erroSenha.classList.remove('show');
     }
 
