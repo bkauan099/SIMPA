@@ -35,7 +35,7 @@
                 <input placeholder="Senha" type="password" name="senha">
             </div>
 
-                <button type="submit" class="login">Entrar</button>
+                <button type="submit" class="login" href="aluno-page.php">Entrar</a></button>
 
             <div class="create">
 
