@@ -32,24 +32,13 @@
 <body>
 
 <!-- HEADER -->
-<header class="header-simpa">
-    <div class="header-container text-center py-3">
-        <img src="sobre/assets/img/uema-logo.png" alt="UEMA" class="logo-uema">
-        <h1 class="titulo-sistema">SIMPA</h1>
-    </div>
-</header>
 
 <div class="container py-5">
 
     <!-- TÍTULO -->
     <div class="text-center mb-4">
-        <h4 class="titulo-simpa">SIMPA - 2026</h4>
-        <p class="subtitulo">
-            Sistema Integrado de Monitoramento de Projetos Acadêmicos<br>
-            © Universidade Estadual do Maranhão - UEMA
-        </p>
+        <h2 class="secao-titulo">SOBRE O SIMPA</h2>
     </div>
-
     <!-- TEXTO -->
     <div class="texto-sobre">
         <p>
