@@ -5,11 +5,10 @@
 <html lang="pt-br">
 <header> 
     <div class="header-container text-center py-3">
-        <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema">
-        <h1 class="titulo-sistema">SIMPA</h1>
-        <h1>© SIMPA - Sistema Integrado de Monitoramento de Projetos Acadêmicos</h1>
+        <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema" width="245" height="100">
+        <h1 class="titulo-sistema"> SIMPA </h1>
+        <h2 class="subtitulo-sistema">  © SIMPA - Sistema Integrado de Monitoramento de Projetos Acadêmicos </h2>
     </div>
-
 <header> 
 
 <head>
@@ -33,14 +32,14 @@
 </head>
 <body>
 
-<!-- HEADER -->
+    <!-- HEADER -->
 
-<div class="container py-5">
+    <div class="container py-5">
 
-    <!-- TÍTULO -->
-    <div class="text-center mb-4">
-        <h2 class="secao-titulo">SOBRE O SIMPA</h2>
-    </div>
+        <!-- TÍTULO -->
+        <div class="text-center mb-4">
+            <h2 class="secao-titulo">SOBRE O SIMPA</h2>
+        </div>
     <!-- TEXTO -->
     <div class="texto-sobre">
         <p>
@@ -129,14 +128,15 @@
 <!-- FOOTER -->
 <footer class="footer-simpa">
     <div class="footer-container text-center py-4">
-        <img src="assets/img/uema-logo.png" class="footer-logo">
+        <div class="container-fluid background-"> == $0
+        <img src="assets/img/uema-logo-rodape.png" class="footer-logo">
 
         <div class="footer-text">
-            © Todos os direitos reservados Universidade Estadual do Maranhão - UEMA.
-            Cidade Universitária Paulo VI - Avenida Lourenço Vieira da Silva, 1000 – São Luís/MA.
-            Fone: (98) 2016-8100.
-            Pró-Reitoria de Extensão e Assuntos Estudantis - PROEXAE
-            Desenvolvido por: Brisa Tecnologia e Softex Maranhão.
+           <p>Todos os direitos reservados Universidade Estadual do Maranhão - UEMA.<p>
+           <p>Cidade Universitária Paulo VI - Avenida Lourenço Vieira da Silva, 1000 – São Luís/MA.<p>
+           <p>Fone: (98) 2016-8100.<p>
+           <p>Pró-Reitoria de Extensão e Assuntos Estudantis - PROEXAE<p>
+           <p>Desenvolvido por: Brisa Tecnologia e Softex Maranhão.<p> 
         </div>
     </div>
 </footer>
