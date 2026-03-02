@@ -13,6 +13,8 @@
 <header> 
 
 <head>
+    <link rel="stylesheet" href="assets/css/sobre.css">
+<script src="assets/js/sobre.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     

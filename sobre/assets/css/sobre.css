@@ -12,6 +12,7 @@ body {
     text-align: justify;
     font-size: 16px;
     line-height: 1.7;
+    color: #2b3c5d;
 }
 
 /* Header */
@@ -34,7 +35,7 @@ body {
 .header-container h1 {
     font-size: 22px;
     margin: 0;
-    color: #1f3c88;
+    color: #2b3c5d;
     font-weight: 600;
 }
 
