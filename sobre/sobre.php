@@ -96,7 +96,7 @@
 
         <div class="row justify-content-center align-items-center g-4">
             <div class="col-md-2 col-4">
-                <img src="sobre/assets/img/uema-logo.png" class="logo-parceiro">
+                <img src="/assets/img/uema-logo.png" class="logo-parceiro">
             </div>
 
             <div class="col-md-2 col-4">
