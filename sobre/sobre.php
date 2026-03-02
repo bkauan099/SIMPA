@@ -3,6 +3,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+<header> <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema"> </header>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -96,7 +97,7 @@
 
         <div class="row justify-content-center align-items-center g-4">
             <div class="col-md-2 col-4">
-                <img src="/assets/img/uema-logo.png" class="logo-parceiro">
+                <img src="sobre/assets/img/uema-logo.png" class="logo-parceiro">
             </div>
 
             <div class="col-md-2 col-4">
@@ -132,9 +133,11 @@
         <img src="sobre/assets/img/uema-logo.png" class="footer-logo">
 
         <div class="footer-text">
-            SIMPA<br>
-            Sistema Integrado de Monitoramento de Projetos Acadêmicos
-        </div>
+            © Todos os direitos reservados Universidade Estadual do Maranhão - UEMA. </br>
+            <br> Cidade Universitária Paulo VI - Avenida Lourenço Vieira da Silva, 1000 – São Luís/MA. </br>
+            <br> Fone: (98) 2016-8100.<br> Pró-Reitoria de Extensão e Assuntos Estudantis - PROEXAE </br>
+            <br> Desenvolvido por: Brisa Tecnologia e Softex Maranhão. </br>
+            </div>
     </div>
 </footer>
 
