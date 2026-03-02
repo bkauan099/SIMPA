@@ -3,13 +3,22 @@
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-<header> 
-    <div class="header-container text-center py-3">
-        <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema" width="245" height="100">
-        <h1 class="titulo-sistema"> SIMPA </h1>
-        <h2 class="subtitulo-sistema">  © SIMPA - Sistema Integrado de Monitoramento de Projetos Acadêmicos </h2>
+<header class="header-simpa">
+    <div class="header-container">
+        
+        <div class="logo-area">
+            <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema">
+        </div>
+
+        <div class="titulo-area">
+            <h1 class="titulo-sistema">SIMPA</h1>
+            <h2 class="subtitulo-sistema">
+                © Sistema Integrado de Monitoramento de Projetos Acadêmicos
+            </h2>
+        </div>
+
     </div>
-<header> 
+</header>
 
 <head>
     <link rel="stylesheet" href="assets/css/sobre.css">
@@ -92,7 +101,7 @@
 
     <!-- LOGOS PARCEIROS -->
     <div class="parceiros text-center mt-5">
-
+    <h6> PARCEIROS  </h6>
         <div class="row justify-content-center align-items-center g-4">
             <div class="col-md-2 col-4">
                 <img src="assets/img/uema-logo.png" class="logo-parceiro">
@@ -127,17 +136,20 @@
 
 <!-- FOOTER -->
 <footer class="footer-simpa">
-    <div class="footer-container text-center py-4">
-        <div class="container-fluid background-"> == $0
-        <img src="assets/img/uema-logo-rodape.png" class="footer-logo">
+    <div class="footer-container">
+
+        <img src="assets/img/uema-logo-rodape.png" 
+             alt="UEMA" 
+             class="footer-logo">
 
         <div class="footer-text">
-           <p>Todos os direitos reservados Universidade Estadual do Maranhão - UEMA.<p>
-           <p>Cidade Universitária Paulo VI - Avenida Lourenço Vieira da Silva, 1000 – São Luís/MA.<p>
-           <p>Fone: (98) 2016-8100.<p>
-           <p>Pró-Reitoria de Extensão e Assuntos Estudantis - PROEXAE<p>
-           <p>Desenvolvido por: Brisa Tecnologia e Softex Maranhão.<p> 
+            © Todos os direitos reservados Universidade Estadual do Maranhão - UEMA.<br>
+            Cidade Universitária Paulo VI - Avenida Lourenço Vieira da Silva, 1000 – São Luís/MA.<br>
+            Fone: (98) 2016-8100.<br>
+            Pró-Reitoria de Extensão e Assuntos Estudantis - PROEXAE<br>
+            Desenvolvido por: Brisa Tecnologia e Softex Maranhão
         </div>
+
     </div>
 </footer>
 
