@@ -3,11 +3,19 @@
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-<header> <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema"> </header>
+<header> class="header-simpa">
+    <div class="header-container text-center py-3">
+        <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema">
+        <h1 class="titulo-sistema">SIMPA</h1>
+        <h1>© SIMPA - Sistema Integrado de Monitoramento de Projetos Acadêmicos</h1>
+    </div>
+
+<header> 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMPA - Sobre o Sistema</title>
+    
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -97,29 +105,29 @@
 
         <div class="row justify-content-center align-items-center g-4">
             <div class="col-md-2 col-4">
-                <img src="sobre/assets/img/uema-logo.png" class="logo-parceiro">
+                <img src="assets/img/uema-logo.png" class="logo-parceiro">
             </div>
 
             <div class="col-md-2 col-4">
-                <img src="sobre/assets/img/proexae-logocor.png" class="logo-parceiro">
+                <img src="assets/img/proexae-logocor.png" class="logo-parceiro">
             </div>
 
             <div class="col-md-2 col-4">
-                <img src="sobre/assets/img/cct-logoazul.png" class="logo-parceiro">
+                <img src="assets/img/cct-logoazul.png" class="logo-parceiro">
             </div>
 
             <div class="col-md-3 col-6">
-                <img src="sobre/assets/img/marandu-logo.png" class="logo-parceiro">
+                <img src="assets/img/marandu-logo.png" class="logo-parceiro">
             </div>
         </div>
 
         <div class="row justify-content-center mt-4">
             <div class="col-md-4 col-6">
-                <img src="sobre/assets/img/brisa-logo.png" class="logo-parceiro-grande">
+                <img src="assets/img/brisa-logo.png" class="logo-parceiro-grande">
             </div>
 
             <div class="col-md-4 col-6">
-                <img src="sobre/assets/img/softex-logocor.png" class="logo-parceiro-grande">
+                <img src="assets/img/softex-logocor.png" class="logo-parceiro-grande">
             </div>
         </div>
 
@@ -130,14 +138,15 @@
 <!-- FOOTER -->
 <footer class="footer-simpa">
     <div class="footer-container text-center py-4">
-        <img src="sobre/assets/img/uema-logo.png" class="footer-logo">
+        <img src="assets/img/uema-logo.png" class="footer-logo">
 
         <div class="footer-text">
-            © Todos os direitos reservados Universidade Estadual do Maranhão - UEMA. </br>
-            <br> Cidade Universitária Paulo VI - Avenida Lourenço Vieira da Silva, 1000 – São Luís/MA. </br>
-            <br> Fone: (98) 2016-8100.<br> Pró-Reitoria de Extensão e Assuntos Estudantis - PROEXAE </br>
-            <br> Desenvolvido por: Brisa Tecnologia e Softex Maranhão. </br>
-            </div>
+            © Todos os direitos reservados Universidade Estadual do Maranhão - UEMA.
+            Cidade Universitária Paulo VI - Avenida Lourenço Vieira da Silva, 1000 – São Luís/MA.
+            Fone: (98) 2016-8100.
+            Pró-Reitoria de Extensão e Assuntos Estudantis - PROEXAE
+            Desenvolvido por: Brisa Tecnologia e Softex Maranhão.
+        </div>
     </div>
 </footer>
 
