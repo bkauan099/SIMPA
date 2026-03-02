@@ -3,7 +3,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-<header> class="header-simpa">
+<header> 
     <div class="header-container text-center py-3">
         <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema">
         <h1 class="titulo-sistema">SIMPA</h1>
