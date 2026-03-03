@@ -72,29 +72,112 @@
     </div>
 
     <!-- RESIDENTES -->
-    <div class="text-center mt-5 mb-4">
-        <h5 class="secao-titulo">RESIDENTES - RESIDÊNCIA TIC</h5>
+<div class="text-center mt-5 mb-4">
+    <h5 class="secao-titulo">RESIDENTES - RESIDÊNCIA TIC</h5>
+    <p class="subtitulo-residentes">Programa de Residência em TIC16 Brisa e Softex Maranhão - 2ª Turma (2026)</p>
+</div>
+
+<div class="row justify-content-center residentes">
+
+    <!-- RESIDENTE 1 -->
+    <div class="col-md-2 col-6 text-center residente-card">
+        <div class="foto-placeholder">
+            José Kauã
+            <!-- <img src="assets/img/residentes/josepkaua.jpg" alt="José Kauã" class="foto-residente"> -->
+        </div>
+        <p class="nome-residente">José Kauã</p>
+        <p class="funcao mt-2">Fullstack</p>
+        <p class="formacao">Formação Acadêmica</p>
+        <div class="social">
+            <a href="#" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-linkedin"></i>
+            </a>
+            <a href="https://github.com/Josepkaua" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-github"></i>
+            </a>
+        </div>
     </div>
 
-    <div class="row justify-content-center residentes">
-
-        <?php
-        $residentes = ["Front-end", "Fullstack", "Fullstack", "Back-end", "Front-end"];
-
-        foreach ($residentes as $funcao) {
-            echo '
-            <div class="col-md-2 col-6 text-center residente-card">
-                <div class="foto-placeholder">FOTO</div>
-                <p class="funcao">'.$funcao.'</p>
-                <div class="social">
-                    <a href="#"><i class="bi bi-linkedin"></i></a>
-                    <a href="#"><i class="bi bi-github"></i></a>
-                </div>
-            </div>
-            ';
-        }
-        ?>
+    <!-- RESIDENTE 2 -->
+    <div class="col-md-2 col-6 text-center residente-card">
+        <div class="foto-placeholder">
+            Bruno Kauan
+            <!-- <img src="assets/img/residentes/brunokauan.jpg" alt="Bruno Kauan" class="foto-residente"> -->
+        </div>
+        <p class="nome-residente">Bruno Kauan</p>
+        <p class="funcao mt-2">Fullstack</p>
+        <p class="formacao">Formação Acadêmica</p>
+        <div class="social">
+            <a href="#" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-linkedin"></i>
+            </a>
+            <a href="https://github.com/bkauan099" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-github"></i>
+            </a>
+        </div>
     </div>
+
+    <!-- RESIDENTE 3 -->
+    <div class="col-md-2 col-6 text-center residente-card">
+        <div class="foto-placeholder">
+            Augusto Nicácio
+            <!-- <img src="assets/img/residentes/augustonicacio.jpg" alt="Augusto Nicácio" class="foto-residente"> -->
+        </div>
+        <p class="nome-residente">Augusto Nicácio</p>
+        <p class="funcao mt-2">Front-end</p>
+        <p class="formacao">Formação Acadêmica</p>
+        <div class="social">
+            <a href="#" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-linkedin"></i>
+            </a>
+            <a href="https://github.com/AugustoNicacio" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-github"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- RESIDENTE 4 -->
+    <div class="col-md-2 col-6 text-center residente-card">
+        <div class="foto-placeholder">
+            Aian
+            <!-- <img src="assets/img/residentes/aian.jpg" alt="Aian" class="foto-residente"> -->
+        </div>
+        <p class="nome-residente">Aian</p>
+        <p class="funcao mt-2">Back-End</p>
+        <p class="formacao">Formação Acadêmica</p>
+        <div class="social">
+            <a href="#" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-linkedin"></i>
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-github"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- RESIDENTE 5 -->
+    <div class="col-md-2 col-6 text-center residente-card">
+        <div class="foto-placeholder">
+            <img src="assets/img/residentes/andrenunes.jpg" alt="André Nunes" class="foto-residente">
+        </div>
+        <p class="nome-residente">André Nunes</p>
+        <p class="funcao mt-2">Front-end</p>
+        <p class="formacao">Designer</p>
+        <div class="social">
+            <a href="https://www.linkedin.com/in/andrecnr/" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-linkedin"></i>
+            </a>
+            <a href="https://github.com/andreandre-cnr" target="_blank" rel="noopener noreferrer">
+                <i class="bi bi-github"></i>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<!-- FIM DA ROW RESIDENTES -->
+
+
 <!-- LOGOS PARCEIROS -->
 <div class="parceiros text-center mt-5">
     <h6>PARCEIROS</h6>
@@ -150,6 +233,8 @@
         </div>
     </div>
 </div>
+
+
 <!-- FOOTER -->
 <footer class="footer-simpa">
     <div class="footer-container">
