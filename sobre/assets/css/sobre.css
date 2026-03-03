@@ -115,14 +115,17 @@ body {
 
 .logo-uema-parceiro {
     height: 100px;
+    width: 215px;
 }
 
 .logo-proexae {
-    height: 85px;
+    height: 75px;
+    width: auto ;
 }
 
 .logo-cct {
-    height: 95px;
+    height: 85px;
+    width: auto;
 }
 
 .logo-marandu {
@@ -130,15 +133,18 @@ body {
 }
 
 .logo-brisa {
-    height: 105px;
+    height: 85px;
+    width: auto;
 }
 
 .logo-softex {
-    height: 105px;
+    height: 78px;
+    width: auto;
 }
 
 .logo-mcti {
-    height: 150px;
+    height: 90px;
+    width: auto;
 }
 /* Cards residentes */
 .residente-card {
