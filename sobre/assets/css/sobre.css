@@ -164,10 +164,11 @@ body {
     margin-top: 50px;
     width: 100%;
 }
+
 .footer-container {
-    max-width: 1100px;
-    margin: 0 auto; /* Centraliza o conteúdo */
-    padding: 0 20px; /* Adiciona padding nas laterais para mobile */
+    max-width: 1140px; /* ou o valor que preferir */
+    margin: 0 auto;
+    padding: 0 15px;
     display: flex;
     align-items: center;
     gap: 25px;
