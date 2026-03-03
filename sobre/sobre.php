@@ -102,37 +102,51 @@
     <!-- LINHA 1 -->
     <div class="row justify-content-center align-items-center parceiros-linha">
         <div class="col-md-2 col-6">
-            <img src="assets/img/uema-logo.png" class="logo-parceiro logo-uema-parceiro">
+            <a href="https://www.uema.br/" target="_blank" rel="noopener noreferrer">
+                <img src="assets/img/uema-logo.png" class="logo-parceiro logo-uema-parceiro" alt="UEMA">
+            </a>
         </div>
 
         <div class="col-md-2 col-6">
-            <img src="assets/img/proexae-logocor.png" class="logo-parceiro logo-proexae">
+            <a href="https://www.proexae.uema.br/" target="_blank" rel="noopener noreferrer">
+                <img src="assets/img/proexae-logocor.png" class="logo-parceiro logo-proexae" alt="PROEXAE">
+            </a>
         </div>
 
         <div class="col-md-2 col-6">
-            <img src="assets/img/cct-logoazul.png" class="logo-parceiro logo-cct">
+            <a href="https://www.prog.uema.br/cct/" target="_blank" rel="noopener noreferrer">
+                <img src="assets/img/cct-logoazul.png" class="logo-parceiro logo-cct" alt="CCT-UEMA">
+            </a>
         </div>  
 
         <div class="col-md-3 col-6">
-            <img src="assets/img/marandu-logo.png" class="logo-parceiro logo-marandu">
+            <a href="https://marandu.uema.br/" target="_blank" rel="noopener noreferrer">
+                <img src="assets/img/marandu-logo.png" class="logo-parceiro logo-marandu" alt="Agência Marandu">
+            </a>
         </div>
     </div>
 
     <!-- LINHA 2 -->
     <div class="row justify-content-center align-items-center parceiros-linha">
         <div class="col-md-4 col-6">
-            <img src="assets/img/brisa-logo.png" class="logo-parceiro-grande logo-brisa">
+            <a href="https://brisabr.com.br/" target="_blank" rel="noopener noreferrer">
+                <img src="assets/img/brisa-logo.png" class="logo-parceiro-grande logo-brisa" alt="Brisa">
+            </a>
         </div>
 
         <div class="col-md-4 col-6">
-            <img src="assets/img/softex-logocor.png" class="logo-parceiro-grande logo-softex">
+            <a href="https://softex.br/" target="_blank" rel="noopener noreferrer">
+                <img src="assets/img/softex-logocor.png" class="logo-parceiro-grande logo-softex" alt="Softex">
+            </a>
         </div>
     </div>
 
     <!-- LINHA 3 -->
     <div class="row justify-content-center align-items-center parceiros-linha">
         <div class="col-md-6 col-8">
-            <img src="assets/img/mcti-logo.png" class="logo-mcti">
+            <a href="https://www.gov.br/mcti/pt-br" target="_blank" rel="noopener noreferrer">
+                <img src="assets/img/mcti-logo.png" class="mcti-logo" alt="MCTI">
+            </a>
         </div>
     </div>
 </div>

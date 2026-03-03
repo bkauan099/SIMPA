@@ -3,8 +3,8 @@ body {
     font-family: 'Montserrat', sans-serif;
     background-color: #f5f6f8;
     font-size: 16px;
-    color:#2b3c50;
-   
+    color: #2b3c50;
+    overflow-x: hidden; /* Evita barra branca lateral */
 }
 
 /* Texto institucional */
@@ -15,31 +15,39 @@ body {
     font-size: 16px;
     line-height: 1.7;
     color: #2b3c50;
+    padding: 0 15px; /* Padding para mobile */
 }
 
-/* HEADER */
+/* ========================= */
+/* HEADER - CORRIGIDO */
+/* ========================= */
 .header-simpa {
     background-color: #ffffff;
     border-bottom: 1px solid #e0e0e0;
     padding: 20px 0;
 }
+
 .header-wrapper {
     max-width: 1140px;
     margin: 0 auto;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     position: relative;
 }
+
 .logo-area {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
+    flex: 0 0 auto;
 }
 
 .logo-uema {
     height: 100px;
     width: auto;
 }
+
 .titulo-area {
+    flex: 1;
     text-align: center;
 }
 
@@ -47,14 +55,16 @@ body {
     margin: 0;
     font-size: 26px;
     font-weight: 600;
-    color: #2b3c50
+    color: #2b3c50;
 }
+
 .subtitulo-sistema {
     margin: 0;
     font-size: 14px;
     font-weight: 400;
     color: #333;
 }
+
 /* Redes sociais */
 .social a {
     font-size: 22px;
@@ -77,31 +87,37 @@ body {
 .social .bi-github:hover {
     color: #333333;
 }
-/* ========================= */
-/* SEÇÃO PARCEIROS */
-/* ========================= */
 
+/* ========================= */
+/* SEÇÃO PARCEIROS - CORRIGIDA */
+/* ========================= */
 .parceiros {
     margin-top: 70px;
+    padding: 0 15px;
 }
 
 .parceiros-linha {
     margin-top: 45px;
 }
 
-/* Espaçamento horizontal consistente */
 .parceiros .row {
-    --bs-gutter-x: 60px;
+    --bs-gutter-x: 30px; /* Reduzido de 60px para 30px */
+    --bs-gutter-y: 20px;
+    margin-left: 0;
+    margin-right: 0;
+    justify-content: center;
 }
 
-/* Base */
-.logo-parceiro {
-    width: auto;
-    transition: transform 0.2s ease;
-}
-
+/* Base - todas as logos com altura padronizada */
+.logo-parceiro,
 .logo-parceiro-grande {
+    height: 85px;
     width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+    display: block;
+    margin: 0 auto;
 }
 
 .parceiros img {
@@ -110,22 +126,20 @@ body {
 }
 
 /* ========================= */
-/* AJUSTES INDIVIDUAIS */
+/* AJUSTES INDIVIDUAIS - PROPORCIONAIS */
 /* ========================= */
-
 .logo-uema-parceiro {
-    height: 100px;
-    width: 215px;
+    height: 100px; /* Um pouco maior */
+    width: auto;
+    max-width: 215px;
 }
 
 .logo-proexae {
     height: 75px;
-    width: auto ;
 }
 
 .logo-cct {
     height: 85px;
-    width: auto;
 }
 
 .logo-marandu {
@@ -134,17 +148,17 @@ body {
 
 .logo-brisa {
     height: 85px;
-    width: auto;
 }
 
 .logo-softex {
     height: 78px;
-    width: auto;
 }
 
 .logo-mcti {
     height: 90px;
     width: auto;
+    max-width: 100%;
+    object-fit: contain;
 }
 /* Cards residentes */
 .residente-card {
@@ -163,16 +177,22 @@ body {
     font-size: 12px;
     color: #666;
 }
-/* FOOTER */
+
+/* ========================= */
+/* FOOTER - CORRIGIDO */
+/* ========================= */
 .footer-simpa {
     background-color: #2b3c50;
     padding: 30px 0;
     margin-top: 50px;
-    width: 100%;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    position: relative;
+    left: 0;
 }
 
 .footer-container {
-    max-width: 1140px; /* ou o valor que preferir */
+    max-width: 1140px;
     margin: 0 auto;
     padding: 0 15px;
     display: flex;
@@ -182,7 +202,8 @@ body {
 
 .footer-logo {
     height: 150px;
-    width: auto;   
+    width: auto;
+    max-width: 100%;
 }
 
 .footer-text {
@@ -191,16 +212,175 @@ body {
     line-height: 1.6;
 }
 
-/* Para mobile */
+/* ========================= */
+/* RESPONSIVIDADE COMPLETA */
+/* ========================= */
 
-/*Footer responsivo*/
+/* Para tablets e celulares (até 768px) */
 @media (max-width: 768px) {
-    .footer-container {
-        flex-direction: column; /* Empilha logo e texto no mobile */
+    
+    /* HEADER RESPONSIVO */
+    .header-wrapper {
+        flex-direction: column;
         text-align: center;
         gap: 15px;
     }
-        .footer-logo {
-            height: 120px; /* Reduz o tamanho da logo no mobile */
-        }
+    
+    .logo-area {
+        margin-bottom: 5px;
     }
+    
+    .logo-uema {
+        height: 70px;
+    }
+    
+    .titulo-sistema {
+        font-size: 22px;
+    }
+    
+    .subtitulo-sistema {
+        font-size: 12px;
+    }
+    
+    /* TEXTO RESPONSIVO */
+    .texto-sobre {
+        font-size: 15px;
+        padding: 0 15px;
+    }
+    
+    /* PARCEIROS RESPONSIVO */
+    .parceiros .row {
+        --bs-gutter-x: 15px;
+    }
+    
+    /* Reduzindo todas as logos proporcionalmente */
+    .logo-parceiro,
+    .logo-parceiro-grande,
+    .logo-uema-parceiro,
+    .logo-proexae,
+    .logo-cct,
+    .logo-marandu,
+    .logo-brisa,
+    .logo-softex {
+        height: 60px; /* Todas com altura uniforme no mobile */
+    }
+    
+    .logo-uema-parceiro {
+        height: 70px; /* Um pouco maior */
+    }
+    
+    .logo-mcti {
+        height: 70px;
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+}
+    
+    /* CARDS RESIDENTES RESPONSIVO */
+    .residente-card {
+        margin-bottom: 30px;
+    }
+    
+    .foto-placeholder {
+        width: 90px;
+        height: 90px;
+    }
+    
+    /* FOOTER RESPONSIVO */
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .footer-logo {
+        height: 100px;
+    }
+    
+    .footer-text {
+        font-size: 13px;
+        padding: 0 10px;
+    }
+}
+
+/* Para celulares pequenos (até 480px) */
+@media (max-width: 480px) {
+    
+    .logo-uema {
+        height: 50px;
+    }
+    
+    .titulo-sistema {
+        font-size: 18px;
+    }
+    
+    .subtitulo-sistema {
+        font-size: 11px;
+    }
+    
+    .texto-sobre {
+        font-size: 14px;
+    }
+    
+    /* Logos ainda menores */
+    .logo-parceiro,
+    .logo-parceiro-grande,
+    .logo-uema-parceiro,
+    .logo-proexae,
+    .logo-cct,
+    .logo-marandu,
+    .logo-brisa,
+    .logo-softex {
+        height: 45px;
+    }
+    
+    .mcti-logo {
+        height: 55px;
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+}
+    
+    .foto-placeholder {
+        width: 70px;
+        height: 70px;
+        font-size: 10px;
+    }
+    
+    .footer-logo {
+        height: 80px;
+    }
+    
+    .footer-text {
+        font-size: 12px;
+    }
+}/* ========================= */
+/* EFEITO HOVER NAS LOGOS */
+/* ========================= */
+
+.parceiros a {
+    display: block;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.parceiros a:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+}
+
+.parceiros a:hover img {
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15));
+}
+
+/* Para mobile, desabilitar hover */
+@media (max-width: 768px) {
+    .parceiros a:hover {
+        transform: none;
+        opacity: 1;
+    }
+    
+    .parceiros a:hover img {
+        filter: none;
+    }
+}   
