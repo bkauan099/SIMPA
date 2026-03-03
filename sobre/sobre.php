@@ -158,7 +158,7 @@
     <!-- RESIDENTE 5 -->
     <div class="col-md-2 col-6 text-center residente-card">
         <div class="foto-placeholder">
-            <img src="assets/img/residentes/andrenunes.jpg" alt="André Nunes" class="foto-residente">
+            <img src="assets/img/residentes/andrenunes.jpeg" alt="André Nunes" class="foto-residente">
         </div>
         <p class="nome-residente">André Nunes</p>
         <p class="funcao mt-2">Front-end</p>

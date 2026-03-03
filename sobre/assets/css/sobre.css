@@ -169,29 +169,24 @@ body {
 }
 
 .foto-placeholder {
-    width: 110px;
+      width: 110px;
     height: 110px;
     background-color: #d9d9d9;
     border-radius: 50%;
+    border: 3px solid #2b3c50;
     margin: 0 auto;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
-    color: #2b3c50;
-    line-height: 1.3;
-    padding: 5px;
-    word-break: break-word;
-    box-sizing: border-box;
 }
 
+
 .foto-residente {
-    width: 100%;
+     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%;
+     border-radius: 50%;
     display: block;
 }
 
@@ -337,7 +332,11 @@ body {
     .foto-placeholder {
         width: 90px;
         height: 90px;
+        background-color: transparent;
+        border: 3px solid #2b3c50;
+        padding: 0;
     }
+}
     
     .formacao {
         font-size: 12px;
@@ -366,7 +365,7 @@ body {
     .parceiros a:hover img {
         filter: none;
     }
-}
+
 
 @media (max-width: 480px) {
     .logo-uema {
@@ -403,8 +402,11 @@ body {
     .foto-placeholder {
         width: 70px;
         height: 70px;
-        font-size: 10px;
+        background-color: transparent;
+        border: 3px solid #2b3c50;
+        padding: 0;
     }
+}
     
     .footer-logo {
         height: 80px;
@@ -413,7 +415,7 @@ body {
     .footer-text {
         font-size: 11px;
     }
-}.nome-residente {
+.nome-residente {
     font-size: 15px;
     font-weight: 600;
     color: #2b3c50;
