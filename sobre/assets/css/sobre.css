@@ -3,7 +3,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     background-color: #f5f6f8;
     font-size: 16px;
-    color:#2b3c5d;
+    color:#2b3c50;
    
 }
 
@@ -14,50 +14,47 @@ body {
     text-align: justify;
     font-size: 16px;
     line-height: 1.7;
-    color: #2b3c5d;
+    color: #2b3c50;
 }
 
 /* HEADER */
 .header-simpa {
     background-color: #ffffff;
     border-bottom: 1px solid #e0e0e0;
-    padding: 15px 0;
+    padding: 20px 0;
 }
-
-.header-container {
-    max-width: 1100px;
+.header-wrapper {
+    max-width: 1140px;
     margin: 0 auto;
-    display: flex;
-    align-items: center;
+    position: relative;
 }
-
 .logo-area {
-    flex: 0 0 auto;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .logo-uema {
-    height: 50px;
+    height: 100px;
+    width: auto;
 }
-
 .titulo-area {
-    flex: 1;
     text-align: center;
 }
 
 .titulo-sistema {
     margin: 0;
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 600;
-    color: #1f3c88;
+    color: #2b3c50
 }
-
 .subtitulo-sistema {
     margin: 0;
     font-size: 14px;
     font-weight: 400;
-    color: #666;
+    color: #333;
 }
-
 /* Redes sociais */
 .social a {
     font-size: 22px;
@@ -80,17 +77,30 @@ body {
 .social .bi-github:hover {
     color: #333333;
 }
+/* ========================= */
+/* SEÇÃO PARCEIROS */
+/* ========================= */
 
-/* Logos parceiros */
-.logo-parceiro {
-    max-height: 50px;
-    width: 100%;
-    object-fit: contain;
+.parceiros {
+    margin-top: 70px;
 }
 
-.logo-parceiro,
+.parceiros-linha {
+    margin-top: 45px;
+}
+
+/* Espaçamento horizontal consistente */
+.parceiros .row {
+    --bs-gutter-x: 60px;
+}
+
+/* Base */
+.logo-parceiro {
+    width: auto;
+    transition: transform 0.2s ease;
+}
+
 .logo-parceiro-grande {
-    height: 60px;
     width: auto;
 }
 
@@ -99,6 +109,37 @@ body {
     margin: 0 auto;
 }
 
+/* ========================= */
+/* AJUSTES INDIVIDUAIS */
+/* ========================= */
+
+.logo-uema-parceiro {
+    height: 100px;
+}
+
+.logo-proexae {
+    height: 85px;
+}
+
+.logo-cct {
+    height: 95px;
+}
+
+.logo-marandu {
+    height: 85px;
+}
+
+.logo-brisa {
+    height: 105px;
+}
+
+.logo-softex {
+    height: 105px;
+}
+
+.logo-mcti {
+    height: 150px;
+}
 /* Cards residentes */
 .residente-card {
     margin-bottom: 25px;
@@ -118,7 +159,7 @@ body {
 }
 /* FOOTER */
 .footer-simpa {
-    background-color: #2b3c5d;
+    background-color: #2b3c50;
     padding: 30px 0;
     margin-top: 50px;
 }
@@ -127,13 +168,13 @@ body {
     max-width: 1100px;
     margin: 0 auto;
     display: flex;
-    align-items: flex-start; /* alinha topo do texto com topo da logo */
+    align-items:   center;
     gap: 25px;
 }
 
 .footer-logo {
-    height: 80px;
-    width: 215px
+    height: 150px;
+    width: auto;   
 }
 
 .footer-text {

@@ -4,8 +4,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <header class="header-simpa">
-    <div class="header-container">
-        
+    <div class="header-wrapper">
+
         <div class="logo-area">
             <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema">
         </div>
@@ -21,23 +21,20 @@
 </header>
 
 <head>
-    <link rel="stylesheet" href="assets/css/sobre.css">
-<script src="assets/js/sobre.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
+    
     <!-- Fonte Montserrat -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+    
     <!-- CSS -->
-    <link rel="stylesheet" href="sobre/assets/css/sobre.css">
+    <link rel="stylesheet" href="assets/css/sobre.css">
 </head>
 <body>
 
@@ -98,42 +95,47 @@
         }
         ?>
     </div>
+<!-- LOGOS PARCEIROS -->
+<div class="parceiros text-center mt-5">
+    <h6>PARCEIROS</h6>
 
-    <!-- LOGOS PARCEIROS -->
-    <div class="parceiros text-center mt-5">
-    <h6> PARCEIROS  </h6>
-        <div class="row justify-content-center align-items-center g-4">
-            <div class="col-md-2 col-4">
-                <img src="assets/img/uema-logo.png" class="logo-parceiro">
-            </div>
-
-            <div class="col-md-2 col-4">
-                <img src="assets/img/proexae-logocor.png" class="logo-parceiro">
-            </div>
-
-            <div class="col-md-2 col-4">
-                <img src="assets/img/cct-logoazul.png" class="logo-parceiro">
-            </div>
-
-            <div class="col-md-3 col-6">
-                <img src="assets/img/marandu-logo.png" class="logo-parceiro">
-            </div>
+    <!-- LINHA 1 -->
+    <div class="row justify-content-center align-items-center parceiros-linha">
+        <div class="col-md-2 col-6">
+            <img src="assets/img/uema-logo.png" class="logo-parceiro logo-uema-parceiro">
         </div>
 
-        <div class="row justify-content-center mt-4">
-            <div class="col-md-4 col-6">
-                <img src="assets/img/brisa-logo.png" class="logo-parceiro-grande">
-            </div>
-
-            <div class="col-md-4 col-6">
-                <img src="assets/img/softex-logocor.png" class="logo-parceiro-grande">
-            </div>
+        <div class="col-md-2 col-6">
+            <img src="assets/img/proexae-logocor.png" class="logo-parceiro logo-proexae">
         </div>
 
+        <div class="col-md-2 col-6">
+            <img src="assets/img/cct-logoazul.png" class="logo-parceiro logo-cct">
+        </div>  
+
+        <div class="col-md-3 col-6">
+            <img src="assets/img/marandu-logo.png" class="logo-parceiro logo-marandu">
+        </div>
     </div>
 
-</div>
+    <!-- LINHA 2 -->
+    <div class="row justify-content-center align-items-center parceiros-linha">
+        <div class="col-md-4 col-6">
+            <img src="assets/img/brisa-logo.png" class="logo-parceiro-grande logo-brisa">
+        </div>
 
+        <div class="col-md-4 col-6">
+            <img src="assets/img/softex-logocor.png" class="logo-parceiro-grande logo-softex">
+        </div>
+    </div>
+
+    <!-- LINHA 3 -->
+    <div class="row justify-content-center align-items-center parceiros-linha">
+        <div class="col-md-6 col-8">
+            <img src="assets/img/mcti-logo.png" class="logo-mcti">
+        </div>
+    </div>
+</div>
 <!-- FOOTER -->
 <footer class="footer-simpa">
     <div class="footer-container">
@@ -147,14 +149,12 @@
             Cidade Universitária Paulo VI - Avenida Lourenço Vieira da Silva, 1000 – São Luís/MA.<br>
             Fone: (98) 2016-8100.<br>
             Pró-Reitoria de Extensão e Assuntos Estudantis - PROEXAE<br>
-            Desenvolvido por: Brisa Tecnologia e Softex Maranhão
+            Desenvolvido por: Residentes do Programa de Residência em TIC16 Brisa e Softex Maranhão.
         </div>
 
     </div>
 </footer>
-
 <!-- JS -->
-<script src="sobre/assets/js/sobre.js"></script>
-
+    <script src="assets/js/sobre.js"></script>
 </body>
 </html>
