@@ -162,13 +162,14 @@ body {
     background-color: #2b3c50;
     padding: 30px 0;
     margin-top: 50px;
+    width: 100%;
 }
-
 .footer-container {
     max-width: 1100px;
-    margin: 0 auto;
+    margin: 0 auto; /* Centraliza o conteúdo */
+    padding: 0 20px; /* Adiciona padding nas laterais para mobile */
     display: flex;
-    align-items:   center;
+    align-items: center;
     gap: 25px;
 }
 
@@ -182,3 +183,17 @@ body {
     font-size: 14px;
     line-height: 1.6;
 }
+
+/* Para mobile */
+
+/*Footer responsivo*/
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column; /* Empilha logo e texto no mobile */
+        text-align: center;
+        gap: 15px;
+    }
+        .footer-logo {
+            height: 120px; /* Reduz o tamanho da logo no mobile */
+        }
+    }
