@@ -469,8 +469,34 @@ body {
         color: #000 !important;
     }
 
+    /* Esconde apenas elementos interativos que não fazem sentido no papel */
+    .parceiros a:hover,
+    .parceiros a:hover img {
+        display: none !important;
+    }
+
+    /* OS ÍCONES SOCIAIS DEVEM PERMANECER VISÍVEIS */
+    .social {
+        display: block !important;  /* GARANTE QUE FICAM VISÍVEIS */
+    }
+    
+    .social a {
+        color: #000 !important;     /* MUDA PARA PRETO NO PAPEL */
+        text-decoration: none;
+        pointer-events: none;        /* IMPEDE CLIQUE, MAS MANTÉM VISUAL */
+        opacity: 1 !important;
+    }
+    
+    .social i {
+        font-size: 14pt !important;  /* AJUSTA TAMANHO PARA IMPRESSÃO */
+    }
+
+    /* Mantém cores do texto */
+    body, p, h1, h2, h5, h6, .titulo-sistema, .subtitulo-sistema, .texto-sobre {
+        color: #000 !important;
+    }
+
     /* Esconde elementos interativos */
-    .social,
     .parceiros a:hover,
     .parceiros a:hover img,
     .parceiros a:after,
