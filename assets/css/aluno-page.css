@@ -8,26 +8,12 @@
 :root {
 
     /* Cores atualizadas baseadas na imagem da UEMA */
-
     --fundo-azul-uema: #2F3F54;
-
     --azul-ativo: #435A76; /* Um tom um pouco mais claro para o botão ativo */
-
-   
-
     --fundo-cinza-claro: #f8fafc;
-
     --texto-escuro: #1e293b;
-
     --texto-mutado: #64748b;
-
 }
-
-
-
-
-
-
 html, body {
     height: 100%;
     margin: 0;
@@ -38,83 +24,44 @@ html, body {
     overflow-y: hidden; /* prevent page scrollbar, content will scroll internally */
 }
 
-
-
 /* Utilitários de Texto */
-
 .texto-secundario {
-
     color: var(--texto-mutado) !important;
-
 }
-
-
 
 /* Layout Base */
-
 .envoltorio-principal {
-
     display: flex;
-
     height: 100vh;
-
     overflow: hidden;
-
 }
-
-
 
 /* Barra Lateral (Sidebar) */
 
 .barra-lateral {
-
     width: 260px;
-
     background-color: var(--fundo-azul-uema);
-
     color: white;
-
     display: flex;
-
     flex-direction: column;
-
     transition: all 0.3s;
-
 }
-
-
 
 .logo-lateral {
-
     padding: 20px;
-
     border-bottom: 1px solid rgba(255,255,255,0.1);
-
 }
-
-
 
 .link-navegacao {
-
     color: rgba(255, 255, 255, 0.75);
-
     padding: 12px 20px;
-
     display: flex;
-
     align-items: center;
-
     gap: 12px;
-
     font-weight: 500;
-
     text-decoration: none;
-
     transition: 0.2s;
-
 }
-
-
 
 .link-navegacao:hover {
 
@@ -124,188 +71,109 @@ html, body {
 
 }
 
-
-
 .link-navegacao.ativo {
-
     color: white;
-
     background-color: var(--azul-ativo);
-
     border-left: 4px solid white;
 
 }
 
-
-
 /* Barra Superior (Topbar) */
-
 .barra-superior {
-
     background-color: var(--fundo-azul-uema);
-
     padding: 15px 30px;
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
 
 }
 
-
-
 .conteudo-principal {
-
     flex: 1;
-
     display: flex;
-
     flex-direction: column;
-
     overflow-y: auto;
-
 }
 
-
-
 /* Área de Conteúdo */
-
 .area-conteudo {
 
     padding: 30px;
-
 }
-
-
 
 .cartao-estatistica {
-
     background: white;
-
     border-radius: 12px;
-
     padding: 20px;
-
     display: flex;
-
     align-items: center;
-
     gap: 15px;
-
     box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-
     border: none;
-
 }
-
-
 
 .icone-estatistica {
-
     font-size: 1.5rem;
-
     width: 50px;
-
     height: 50px;
-
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
     border-radius: 10px;
-
 }
-
-
 
 .fundo-azul-claro { background-color: #eff6ff; color: #3b82f6; }
 
 .fundo-laranja-claro { background-color: #fff7ed; color: #f97316; }
 
-
-
 .cartao-customizado {
-
     background: white;
-
     border-radius: 12px;
-
     box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-
     border: none;
-
 }
-
-
 
 /* Tabelas */
 
 .table > :not(caption) > * > * {
-
     padding: 16px 10px;
-
     border-bottom-color: #f1f5f9;
-
     color: var(--texto-escuro);
-
     vertical-align: middle;
 
 }
 
-
-
 .table th {
-
     font-weight: 600;
-
     color: var(--texto-mutado);
-
     font-size: 0.85rem;
-
     text-transform: uppercase;
 
 }
 
-
-
 /* Etiquetas (Badges) e Botões */
 
 .etiqueta-status {
-
     padding: 6px 12px;
-
     border-radius: 6px;
-
     font-weight: 500;
-
     font-size: 0.85rem;
-
 }
 
 .etiqueta-ativo { background-color: #dcfce7; color: #16a34a; }
 
 .etiqueta-pendente { background-color: #ffedd5; color: #ea580c; }
 
-
-
 .botao-fantasma {
 
     background: transparent;
-
     color: var(--texto-mutado);
-
     border: 1px solid #e2e8f0;
 
 }
 
 .botao-fantasma:hover {
-
     background: #f8fafc;
-
     color: var(--texto-escuro);
 
 }
@@ -313,23 +181,15 @@ html, body {
 
 
 .item-pendencia {
-
     display: flex;
-
     justify-content: space-between;
-
     align-items: center;
-
     padding: 12px 0;
-
     border-bottom: 1px solid #f1f5f9;
-
 }
 
 .item-pendencia:last-child {
-
     border-bottom: none;
-
     padding-bottom: 0;
 
 }
@@ -344,7 +204,7 @@ html, body {
     overflow-y: auto; /* allow scrolling if sidebar content taller than viewport */
 }
 
-#content {
+#content  {
     margin-left: 260px;
     height: 100vh;
     overflow-y: auto;
@@ -353,7 +213,7 @@ html, body {
 /* styles originally in aluno-page.php */
 :root {
     /* Cor oficial baseada na logo UEMA */
-    --azul-uema: #2B3C50;
+    --azul-uema: #0723ab;
     --azul-hover: #435A76;
     --fundo-cinza: #f0f2f5;
     --branco: #ffffff;
@@ -368,7 +228,7 @@ body, html {
 
 /* Estrutura Principal Flexbox */
 .wrapper {
-    display: flex;
+
     width: 100%;
     min-height: 100vh;
     align-items: stretch;
@@ -376,11 +236,12 @@ body, html {
 
 /* Sidebar - Menu Lateral */
 #sidebar {
+    margin-top: 70px ;
     min-width: 260px;
     max-width: 260px;
     background: var(--azul-uema);
     color: var(--branco);
-    transition: all 0.3s;
+    transition: all 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
 }
@@ -392,13 +253,12 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
+
 .logo-uema {
-    max-height: 45px; /* Tamanho ajustado para equilíbrio visual */
     width: auto;
-    max-height: 90px;
+    max-height: 80px;
 }
 
 /* Links da Navegação */
@@ -428,23 +288,28 @@ body, html {
 }
 
 /* Conteúdo da Direita */
-#content {
-    width: 100%;
+#content  {
+    width:83% ;
     display: flex;
     flex-direction: column;
 }
 
 /* Barra Superior - Topbar */
 .navbar-custom {
+   
     background-color: var(--azul-uema);
     height: 70px;
-    padding: 0 30px;
+    padding: 5px 30px 5px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: var(--branco);
+
 }
 
+.navbar-custom img{
+    margin-right: 20px;
+}
 .logo-proexae {
     max-height: 60px;
     width: auto;
@@ -508,5 +373,15 @@ body, html {
 
 /* Ajuste de responsividade */
 @media (max-width: 768px) {
-    #sidebar { display: none; }
+    #sidebar { display: flex; }
 }
+
+.bnt-expandir {
+font-size: 25px;
+height: 15px;
+padding: 12px 25px 30px 20px;
+}
+.bnt-expandir i {
+  color: var(--branco);
+}
+

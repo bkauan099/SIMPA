@@ -27,16 +27,15 @@
 
 <body>
 
-
+<header>
 
 <div class="wrapper">
 
     <nav id="sidebar">
 
-        <div class="sidebar-header">
 
-            <img src="assets/img/logo-uema-semfundo.png" alt="UEMA" class="logo-uema">
-
+        <div class="bnt-expandir">
+            <i class="bi bi-list"></i>
         </div>
 
 
@@ -61,16 +60,13 @@
 
     </nav>
 
+ <header class="navbar-custom">
 
-
-    <div id="content">
-
-        <header class="navbar-custom">
 
             <div class="d-flex align-items-center gap-3">
-
+                <img src="assets/img/logo-uema-semfundo.png" alt="UEMA" class="logo-uema">
                 <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae">
-
+                
             </div>
 
            
@@ -96,6 +92,10 @@
             </div>
 
         </header>
+
+    <div id="content">
+
+       
 
 
 
@@ -299,7 +299,7 @@
 
 
 
+
 </body>
 
 </html>
-
