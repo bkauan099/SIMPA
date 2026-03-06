@@ -21,45 +21,78 @@
 </head>
 <body>
 
-<div class="wrapper">
-    <!-- SIDEBAR -->
+<!-- HEADER FIXO (sempre visível) -->
+<header class="header-principal">
+    <div class="header-container">
+        <div class="header-left">
+            <button class="menu-sanduiche" id="menuToggle">
+                <i class="bi bi-list"></i>
+            </button>
+            <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema">
+            <img src="assets/img/proexae-logocor.png" alt="ProExae" class="logo-proexae">
+        </div>
+
+        <div class="header-right">
+            <div class="notificacoes-dropdown">
+                <button class="btn-notificacoes" id="notificacoesBtn">
+                    <i class="bi bi-bell"></i>
+                    <span class="badge-notificacao">2</span>
+                </button>
+                <div class="dropdown-notificacoes" id="notificacoesDropdown">
+                    <div class="dropdown-header">
+                        <h6>Notificações</h6>
+                        <span class="marcar-lidas">Marcar todas como lidas</span>
+                    </div>
+                    <div class="dropdown-item">
+                        <small class="text-muted">Agora mesmo</small>
+                        <p><strong>Novo projeto</strong> - Projeto Social Comunitário foi aprovado</p>
+                    </div>
+                    <div class="dropdown-item">
+                        <small class="text-muted">Há 2 horas</small>
+                        <p><strong>Atividade pendente</strong> - Você tem 8 horas para registrar</p>
+                    </div>
+                    <div class="dropdown-item">
+                        <small class="text-muted">Ontem</small>
+                        <p><strong>Reunião</strong> - Orientação de projeto amanhã às 14h</p>
+                    </div>
+                </div>
+            </div>
+            <div class="usuario-info">
+                <img src="https://ui-avatars.com/api/?name=João&background=2b3c50&color=fff" class="rounded-circle" width="35">
+                <span class="fw-medium">João <i class="bi bi-chevron-down small"></i></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="app-container">
+    <!-- SIDEBAR (rolável) -->
     <nav id="sidebar">
         <ul class="list-unstyled components">
-            <li><a href="#dashboard" class="active menu-item" data-target="dashboard"><i class="bi bi-house-door"></i> <span>Dashboard</span></a></li>
-            <li><a href="#projetos" class="menu-item" data-target="projetos"><i class="bi bi-folder"></i> <span>Meus Projetos</span></a></li>
-            <li><a href="#atividades" class="menu-item" data-target="atividades"><i class="bi bi-check2-square"></i> <span>Minhas Atividades</span></a></li>
-            <li><a href="#documentos" class="menu-item" data-target="documentos"><i class="bi bi-file-earmark-text"></i> <span>Documentos</span></a></li>
-            <li><a href="#certificados" class="menu-item" data-target="certificados"><i class="bi bi-award"></i> <span>Certificados</span></a></li>
-            <li><a href="#perfil" class="menu-item" data-target="perfil"><i class="bi bi-person"></i> <span>Meu Perfil</span></a></li>
-            <li class="mt-auto"><a href="#sair"><i class="bi bi-box-arrow-left"></i> <span>Sair</span></a></li>
+            <li><a href="#dashboard" class="active menu-item" data-target="dashboard"><i class="bi bi-speedometer2"></i> <span>Dashboard</span></a></li>
+            <li><a href="#projetos" class="menu-item" data-target="projetos"><i class="bi bi-grid-3x3-gap-fill"></i> <span>Meus Projetos</span></a></li>
+            <li><a href="#atividades" class="menu-item" data-target="atividades"><i class="bi bi-calendar-check"></i> <span>Minhas Atividades</span></a></li>
+            <li><a href="#documentos" class="menu-item" data-target="documentos"><i class="bi bi-file-text"></i> <span>Documentos</span></a></li>
+            <li><a href="#certificados" class="menu-item" data-target="certificados"><i class="bi bi-patch-check"></i> <span>Certificados</span></a></li>
+            
+            <!-- PERFIL COM SUBITENS -->
+            <li class="menu-perfil">
+                <a href="#" class="menu-item-perfil" id="perfilToggle">
+                    <i class="bi bi-person-circle"></i> <span>Perfil</span> <i class="bi bi-chevron-down ms-auto seta-perfil"></i>
+                </a>
+                <ul class="submenu-perfil" id="submenuPerfil">
+                    <li><a href="#" class="submenu-item" data-perfil="admin"><i class="bi bi-shield-lock"></i> Administrador</a></li>
+                    <li><a href="#" class="submenu-item" data-perfil="estudante"><i class="bi bi-mortarboard"></i> Estudante</a></li>
+                    <li><a href="#" class="submenu-item" data-perfil="professor"><i class="bi bi-person-badge"></i> Professor Orientador</a></li>
+                </ul>
+            </li>
+            
+            <li class="mt-auto"><a href="#sair"><i class="bi bi-door-open"></i> <span>Sair</span></a></li>
         </ul>
     </nav>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <div id="content">
-        <!-- HEADER COM MENU SANDUÍCHE -->
-        <header class="navbar-custom">
-            <div class="d-flex align-items-center gap-3">
-                <button class="menu-sanduiche" id="menuToggle">
-                    <i class="bi bi-list"></i>
-                </button>
-                <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema">
-                <img src="assets/img/proexae-logocor.png" alt="ProExae" class="logo-proexae">
-            </div>
-
-            <div class="d-flex align-items-center gap-4">
-                <div class="position-relative">
-                    <i class="bi bi-bell fs-5"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">2</span>
-                </div>
-                <div class="d-flex align-items-center gap-2" style="cursor:pointer">
-                    <img src="https://ui-avatars.com/api/?name=João&background=random" class="rounded-circle" width="35">
-                    <span class="fw-medium">João <i class="bi bi-chevron-down small"></i></span>
-                </div>
-            </div>
-        </header>
-
-        <!-- ÁREA DAS TELAS -->
+    <!-- CONTEÚDO PRINCIPAL (rolável) -->
+    <main id="content">
         <div class="dashboard-container">
             <!-- TELA DASHBOARD -->
             <div id="tela-dashboard" class="tela ativa">
@@ -146,52 +179,16 @@
                 </div>
             </div>
 
-            <!-- TELA MEUS PROJETOS -->
-            <div id="tela-projetos" class="tela">
-                <h3 class="fw-bold mb-1">Meus Projetos</h3>
-                <p class="text-muted mb-4">Lista de todos os seus projetos</p>
-                <div class="content-card">
-                    <p>Conteúdo da página Meus Projetos</p>
-                </div>
-            </div>
-
-            <!-- TELA MINHAS ATIVIDADES -->
-            <div id="tela-atividades" class="tela">
-                <h3 class="fw-bold mb-1">Minhas Atividades</h3>
-                <p class="text-muted mb-4">Acompanhe suas atividades</p>
-                <div class="content-card">
-                    <p>Conteúdo da página Minhas Atividades</p>
-                </div>
-            </div>
-
-            <!-- TELA DOCUMENTOS -->
-            <div id="tela-documentos" class="tela">
-                <h3 class="fw-bold mb-1">Documentos</h3>
-                <p class="text-muted mb-4">Gerencie seus documentos</p>
-                <div class="content-card">
-                    <p>Conteúdo da página Documentos</p>
-                </div>
-            </div>
-
-            <!-- TELA CERTIFICADOS -->
-            <div id="tela-certificados" class="tela">
-                <h3 class="fw-bold mb-1">Certificados</h3>
-                <p class="text-muted mb-4">Seus certificados</p>
-                <div class="content-card">
-                    <p>Conteúdo da página Certificados</p>
-                </div>
-            </div>
-
-            <!-- TELA MEU PERFIL -->
-            <div id="tela-perfil" class="tela">
-                <h3 class="fw-bold mb-1">Meu Perfil</h3>
-                <p class="text-muted mb-4">Suas informações pessoais</p>
-                <div class="content-card">
-                    <p>Conteúdo da página Meu Perfil</p>
-                </div>
-            </div>
+            <!-- DEMAIS TELAS (abreviadas para economia de espaço) -->
+            <div id="tela-projetos" class="tela"><h3>Meus Projetos</h3><p>Lista de projetos</p></div>
+            <div id="tela-atividades" class="tela"><h3>Minhas Atividades</h3><p>Acompanhe suas atividades</p></div>
+            <div id="tela-documentos" class="tela"><h3>Documentos</h3><p>Gerencie seus documentos</p></div>
+            <div id="tela-certificados" class="tela"><h3>Certificados</h3><p>Seus certificados</p></div>
+            <div id="tela-admin" class="tela"><h3>Painel Administrativo</h3><p>Gerenciar usuários</p></div>
+            <div id="tela-estudante" class="tela"><h3>Perfil do Estudante</h3><p>Informações acadêmicas</p></div>
+            <div id="tela-professor" class="tela"><h3>Perfil do Professor</h3><p>Projetos e orientandos</p></div>
         </div>
-    </div>
+    </main>
 </div>
 
 <!-- JavaScript -->

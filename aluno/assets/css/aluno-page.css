@@ -24,17 +24,77 @@ html, body {
     background-color: var(--fundo-cinza);
     font-family: 'Montserrat', sans-serif;
     color: var(--texto-escuro);
-    overflow-x: hidden;
-}
-
-.wrapper {
-    display: flex;
-    width: 100%;
-    min-height: 100vh;
+    overflow: hidden; /* Impede scroll no body */
 }
 
 /* ===================== */
-/* SIDEBAR */
+/* HEADER FIXO */
+/* ===================== */
+.header-principal {
+    background-color: var(--azul-uema);
+    height: 80px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.header-container {
+    max-width: 100%;
+    height: 100%;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.menu-sanduiche {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 28px;
+    display: block;
+    cursor: pointer;
+    margin-right: 10px;
+    line-height: 1;
+}
+
+.logo-uema {
+    height: 50px;
+    width: auto;
+}
+
+.logo-proexae {
+    height: 40px;
+    width: auto;
+}
+
+/* ===================== */
+/* APP CONTAINER (sidebar + content) */
+/* ===================== */
+.app-container {
+    display: flex;
+    height: calc(100vh - 80px); /* Altura total menos header */
+    margin-top: 80px; /* Espaço para o header fixo */
+    overflow: hidden; /* Impede scroll no container */
+}
+
+/* ===================== */
+/* SIDEBAR (rolável) */
 /* ===================== */
 #sidebar {
     width: 260px;
@@ -42,13 +102,22 @@ html, body {
     color: var(--branco);
     display: flex;
     flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 1000;
+    height: 100%;
+    overflow-y: auto; /* SIDEBAR ROLÁVEL */
     transition: all 0.3s ease;
-    overflow-y: auto;
+}
+
+#sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+#sidebar::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1);
+}
+
+#sidebar::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.3);
+    border-radius: 3px;
 }
 
 #sidebar ul.components {
@@ -99,55 +168,18 @@ html, body {
 }
 
 /* ===================== */
-/* CONTEÚDO PRINCIPAL */
+/* CONTEÚDO PRINCIPAL (rolável) */
 /* ===================== */
 #content {
     flex: 1;
-    margin-left: 260px;
-    width: calc(100% - 260px);
+    overflow-y: auto; /* CONTEÚDO ROLÁVEL */
+    height: 100%;
+    background-color: var(--fundo-cinza);
     transition: all 0.3s ease;
 }
 
 #sidebar.collapsed + #content {
-    margin-left: 70px;
-    width: calc(100% - 70px);
-}
-
-/* ===================== */
-/* HEADER / TOPBAR */
-/* ===================== */
-.navbar-custom {
-    background-color: var(--azul-uema);
-    height: 80px;
-    padding: 0 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--branco);
-    position: sticky;
-    top: 0;
-    z-index: 900;
-}
-
-.menu-sanduiche {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 28px;
-    display: none;
-    cursor: pointer;
-    margin-right: 10px;
-    line-height: 1;
-}
-
-.logo-uema {
-    height: 50px;
-    width: auto;
-}
-
-.logo-proexae {
-    height: 40px;
-    width: auto;
+    margin-left: 0;
 }
 
 /* ===================== */
@@ -304,18 +336,186 @@ html, body {
 }
 
 /* ===================== */
+/* MENU PERFIL (ACORDEÃO) */
+/* ===================== */
+.menu-perfil {
+    position: relative;
+}
+
+.menu-item-perfil {
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    cursor: pointer;
+    gap: 12px;
+}
+
+.menu-item-perfil:hover {
+    color: var(--branco);
+    background: var(--azul-hover);
+}
+
+.seta-perfil {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.menu-perfil.open .seta-perfil {
+    transform: rotate(180deg);
+}
+
+.submenu-perfil {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    background: var(--azul-ativo);
+    display: none;
+}
+
+.menu-perfil.open .submenu-perfil {
+    display: block;
+}
+
+.submenu-perfil li a {
+    padding: 10px 20px 10px 52px;
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.9rem;
+    gap: 10px;
+}
+
+.submenu-perfil li a:hover {
+    color: var(--branco);
+    background: var(--azul-hover);
+}
+
+#sidebar.collapsed .menu-item-perfil span,
+#sidebar.collapsed .seta-perfil,
+#sidebar.collapsed .submenu-perfil {
+    display: none;
+}
+
+/* ===================== */
+/* NOTIFICAÇÕES DROPDOWN */
+/* ===================== */
+.notificacoes-dropdown {
+    position: relative;
+}
+
+.btn-notificacoes {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    position: relative;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.badge-notificacao {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #dc3545;
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 18px;
+}
+
+.dropdown-notificacoes {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 320px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    margin-top: 10px;
+    display: none;
+    z-index: 1200;
+}
+
+.dropdown-notificacoes.show {
+    display: block;
+}
+
+.dropdown-header {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown-header h6 {
+    margin: 0;
+    color: #2b3c50;
+    font-weight: 600;
+}
+
+.marcar-lidas {
+    font-size: 0.75rem;
+    color: #0d6efd;
+    cursor: pointer;
+}
+
+.dropdown-notificacoes .dropdown-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.dropdown-notificacoes .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-notificacoes .dropdown-item:hover {
+    background: #f8fafc;
+}
+
+.dropdown-notificacoes .dropdown-item small {
+    font-size: 0.7rem;
+}
+
+.dropdown-notificacoes .dropdown-item p {
+    margin: 5px 0 0;
+    font-size: 0.85rem;
+    color: #1e293b;
+}
+
+/* ===================== */
 /* RESPONSIVIDADE */
 /* ===================== */
 @media (max-width: 768px) {
-    .menu-sanduiche {
-        display: block;
+    .header-principal {
+        height: auto;
+        min-height: 70px;
+        padding: 10px 0;
+    }
+    
+    .header-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .app-container {
+        height: calc(100vh - 120px);
+        margin-top: 120px;
     }
     
     #sidebar {
+        position: fixed;
+        left: 0;
+        top: 120px;
+        bottom: 0;
+        z-index: 1000;
         transform: translateX(-100%);
         box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-        position: fixed;
-        z-index: 1050;
     }
     
     #sidebar.mobile-visible {
@@ -323,8 +523,7 @@ html, body {
     }
     
     #content {
-        margin-left: 0 !important;
-        width: 100% !important;
+        width: 100%;
     }
     
     .navbar-custom {
@@ -347,11 +546,6 @@ html, body {
         padding: 15px;
     }
     
-    .dashboard-container h3 {
-        font-size: 1.5rem;
-        margin-top: 10px;
-    }
-    
     .row.g-4.mb-4 {
         margin: 0 -8px;
     }
@@ -371,14 +565,6 @@ html, body {
         font-size: 1rem;
     }
     
-    .stat-card h4 {
-        font-size: 1.2rem;
-    }
-    
-    .stat-card small {
-        font-size: 0.7rem;
-    }
-    
     .content-card .row.g-2 {
         flex-direction: column;
     }
@@ -389,29 +575,15 @@ html, body {
         margin-bottom: 8px;
     }
     
-    .content-card button,
-    .content-card select {
-        width: 100% !important;
+    .dropdown-notificacoes {
+        width: 280px;
+        right: -50px;
     }
 }
 
 @media (max-width: 480px) {
-    .navbar-custom {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .navbar-custom .d-flex.align-items-center.gap-4 {
-        justify-content: space-between;
-        width: 100%;
-    }
-    
     .dashboard-container {
         padding: 12px;
-    }
-    
-    .dashboard-container h3 {
-        font-size: 1.3rem;
     }
     
     .stat-card {
@@ -420,10 +592,6 @@ html, body {
     
     .stat-card h4 {
         font-size: 1rem;
-    }
-    
-    .content-card {
-        padding: 15px;
     }
     
     .table td, 
