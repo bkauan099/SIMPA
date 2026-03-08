@@ -3,6 +3,28 @@
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Fonte Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/sobre.css">
+
+    <title>Sobre o SIMPA</title>
+</head>
+
+<body>
+<!-- HEADER -->
 <header class="header-simpa">
     <div class="header-wrapper">
 
@@ -20,27 +42,9 @@
     </div>
 </header>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    
-    <!-- Fonte Montserrat -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- CSS -->
-    <link rel="stylesheet" href="assets/css/sobre.css">
-</head>
 <body>
 
-    <!-- HEADER -->
-
-    <div class="container py-5">
+<div class="container py-5">
 
         <!-- TÍTULO -->
         <div class="text-center mb-4">
@@ -202,7 +206,7 @@
             </a>
         </div>  
 
-        <div class="col-md-3 col-6">
+        <div class="col-md-2 col-6">
             <a href="https://marandu.uema.br/" target="_blank" rel="noopener noreferrer">
                 <img src="assets/img/marandu-logo.png" class="logo-parceiro logo-marandu" alt="Agência Marandu">
             </a>
@@ -211,13 +215,13 @@
 
     <!-- LINHA 2 -->
     <div class="row justify-content-center align-items-center parceiros-linha">
-        <div class="col-md-4 col-6">
+        <div class="col-md-3 col-6">
             <a href="https://brisabr.com.br/" target="_blank" rel="noopener noreferrer">
                 <img src="assets/img/brisa-logo.png" class="logo-parceiro-grande logo-brisa" alt="Brisa">
             </a>
         </div>
 
-        <div class="col-md-4 col-6">
+        <div class="col-md-3 col-6">
             <a href="https://softex.br/" target="_blank" rel="noopener noreferrer">
                 <img src="assets/img/softex-logocor.png" class="logo-parceiro-grande logo-softex" alt="Softex">
             </a>
