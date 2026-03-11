@@ -231,8 +231,12 @@
     <!-- LINHA 3 -->
     <div class="row justify-content-center align-items-center parceiros-linha">
         <div class="col-md-6 col-8">
+            <a href="https://mctifuturo.softex.br/" target="_blank" rel="noopener noreferrer">
+                <img src="assets/img/logo-mcti-futuro.png" class="mcti-futuro-logo" alt="MCTI">
+                 <div class="col-md-6 col-8">
             <a href="https://www.gov.br/mcti/pt-br" target="_blank" rel="noopener noreferrer">
                 <img src="assets/img/mcti-logo.png" class="mcti-logo" alt="MCTI">
+            </a>
             </a>
         </div>
     </div>
