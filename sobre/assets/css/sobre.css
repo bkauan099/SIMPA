@@ -194,6 +194,14 @@ body {
     margin: 0 auto;
 }
 
+.logo-mcti-futuro {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+}
+
 /* ========================= */
 /* CARDS RESIDENTES */
 /* ========================= */
