@@ -140,3 +140,22 @@ body::before {
     transition: 0.3s;
 
 }
+
+.erro{
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #e74c3c;
+    margin-top: 8px;
+}
+
+.erro.show{
+    display: flex;
+}
+
+.erro svg{
+    width:16px;
+    height:16px;
+}
+
