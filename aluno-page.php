@@ -46,13 +46,13 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
             </div>
 
             <ul class="list-unstyled components">
-                <li><a href="?page=dashboard" class="<?= $page == 'dashboard' ? 'active' : '' ?>"><i
+                <li><a href="#" onclick="carregarPagina('dashboard')" class="<?= $page == 'dashboard' ? 'active' : '' ?>"><i
                             class="bi bi-house-door"></i> Dashboard</a></li>
-                <li><a href="?page=usuarios" class="<?= $page == 'usuarios' ? 'active' : '' ?>"><i
+                <li><a href="#" onclick="carregarPagina('usuarios')" class="<?= $page == 'usuarios' ? 'active' : '' ?>"><i
                             class="bi bi-people"></i> Usuários</a></li>
-                <li><a href="?page=participacoes" class="<?= $page == 'participacoes' ? 'active' : '' ?>"><i
+                <li><a href="#" onclick="carregarPagina('participacoes')" class="<?= $page == 'participacoes' ? 'active' : '' ?>"><i
                             class="bi bi-diagram-3"></i> Participações</a></li>
-                <li><a href="?page=projetos" class="<?= $page == 'projetos' ? 'active' : '' ?>"><i
+                <li><a href="#" onclick="carregarPagina('projetos')" class="<?= $page == 'projetos' ? 'active' : '' ?>"><i
                             class="bi bi-folder"></i> Projetos</a></li>
                 <li><a href="#"><i class="bi bi-file-earmark-text"></i> Documentos</a></li>
                 <li class="mt-auto"><a href="#"><i class="bi bi-box-arrow-left"></i> Sair</a></li>
@@ -79,10 +79,10 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                 </div>
             </header>
 
-            <div class="dashboard-container">
+            <div id="content-area" class="dashboard-container">
                 <?php
                 $allowed_pages = ['dashboard', 'usuarios', 'participacoes', 'projetos'];
-                
+
                 if (in_array($page, $allowed_pages)) {
                     include "pages/{$page}.php";
                 } else {
@@ -94,6 +94,27 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function carregarPagina(page) {
+
+            fetch("pages/" + page + ".php")
+                .then(response => response.text())
+                .then(data => {
+
+                    document.getElementById("content-area").innerHTML = data;
+
+                })
+                .catch(error => {
+                    console.error("Erro ao carregar página:", error);
+                });
+
+        }
+    </script>
+    <script>
+        window.onload = function() {
+            carregarPagina("dashboard");
+        }
+    </script>
 </body>
 
 </html>
