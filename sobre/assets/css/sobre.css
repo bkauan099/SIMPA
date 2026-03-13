@@ -503,143 +503,180 @@ html, body {
 }
 
 /* ========================= */
-/* IMPRESSÃO - @media print */
+/* IMPRESSÃO FINAL A4 */
 /* ========================= */
+
 @media print {
 
-    @page {
-        size: A4 portrait;
-        margin: 12mm;
-    }
+@page{
+size:A4 portrait;
+margin:10mm;
+}
 
-    html, body {
-        height: auto !important;
-        overflow: visible !important;
-        background: #ffffff !important;
-    }
+html,body{
+overflow:visible !important;
+height:auto !important;
+background:#fff;
+}
 
-    /* remover posições fixas para fluxo natural */
-    .header-simpa,
-    .conteudo-principal,
-    .footer-simpa {
-        position: static !important;
-        overflow: visible !important;
-    }
+body{
+font-family:'Montserrat',sans-serif;
+color:#2b3c50;
+zoom:0.90;
+}
 
-    /* esconder botão imprimir */
-    .botao-imprimir {
-        display: none !important;
-    }
+/* remover fixed */
+.header-simpa,
+.conteudo-principal,
+.footer-simpa{
+position:static !important;
+height:auto !important;
+overflow:visible !important;
+}
 
-    /* manter aparência do site */
-    body {
-        font-family: 'Montserrat', sans-serif;
-        color: #2b3c50;
-        zoom: 0.88; /* reduz levemente para caber na A4 */
-    }
+/* esconder botão */
+.botao-imprimir{
+display:none !important;
+}
 
-    /* container ocupa largura total da página */
-    .container {
-        max-width: 100%;
-        padding: 0;
-    }
+/* HEADER */
 
-    /* HEADER mantém aparência */
-    .header-simpa {
-        border-bottom: 1px solid #e0e0e0;
-        padding: 10px 0;
-    }
+.logo-uema{
+height:50px;
+}
 
-    .logo-uema {
-        height: 50px;
-    }
+.titulo-sistema{
+font-size:22px;
+}
 
-    .titulo-sistema {
-        font-size: 22px;
-    }
+.subtitulo-sistema{
+font-size:11px;
+}
 
-    .subtitulo-sistema {
-        font-size: 11px;
-    }
+/* TEXTO */
 
-    /* TEXTO */
-    .texto-sobre {
-        font-size: 15px;
-        line-height: 1.6;
-    }
+.texto-sobre{
+font-size:14px;
+line-height:1.6;
+margin-bottom:20px;
+}
 
-    /* RESIDENTES */
-    .residente-card {
-        page-break-inside: avoid;
-    }
+/* ================= */
+/* RESIDENTES */
+/* ================= */
 
-    .foto-placeholder {
-        width: 80px;
-        height: 80px;
-    }
+.residentes{
+display:flex;
+justify-content:center;
+gap:40px;
+margin-top:10px;
+}
 
-    .nome-residente {
-        font-size: 13px;
-    }
+.residente-card{
+display:flex;
+flex-direction:column;
+align-items:center;
+text-align:center;
+width:110px;
+}
 
-    .formacao,
-    .funcao {
-        font-size: 11px;
-    }
+.foto-placeholder{
+width:70px;
+height:70px;
+}
 
-    /* PARCEIROS */
-    .parceiros {
-        page-break-inside: avoid;
-    }
+.nome-residente{
+font-size:12px;
+font-weight:600;
+margin-top:6px;
+}
 
-    .parceiros-linha {
-        margin-top: 25px;
-    }
+.funcao{
+font-size:11px;
+margin-top:2px;
+}
 
-    .logo-parceiro,
-    .logo-parceiro-grande {
-        height: 65px;
-    }
+.formacao{
+font-size:10px;
+margin-top:2px;
+}
 
-    .logo-uema-parceiro {
-        height: 75px;
-    }
+.social{
+margin-top:4px;
+}
 
-    .logo-proexae {
-        height: 60px;
-    }
+/* ================= */
+/* PARCEIROS */
+/* ================= */
 
-    .logo-cct {
-        height: 65px;
-    }
+.parceiros{
+text-align:center;
+margin-top:20px;
+}
 
-    .logo-marandu {
-        height: 65px;
-    }
+.parceiros-linha{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:40px;
+margin-top:14px;
+}
 
-    .logo-brisa,
-    .logo-softex {
-        height: 55px;
-    }
+.logo-parceiro{
+height:45px;
+}
 
-    .logo-mcti,
-    .logo-mcti-futuro {
-        height: 45px;
-    }
+.logo-uema-parceiro{
+height:55px;
+}
 
-    /* FOOTER mantém cores institucionais */
-    .footer-simpa {
-        background-color: #2b3c50 !important;
-        margin-top: 30px;
-    }
+.logo-proexae{
+height:40px;
+}
 
-    .footer-logo {
-        height: 80px;
-    }
+.logo-cct{
+height:42px;
+}
 
-    .footer-text {
-        font-size: 12px;
-        color: #ffffff !important;
-    }
+.logo-marandu{
+height:42px;
+}
+
+.logo-brisa{
+height:38px;
+}
+
+.logo-softex{
+height:38px;
+}
+
+.logo-mcti,
+.logo-mcti-futuro{
+height:34px;
+}
+
+/* ================= */
+/* FOOTER */
+/* ================= */
+
+.footer-simpa{
+background:#2b3c50 !important;
+margin-top:25px;
+padding:10px 0;
+}
+
+.footer-container{
+gap:15px;
+}
+
+.footer-logo{
+height:55px;
+}
+
+.footer-text{
+font-size:10px;
+color:#fff !important;
+max-width:450px;
+}
 
 }
