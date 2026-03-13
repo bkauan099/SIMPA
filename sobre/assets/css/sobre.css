@@ -369,7 +369,8 @@ body {
     .logo-cct,
     .logo-marandu,
     .logo-brisa,
-    .logo-softex {
+    .logo-softex 
+    .logo-mcti-futuro {
         height: 60px;
     }
     
@@ -473,7 +474,8 @@ body {
     .logo-cct,
     .logo-marandu,
     .logo-brisa,
-    .logo-softex {
+    .logo-softex 
+    .logo-mcti-futuro {
         height: 45px;
     }
     
@@ -717,7 +719,6 @@ body {
         background-color: #2b3c50 !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
-        color-adjust: exact;
         padding: 0.1in 0;
         margin-top: 0;
         width: 100%;
