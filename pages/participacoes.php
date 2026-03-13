@@ -33,6 +33,39 @@
                 </tr>
                 <tr>
                     <td class="fw-bold">Inovação Tecnológica</td>
+                    <td>Augusto Nicácio</td>
+                    <td><span class="badge bg-info text-dark border">Coordenador</span></td>
+                    <td>60h</td>
+                    <td>06/01/2026</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger ms-1" title="Remover Vínculo"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Inovação Tecnológica</td>
+                    <td>Bruno Kauan</td>
+                    <td><span class="badge bg-info text-dark border">Coordenador</span></td>
+                    <td>60h</td>
+                    <td>20/01/2026</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger ms-1" title="Remover Vínculo"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Inovação Tecnológica</td>
+                    <td>Aian</td>
+                    <td><span class="badge bg-info text-dark border">Coordenador</span></td>
+                    <td>60h</td>
+                    <td>18/01/2026</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger ms-1" title="Remover Vínculo"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Inovação Tecnológica</td>
                     <td>Jose Kauan</td>
                     <td><span class="badge bg-light text-dark border">Bolsista</span></td>
                     <td>120h</td>
