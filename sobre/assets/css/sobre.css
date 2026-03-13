@@ -506,6 +506,10 @@ html, body {
 /* IMPRESSÃO FINAL A4 */
 /* ========================= */
 
+/* ========================= */
+/* IMPRESSÃO FINAL A4 */
+/* ========================= */
+
 @media print {
 
 @page{
@@ -516,7 +520,7 @@ margin:10mm;
 html,body{
 overflow:visible !important;
 height:auto !important;
-background:#fff;
+background:#ffffff;
 }
 
 body{
@@ -525,7 +529,7 @@ color:#2b3c50;
 zoom:0.90;
 }
 
-/* remover fixed */
+/* remover fixed do layout */
 .header-simpa,
 .conteudo-principal,
 .footer-simpa{
@@ -534,12 +538,14 @@ height:auto !important;
 overflow:visible !important;
 }
 
-/* esconder botão */
+/* esconder botão imprimir */
 .botao-imprimir{
 display:none !important;
 }
 
+/* ================= */
 /* HEADER */
+/* ================= */
 
 .logo-uema{
 height:50px;
@@ -553,31 +559,23 @@ font-size:22px;
 font-size:11px;
 }
 
+/* ================= */
 /* TEXTO */
+/* ================= */
 
 .texto-sobre{
 font-size:14px;
 line-height:1.6;
-margin-bottom:20px;
+margin-bottom:18px;
 }
 
 /* ================= */
 /* RESIDENTES */
 /* ================= */
 
-.residentes{
-display:flex;
-justify-content:center;
-gap:40px;
-margin-top:10px;
-}
-
 .residente-card{
-display:flex;
-flex-direction:column;
-align-items:center;
 text-align:center;
-width:110px;
+page-break-inside:avoid;
 }
 
 .foto-placeholder{
@@ -593,16 +591,10 @@ margin-top:6px;
 
 .funcao{
 font-size:11px;
-margin-top:2px;
 }
 
 .formacao{
 font-size:10px;
-margin-top:2px;
-}
-
-.social{
-margin-top:4px;
 }
 
 /* ================= */
@@ -610,24 +602,25 @@ margin-top:4px;
 /* ================= */
 
 .parceiros{
+margin-top:18px;
 text-align:center;
-margin-top:20px;
 }
 
-.parceiros-linha{
-display:flex;
+/* mantém estrutura bootstrap */
+.parceiros .row{
 justify-content:center;
-align-items:center;
-gap:40px;
-margin-top:14px;
 }
 
-.logo-parceiro{
-height:45px;
+/* espaçamento vertical igual entre linhas */
+.parceiros-linha{
+margin-top:14px;
+margin-bottom:14px;
 }
+
+/* tamanhos das logos */
 
 .logo-uema-parceiro{
-height:55px;
+height:52px;
 }
 
 .logo-proexae{
@@ -660,8 +653,8 @@ height:34px;
 /* ================= */
 
 .footer-simpa{
-background:#2b3c50 !important;
-margin-top:25px;
+background-color:#2b3c50 !important;
+margin-top:20px;
 padding:10px 0;
 }
 
@@ -675,8 +668,8 @@ height:55px;
 
 .footer-text{
 font-size:10px;
-color:#fff !important;
-max-width:450px;
+color:#ffffff !important;
+max-width:420px;
 }
 
 }
