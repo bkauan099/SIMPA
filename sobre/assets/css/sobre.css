@@ -544,14 +544,14 @@ html, body {
     .container {
         max-width: 100%;
         margin: 0;
-        padding: 0.2in;
+        padding: 0.15in; /* reduzido para economizar espaço */
     }
 
-    /* HEADER na impressão - centralizado */
+    /* HEADER na impressão */
     .header-simpa {
         border-bottom: 1px solid #000;
         padding: 0.1in 0;
-        margin-bottom: 0.1in;
+        margin-bottom: 0.05in; /* reduzido */
     }
     .header-wrapper {
         display: flex;
@@ -586,26 +586,26 @@ html, body {
     /* Aproximar texto do header */
     .texto-sobre {
         font-size: 10pt;
-        margin-top: 0.05in;  /* reduzido */
+        margin-top: 0.02in;  /* mínimo */
         margin-bottom: 0.1in;
     }
 
-    /* RESIDENTES - título reduzido */
+    /* RESIDENTES */
     .secao-titulo {
         font-size: 12pt !important;
-        margin-top: 0.1in;
-        margin-bottom: 0.05in;
+        margin-top: 0.05in;
+        margin-bottom: 0.02in;
     }
     .subtitulo-residentes {
         font-size: 9pt;
-        margin-bottom: 0.1in;
+        margin-bottom: 0.05in;
     }
 
     .residentes {
         display: flex;
         flex-wrap: nowrap;
         justify-content: space-between;
-        margin: 0.1in 0;
+        margin: 0.05in 0;
     }
     .residente-card {
         width: 1.0in;
@@ -613,8 +613,8 @@ html, body {
         page-break-inside: avoid;
     }
     .foto-placeholder {
-        width: 0.7in;
-        height: 0.7in;
+        width: 0.65in;
+        height: 0.65in;
         border: 1px solid #000;
         background: #fff !important;
     }
@@ -637,26 +637,26 @@ html, body {
         pointer-events: none;
     }
     .social i {
-        font-size: 9pt !important;
+        font-size: 8pt !important;
     }
 
-    /* PARCEIROS - reduzir espaçamento */
+    /* PARCEIROS - reduzir drasticamente o espaçamento */
     .parceiros {
-        margin-top: 0.05in !important;  /* antes maior */
-        margin-bottom: 0.1in;
+        margin-top: 0.02in !important;
+        margin-bottom: 0.05in;
         text-align: center;
         page-break-inside: avoid;
     }
     .parceiros h6 {
         font-size: 10pt;
         color: #000 !important;
-        margin-bottom: 0.05in;
+        margin-bottom: 0.02in;
     }
     .parceiros .row {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 0.1in;
+        gap: 0.05in; /* reduzido */
         margin: 0;
     }
     .parceiros [class*="col-"] {
@@ -664,7 +664,7 @@ html, body {
         padding: 0;
     }
     .parceiros img {
-        max-height: 0.35in;
+        max-height: 0.3in; /* levemente menor */
         width: auto;
         display: block;
         margin: 0 auto;
@@ -674,7 +674,7 @@ html, body {
     .footer-simpa {
         background-color: #2b3c50 !important;
         padding: 0.1in 0;
-        margin-top: 0.2in;
+        margin-top: 0.1in;
         border-top: none;
         page-break-inside: avoid;
         display: block !important;
@@ -684,16 +684,17 @@ html, body {
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        gap: 0.15in;
+        gap: 0.1in;
         max-width: 100%;
         margin: 0 auto;
     }
     .footer-logo {
-        height: 0.45in;
+        height: 0.4in; /* reduzido para caber melhor */
         width: auto;
     }
     .footer-text {
-        font-size: 7pt;
+        font-size: 6.5pt; /* reduzido */
+        line-height: 1.2;
         color: #ffffff !important;
         text-align: left;
         max-width: 4in;
