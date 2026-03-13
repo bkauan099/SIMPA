@@ -503,7 +503,7 @@ html, body {
 }
 
 /* ========================= */
-/* IMPRESSÃO - @media print (exatamente como no PDF aprovado) */
+/* IMPRESSÃO - @media print */
 /* ========================= */
 @media print {
     * {
@@ -615,9 +615,12 @@ html, body {
         background: #fff !important;
     }
     .nome-residente {
-        font-size: 8pt;
+        font-size: 7.5pt; /* reduzido para caber em uma linha */
         font-weight: bold;
         color: #000 !important;
+        white-space: nowrap; /* força o nome a ficar em uma única linha */
+        overflow: hidden;
+        text-overflow: ellipsis; /* opcional */
     }
     .funcao, .formacao {
         font-size: 7pt;
@@ -633,7 +636,7 @@ html, body {
         font-size: 9pt !important;
     }
 
-    /* PARCEIROS */
+    /* PARCEIROS - espaçamento uniforme entre linhas */
     .parceiros {
         margin: 0.1in 0;
         text-align: center;
@@ -644,17 +647,28 @@ html, body {
         color: #000 !important;
         margin-bottom: 0.05in;
     }
+
+    /* Remove margens padrão das linhas e aplica espaçamento inferior uniforme */
+    .parceiros-linha {
+        margin: 0 0 0.1in 0; /* margem inferior igual ao gap desejado */
+    }
+    .parceiros-linha:last-child {
+        margin-bottom: 0; /* remove margem da última linha */
+    }
+
     .parceiros .row {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 0.1in 0.1in;
+        gap: 0.1in 0.1in; /* espaçamento horizontal e vertical entre itens da mesma linha */
         margin: 0;
     }
+
     .parceiros [class*="col-"] {
         width: auto;
         padding: 0;
     }
+
     .parceiros img {
         max-height: 0.35in;
         width: auto;
