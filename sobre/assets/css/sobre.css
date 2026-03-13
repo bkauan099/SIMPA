@@ -69,6 +69,7 @@ html, body {
     font-size: 12px;
     font-weight: 400;
     color: #333;
+    line-height: 1.2;
 }
 
 /* ========================= */
@@ -93,19 +94,22 @@ html, body {
 .botao-imprimir i {
     font-size: 22px;
     margin-bottom: 2px;
+    color: #2b3c50;
 }
 
 .botao-imprimir span {
     font-size: 10px;
     font-weight: 500;
+    letter-spacing: 0.3px;
+    color: #2b3c50;
 }
 
 .botao-imprimir:hover {
-    background-color: rgba(43,60,80,0.05);
+    background-color: rgba(43, 60, 80, 0.05);
 }
 
 /* ========================= */
-/* CONTEÚDO PRINCIPAL */
+/* CONTEÚDO PRINCIPAL ROLÁVEL */
 /* ========================= */
 .conteudo-principal {
     position: fixed;
@@ -119,10 +123,12 @@ html, body {
 
 .container {
     max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
 /* ========================= */
-/* TEXTO */
+/* TEXTO INSTITUCIONAL */
 /* ========================= */
 .texto-sobre {
     max-width: 900px;
@@ -130,6 +136,8 @@ html, body {
     text-align: justify;
     font-size: 16px;
     line-height: 1.7;
+    color: #2b3c50;
+    padding: 0 15px;
 }
 
 /* ========================= */
@@ -141,259 +149,497 @@ html, body {
     text-decoration: none;
 }
 
-.social .bi-linkedin { color:#0a66c2; }
-.social .bi-github { color:#000; }
+.social .bi-linkedin {
+    color: #0a66c2;
+}
 
-.social .bi-linkedin:hover { color:#084c94; }
-.social .bi-github:hover { color:#333; }
+.social .bi-github {
+    color: #000000;
+}
+
+.social .bi-linkedin:hover {
+    color: #084c94;
+}
+
+.social .bi-github:hover {
+    color: #333333;
+}
 
 /* ========================= */
-/* PARCEIROS */
+/* SEÇÃO PARCEIROS */
 /* ========================= */
-
 .parceiros {
-    margin-top:50px;
-    text-align:center;
+    margin-top: 50px;
+    padding: 0 15px;
 }
 
-.parceiros-linha{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:40px;
-    margin-top:35px;
+.parceiros-linha {
+    margin-top: 30px;
 }
 
-.parceiros img{
-    display:block;
-    margin:auto;
-    width:auto;
-    max-width:100%;
+.parceiros .row {
+    --bs-gutter-x: 20px;
+    --bs-gutter-y: 20px;
+    margin-left: 0;
+    margin-right: 0;
+    justify-content: center;
 }
-
-/* alturas base */
 
 .logo-parceiro,
-.logo-parceiro-grande{
-    height:75px;
+.logo-parceiro-grande {
+    height: 75px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+    display: block;
+    margin: 0 auto;
 }
 
-.logo-uema-parceiro{height:85px;}
-.logo-proexae{height:65px;}
-.logo-cct{height:70px;}
-.logo-marandu{height:70px;}
+/* AJUSTE PARA ALINHAMENTO DAS LOGOS NA PRIMEIRA LINHA */
+.parceiros-linha:first-of-type {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-.logo-brisa{height:60px;}
-.logo-softex{height:60px;}
+.parceiros-linha:first-of-type [class*="col-"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+}
+
+.parceiros-linha:first-of-type a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* ========================= */
+/* AJUSTES INDIVIDUAIS LOGOS */
+/* ========================= */
+.logo-uema-parceiro {
+    height: 85px;
+}
+
+.logo-proexae {
+    height: 65px;
+}
+
+.logo-cct {
+    height: 70px;
+}
+
+.logo-marandu {
+    height: 70px;
+}
+
+.logo-brisa {
+    height: 60px;
+}
+
+.logo-softex {
+    height: 60px;
+}
 
 .logo-mcti,
-.logo-mcti-futuro{
-    height:50px;
-}
-
-/* hover */
-
-.parceiros a{
-    transition:all .25s ease;
-}
-
-.parceiros a:hover{
-    transform:scale(1.04);
-    opacity:.9;
+.logo-mcti-futuro {
+    height: 50px;
 }
 
 /* ========================= */
 /* CARDS RESIDENTES */
 /* ========================= */
-
-.residente-card{
-    margin-bottom:20px;
+.residente-card {
+    margin-bottom: 20px;
 }
 
-.foto-placeholder{
-    width:90px;
-    height:90px;
-    background:#d9d9d9;
-    border-radius:50%;
-    border:3px solid #2b3c50;
-    margin:auto;
-    overflow:hidden;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:12px;
+.foto-placeholder {
+    width: 90px;
+    height: 90px;
+    background-color: #d9d9d9;
+    border-radius: 50%;
+    border: 3px solid #2b3c50;
+    margin: 0 auto;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #2b3c50;
 }
 
-.foto-residente{
-    width:100%;
-    height:100%;
-    object-fit:cover;
+.foto-residente {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
 }
 
-.nome-residente{
-    font-size:14px;
-    font-weight:600;
-    margin-top:8px;
+.nome-residente {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2b3c50;
+    margin-top: 8px;
+    margin-bottom: 2px;
 }
 
-.formacao{
-    font-size:12px;
+.formacao {
+    font-size: 12px;
+    color: #333;
+    margin-top: -3px;
+    margin-bottom: 8px;
 }
 
-.funcao{
-    font-size:12px;
-}
-
-/* ========================= */
-/* FOOTER */
-/* ========================= */
-
-.footer-simpa{
-    position:fixed;
-    bottom:0;
-    width:100%;
-    background:#2b3c50;
-    padding:15px 0;
-    height:140px;
-}
-
-.footer-container{
-    max-width:1140px;
-    margin:auto;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:30px;
-}
-
-.footer-logo{
-    height:90px;
-}
-
-.footer-text{
-    color:#fff;
-    font-size:13px;
-    line-height:1.5;
-    max-width:600px;
+.funcao {
+    font-size: 12px;
+    font-weight: 500;
+    color: #2b3c50;
+    margin: 2px 0;
 }
 
 /* ========================= */
-/* RESPONSIVO */
+/* FOOTER FIXO - CENTRALIZADO */
 /* ========================= */
-
-@media(max-width:768px){
-
-.conteudo-principal{
-    top:110px;
-    bottom:130px;
+.footer-simpa {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2b3c50;
+    padding: 15px 0;
+    height: 140px;
+    z-index: 1000;
 }
 
-.logo-parceiro,
-.logo-parceiro-grande{
-    height:60px;
+.footer-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    height: 100%;
 }
 
-.parceiros-linha{
-    gap:25px;
-    margin-top:25px;
+.footer-logo {
+    height: 90px;
+    width: auto;
+    max-width: 100%;
+    flex-shrink: 0;
 }
 
-.footer-logo{
-    height:70px;
-}
-
-.footer-text{
-    font-size:11px;
-}
-
-}
-
-@media(max-width:480px){
-
-.conteudo-principal{
-    top:140px;
-    bottom:120px;
-}
-
-.parceiros-linha{
-    flex-wrap:wrap;
-    gap:20px;
-}
-
-.logo-parceiro,
-.logo-parceiro-grande{
-    height:50px;
-}
-
-.footer-logo{
-    height:60px;
-}
-
-.footer-text{
-    font-size:10px;
-}
-
+.footer-text {
+    color: #ffffff;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: left;
+    max-width: 600px;
 }
 
 /* ========================= */
-/* IMPRESSÃO */
+/* EFEITO HOVER LOGOS */
 /* ========================= */
-
-@media print{
-
-html,body{
-    overflow:visible;
+.parceiros a {
+    display: block;
+    text-decoration: none;
+    transition: all 0.3s ease;
 }
 
-.header-simpa,
-.conteudo-principal,
-.footer-simpa{
-    position:static !important;
-    height:auto !important;
+.parceiros a:hover {
+    opacity: 0.85;
+    transform: scale(1.03);
 }
 
-.botao-imprimir{
-    display:none;
+.parceiros a:hover img {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
-body{
-    font-family:"Times New Roman",serif;
-    font-size:11pt;
-    background:#fff;
+/* ========================= */
+/* RESPONSIVIDADE - TABLET (768px) */
+/* ========================= */
+@media (max-width: 768px) {
+    .header-simpa {
+        height: auto;
+        min-height: 70px;
+        padding: 8px 0;
+    }
+    .header-wrapper {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+    .logo-uema {
+        height: 45px;
+    }
+    .titulo-sistema {
+        font-size: 20px;
+    }
+    .subtitulo-sistema {
+        font-size: 11px;
+    }
+    .botao-imprimir {
+        flex-direction: row;
+        gap: 5px;
+        min-width: auto;
+        padding: 4px 8px;
+    }
+    .botao-imprimir i {
+        font-size: 18px;
+        margin-bottom: 0;
+    }
+    .botao-imprimir span {
+        font-size: 10px;
+    }
+    .conteudo-principal {
+        top: 110px;
+        bottom: 130px;
+    }
+    .footer-simpa {
+        height: 130px;
+        padding: 10px 0;
+    }
+    .footer-container {
+        gap: 15px;
+    }
+    .footer-logo {
+        height: 70px;
+    }
+    .footer-text {
+        font-size: 11px;
+    }
+    .logo-parceiro,
+    .logo-parceiro-grande {
+        height: 60px;
+    }
+    .logo-uema-parceiro {
+        height: 70px;
+    }
+    .logo-proexae {
+        height: 55px;
+    }
+    .logo-cct {
+        height: 60px;
+    }
+    .logo-marandu {
+        height: 60px;
+    }
+    .logo-brisa, .logo-softex {
+        height: 50px;
+    }
+    .logo-mcti, .logo-mcti-futuro {
+        height: 40px;
+    }
+    .foto-placeholder {
+        width: 80px;
+        height: 80px;
+    }
+    .nome-residente {
+        font-size: 13px;
+    }
 }
 
-.container{
-    max-width:100%;
-    padding:.3in;
+/* ========================= */
+/* RESPONSIVIDADE - CELULAR (480px) */
+/* ========================= */
+@media (max-width: 480px) {
+    .header-wrapper {
+        flex-direction: column;
+    }
+    .logo-uema {
+        height: 40px;
+    }
+    .titulo-sistema {
+        font-size: 18px;
+    }
+    .subtitulo-sistema {
+        font-size: 10px;
+    }
+    .botao-imprimir span {
+        display: none;
+    }
+    .botao-imprimir {
+        padding: 5px;
+        border-radius: 50%;
+    }
+    .botao-imprimir i {
+        font-size: 20px;
+        margin: 0;
+    }
+    .conteudo-principal {
+        top: 140px;
+        bottom: 120px;
+    }
+    .footer-simpa {
+        height: 120px;
+    }
+    .footer-container {
+        gap: 10px;
+    }
+    .footer-logo {
+        height: 60px;
+    }
+    .footer-text {
+        font-size: 10px;
+    }
+    .logo-parceiro,
+    .logo-parceiro-grande {
+        height: 50px;
+    }
+    .foto-placeholder {
+        width: 70px;
+        height: 70px;
+    }
+    .nome-residente {
+        font-size: 12px;
+    }
 }
 
-.parceiros-linha{
-    gap:.2in;
-    margin-top:.15in;
-}
+/* ========================= */
+/* IMPRESSÃO - @media print */
+/* ========================= */
+@media print {
 
-.footer-simpa{
-    display:block !important;
-    margin-top:.2in;
-    padding:.1in 0;
-}
+    @page {
+        size: A4 portrait;
+        margin: 12mm;
+    }
 
-.footer-container{
-    justify-content:center;
-    gap:.15in;
-}
+    html, body {
+        height: auto !important;
+        overflow: visible !important;
+        background: #ffffff !important;
+    }
 
-.footer-logo{
-    height:.45in;
-}
+    /* remover posições fixas para fluxo natural */
+    .header-simpa,
+    .conteudo-principal,
+    .footer-simpa {
+        position: static !important;
+        overflow: visible !important;
+    }
 
-.footer-text{
-    font-size:7pt;
-}
+    /* esconder botão imprimir */
+    .botao-imprimir {
+        display: none !important;
+    }
 
-@page{
-    size:A4;
-    margin:.3in;
-}
+    /* manter aparência do site */
+    body {
+        font-family: 'Montserrat', sans-serif;
+        color: #2b3c50;
+        zoom: 0.88; /* reduz levemente para caber na A4 */
+    }
+
+    /* container ocupa largura total da página */
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    /* HEADER mantém aparência */
+    .header-simpa {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 10px 0;
+    }
+
+    .logo-uema {
+        height: 50px;
+    }
+
+    .titulo-sistema {
+        font-size: 22px;
+    }
+
+    .subtitulo-sistema {
+        font-size: 11px;
+    }
+
+    /* TEXTO */
+    .texto-sobre {
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    /* RESIDENTES */
+    .residente-card {
+        page-break-inside: avoid;
+    }
+
+    .foto-placeholder {
+        width: 80px;
+        height: 80px;
+    }
+
+    .nome-residente {
+        font-size: 13px;
+    }
+
+    .formacao,
+    .funcao {
+        font-size: 11px;
+    }
+
+    /* PARCEIROS */
+    .parceiros {
+        page-break-inside: avoid;
+    }
+
+    .parceiros-linha {
+        margin-top: 25px;
+    }
+
+    .logo-parceiro,
+    .logo-parceiro-grande {
+        height: 65px;
+    }
+
+    .logo-uema-parceiro {
+        height: 75px;
+    }
+
+    .logo-proexae {
+        height: 60px;
+    }
+
+    .logo-cct {
+        height: 65px;
+    }
+
+    .logo-marandu {
+        height: 65px;
+    }
+
+    .logo-brisa,
+    .logo-softex {
+        height: 55px;
+    }
+
+    .logo-mcti,
+    .logo-mcti-futuro {
+        height: 45px;
+    }
+
+    /* FOOTER mantém cores institucionais */
+    .footer-simpa {
+        background-color: #2b3c50 !important;
+        margin-top: 30px;
+    }
+
+    .footer-logo {
+        height: 80px;
+    }
+
+    .footer-text {
+        font-size: 12px;
+        color: #ffffff !important;
+    }
 
 }
