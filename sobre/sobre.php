@@ -38,7 +38,7 @@
                 © Sistema Integrado de Monitoramento de Projetos Acadêmicos
             </h2>
         </div>
-<!-- BOTÃO DE IMPRIMIR -->
+<!-- BOTÃO DE IMPRIMIR (SEM FUNDO) -->
     <div class="botao-imprimir" onclick="imprimirPagina()">
         <i class="bi bi-printer"></i>
         <span>IMPRIMIR PÁGINA</span>
