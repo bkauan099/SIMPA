@@ -514,41 +514,17 @@ body {
 /* IMPRESSÃO - @media print */
 /* ========================= */
 @media print {
-    /* Reset de cores - EXCETO FOOTER */
+    /* Reset geral */
     * {
         background-color: transparent !important;
         box-shadow: none !important;
         text-shadow: none !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
     }
 
-    /* Mantém cores do texto */
-    body, p, h1, h2, h5, h6, .titulo-sistema, .subtitulo-sistema, .texto-sobre {
-        color: #000 !important;
-    }
-
-    /* Esconde apenas elementos interativos que não fazem sentido no papel */
-    .parceiros a:hover,
-    .parceiros a:hover img {
-        display: none !important;
-    }
-
-    /* OS ÍCONES SOCIAIS DEVEM PERMANECER VISÍVEIS */
-    .social {
-        display: block !important;
-    }
-    
-    .social a {
-        color: #000 !important;
-        text-decoration: none;
-        pointer-events: none;
-        opacity: 1 !important;
-    }
-    
-    .social i {
-        font-size: 14pt !important;
-    }
-
-    /* Esconde elementos interativos */
+    /* Esconde elementos desnecessários */
+    .botao-imprimir,
     .parceiros a:hover,
     .parceiros a:hover img,
     .parceiros a:after,
@@ -556,16 +532,183 @@ body {
         display: none !important;
     }
 
-    /* Tipografia geral */
+    /* Tipografia */
     body {
         font-family: 'Times New Roman', Times, serif;
         font-size: 11pt;
         line-height: 1.3;
         background: #fff;
+        color: #000 !important;
         margin: 0.2in;
         width: auto;
     }
 
+    /* Cabeçalho */
+    .header-simpa {
+        border-bottom: 1px solid #000;
+        padding: 0.1in 0;
+        margin-bottom: 0.05in;
+    }
+    .header-wrapper {
+        max-width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    .logo-area {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .logo-uema {
+        height: 0.6in;
+        width: auto;
+    }
+    .titulo-sistema {
+        font-size: 14pt;
+        font-weight: bold;
+        margin: 0;
+        color: #000 !important;
+    }
+    .subtitulo-sistema {
+        font-size: 8pt;
+        margin: 0;
+        color: #000 !important;
+    }
+
+    /* Texto institucional */
+    .texto-sobre {
+        max-width: 100%;
+        text-align: justify;
+        font-size: 10pt;
+        margin: 0.05in 0;
+        padding: 0;
+        color: #000 !important;
+    }
+
+    /* Residentes (5 por linha) */
+    .residentes {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        width: 100%;
+        margin: 0.05in 0;
+    }
+    .residente-card {
+        width: 1.0in;
+        margin: 0 0.02in;
+        text-align: center;
+        page-break-inside: avoid;
+    }
+    .foto-placeholder {
+        width: 0.7in;
+        height: 0.7in;
+        background: #fff;
+        border: 1px solid #000;
+        border-radius: 50%;
+        margin: 0 auto 0.02in;
+        overflow: hidden;
+    }
+    .foto-residente {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .nome-residente {
+        font-size: 8pt;
+        font-weight: bold;
+        margin: 0.02in 0 0;
+        color: #000 !important;
+    }
+    .funcao, .formacao {
+        font-size: 7pt;
+        margin: 0;
+        color: #000 !important;
+    }
+
+    /* Redes sociais (mantém visível) */
+    .social {
+        display: block !important;
+    }
+    .social a {
+        color: #000 !important;
+        text-decoration: none;
+        pointer-events: none;
+    }
+    .social i {
+        font-size: 10pt !important;
+    }
+
+    /* Parceiros - FORÇAR JUNTO COM FOOTER */
+    .parceiros {
+        margin: 0.1in 0 0.1in 0;
+        text-align: center;
+        page-break-inside: avoid;
+        page-break-after: avoid;
+    }
+    .parceiros h6 {
+        font-size: 10pt;
+        margin-bottom: 0.05in;
+        color: #000 !important;
+    }
+    .parceiros .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.1in;
+        margin: 0;
+    }
+    .parceiros [class*="col-"] {
+        width: auto;
+        padding: 0;
+        flex: 0 0 auto;
+    }
+    .parceiros img {
+        max-height: 0.4in;
+        width: auto;
+        display: block;
+        margin: 0 auto;
+    }
+
+    /* Footer - junto com parceiros */
+    .footer-simpa {
+        background-color: #2b3c50 !important;
+        padding: 0.1in 0;
+        margin-top: 0.05in;
+        width: 100%;
+        page-break-before: avoid;
+        page-break-inside: avoid;
+        border-top: none;
+    }
+    .footer-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 0.15in;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0 0.1in;
+    }
+    .footer-logo {
+        height: 0.5in;
+        width: auto;
+    }
+    .footer-text {
+        font-size: 7pt;
+        line-height: 1.2;
+        text-align: left;
+        color: #ffffff !important;
+    }
+
+    /* Configuração da página A4 */
+    @page {
+        size: A4;
+        margin: 0.3in;
+    }
+}
     /* ===================== */
     /* HEADER */
     /* ===================== */

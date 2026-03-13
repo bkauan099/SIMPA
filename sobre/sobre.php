@@ -39,11 +39,10 @@
             </h2>
         </div>
 <!-- BOTÃO DE IMPRIMIR (SEM FUNDO) -->
-    <div class="botao-imprimir" onclick="imprimirPagina()">
-        <i class="bi bi-printer"></i>
-        <span>IMPRIMIR PÁGINA</span>
-    </div>
-    </div>
+   <div class="botao-imprimir" onclick="window.print()">
+    <i class="bi bi-printer"></i>
+    <span>IMPRIMIR PÁGINA</span>
+</div>
 </header>
 
 <body>
