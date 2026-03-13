@@ -89,6 +89,40 @@
                     </td>
                 </tr>
                 <tr>
+                    <td class="fw-bold text-muted">#1018</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="https://ui-avatars.com/api/?name=Andre+Nunes&background=fce7f3&color=be185d" class="rounded-circle" width="32">
+                            <span class="fw-medium">Augusto Nicácio</span>
+                        </div>
+                    </td>
+                    <td>augustonicacio1@gmail.com</td>
+                    <td><span class="badge bg-info text-dark">Aluno Bolsista</span></td>
+                    <td><span class="status-ativo">Ativo</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Configurações"><i class="bi bi-gear"></i></button>
+                        <button class="btn btn-sm btn-outline-danger ms-1" title="Desativar"><i class="bi bi-person-x"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-muted">#1018</td>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="https://ui-avatars.com/api/?name=Andre+Nunes&background=fce7f3&color=be185d" class="rounded-circle" width="32">
+                            <span class="fw-medium">Aian</span>
+                        </div>
+                    </td>
+                    <td>aian@uema.br</td>
+                    <td><span class="badge bg-info text-dark">Aluno Bolsista</span></td>
+                    <td><span class="status-ativo">Ativo</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Configurações"><i class="bi bi-gear"></i></button>
+                        <button class="btn btn-sm btn-outline-danger ms-1" title="Desativar"><i class="bi bi-person-x"></i></button>
+                    </td>
+                </tr>
+                <tr>
                     <td class="fw-bold text-muted">#1045</td>
                     <td>
                         <div class="d-flex align-items-center gap-2">
