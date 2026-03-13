@@ -164,14 +164,14 @@
                     </a>
                 </div>
             </div>
-            <!-- LINHA 3 -->
+            <!-- LINHA 3 – ajustada para aproximar as logos MCTI -->
             <div class="row justify-content-center align-items-center parceiros-linha">
-                <div class="col-md-6 col-8">
+                <div class="col-auto">
                     <a href="https://mctifuturo.softex.br/" target="_blank" rel="noopener noreferrer">
                         <img src="assets/img/logo-mcti-futuro.png" class="logo-mcti-futuro" alt="MCTI Futuro">
                     </a>
                 </div>
-                <div class="col-md-6 col-8">
+                <div class="col-auto">
                     <a href="https://www.gov.br/mcti/pt-br" target="_blank" rel="noopener noreferrer">
                         <img src="assets/img/mcti-logo.png" class="logo-mcti" alt="MCTI">
                     </a>

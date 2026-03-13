@@ -324,7 +324,7 @@ html, body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center; /* CENTRALIZADO */
+    justify-content: center;
     gap: 30px;
     height: 100%;
 }
@@ -363,31 +363,8 @@ html, body {
 }
 
 /* ========================= */
-/* CENTRALIZAR MCTI */
+/* CENTRALIZAR MCTI (já resolvido pelo HTML) */
 /* ========================= */
-.parceiros-linha:last-of-type {
-    display: flex;
-    justify-content: center;
-}
-.parceiros-linha:last-of-type .row {
-    gap: 10px; /* reduz o espaçamento entre as colunas */
-}
-
-.parceiros-linha:last-of-type .col-md-6 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-left: 5px;
-    padding-right: 5px;
-}
-
-
-.parceiros-linha:last-of-type a {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
 
 /* ========================= */
 /* RESPONSIVIDADE - TABLET (768px) */
@@ -610,7 +587,17 @@ html, body {
         margin: 0.1in 0;
     }
 
-    /* Residentes */
+    /* RESIDENTES - título reduzido e margens ajustadas */
+    .secao-titulo {
+        font-size: 12pt !important; /* Reduz tamanho do título RESIDENTES */
+        margin-top: 0.1in;
+        margin-bottom: 0.05in;
+    }
+    .subtitulo-residentes {
+        font-size: 9pt;
+        margin-bottom: 0.1in;
+    }
+
     .residentes {
         display: flex;
         flex-wrap: nowrap;
@@ -636,12 +623,7 @@ html, body {
     .funcao, .formacao {
         font-size: 7pt;
         color: #000 !important;
-    
     }
-    h5.secao-titulo {
-        font-size: 12pt;
-    }
-
 
     /* Redes sociais */
     .social {
@@ -655,15 +637,17 @@ html, body {
         font-size: 9pt !important;
     }
 
-    /* Parceiros */
+    /* PARCEIROS - reduzir margem superior para aproximar do título */
     .parceiros {
-        margin-top: 0.05in;
+        margin-top: 0.05in !important;  /* Antes estava maior */
+        margin-bottom: 0.1in;
         text-align: center;
         page-break-inside: avoid;
     }
     .parceiros h6 {
         font-size: 10pt;
         color: #000 !important;
+        margin-bottom: 0.05in;
     }
     .parceiros .row {
         display: flex;
@@ -683,16 +667,15 @@ html, body {
         margin: 0 auto;
     }
 
-    /* Footer - CENTRALIZADO na impressão */
+    /* FOOTER - garantir que apareça */
     .footer-simpa {
         background-color: #2b3c50 !important;
         padding: 0.1in 0;
-        margin-top: 0.1in;
+        margin-top: 0.2in;
+        border-top: none;
         page-break-inside: avoid;
-        page-break-before: avoid;
-        display: block;
+        display: block !important; /* Garante visibilidade */
     }
-
     .footer-container {
         display: flex;
         flex-direction: row;
@@ -702,24 +685,19 @@ html, body {
         max-width: 100%;
         margin: 0 auto;
     }
-
     .footer-logo {
         height: 0.45in;
         width: auto;
     }
-
     .footer-text {
         font-size: 7pt;
         color: #ffffff !important;
         text-align: left;
+        max-width: 4in;
     }
-}
 
     @page {
-          size: A4;
-        margin: 0.15in; /* antes 0.2in */
+        size: A4;
+        margin: 0.2in;
     }
-    body {
-        margin: 0.1in;
-    }
-
+}
