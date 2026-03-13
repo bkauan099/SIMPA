@@ -12,7 +12,7 @@ html, body {
     font-family: 'Montserrat', sans-serif;
     background-color: #f5f6f8;
     color: #2b3c50;
-    overflow: hidden; /* scroll controlado pelo conteúdo */
+    overflow: hidden;
 }
 
 /* ========================= */
@@ -26,8 +26,8 @@ html, body {
     background-color: #ffffff;
     border-bottom: 1px solid #e0e0e0;
     padding: 10px 0;
-    height: 80px; /* altura reduzida */
     z-index: 1000;
+    height: 80px;
 }
 
 .header-wrapper {
@@ -36,33 +36,32 @@ html, body {
     padding: 0 15px;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     position: relative;
     height: 100%;
 }
 
 .logo-area {
-    position: absolute;
-    left: 15px;
-    top: 50%;
-    transform: translateY(-50%);
+    flex-shrink: 0;
 }
 
 .logo-uema {
-    height: 60px; /* reduzida */
+    height: 60px;
     width: auto;
+    display: block;
 }
 
 .titulo-area {
-    flex: 1;
     text-align: center;
+    flex-grow: 1;
 }
 
 .titulo-sistema {
     margin: 0;
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 600;
     color: #2b3c50;
+    line-height: 1.2;
 }
 
 .subtitulo-sistema {
@@ -70,16 +69,13 @@ html, body {
     font-size: 12px;
     font-weight: 400;
     color: #333;
+    line-height: 1.2;
 }
 
 /* ========================= */
 /* BOTÃO IMPRIMIR */
 /* ========================= */
 .botao-imprimir {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -92,6 +88,7 @@ html, body {
     text-align: center;
     border-radius: 6px;
     background: transparent;
+    flex-shrink: 0;
 }
 
 .botao-imprimir i {
@@ -116,12 +113,12 @@ html, body {
 /* ========================= */
 .conteudo-principal {
     position: fixed;
-    top: 80px;        /* altura do header */
-    bottom: 120px;     /* altura do footer */
+    top: 80px;
+    bottom: 140px;
     left: 0;
     right: 0;
     overflow-y: auto;
-    padding: 10px 0;
+    padding: 20px 0;
 }
 
 .container {
@@ -135,24 +132,12 @@ html, body {
 /* ========================= */
 .texto-sobre {
     max-width: 900px;
-    margin: 0 auto 20px;
+    margin: 0 auto 30px;
     text-align: justify;
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 16px;
+    line-height: 1.7;
     color: #2b3c50;
     padding: 0 15px;
-}
-
-.secao-titulo {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.subtitulo-residentes {
-    font-size: 14px;
-    color: #555;
-    margin-top: -5px;
 }
 
 /* ========================= */
@@ -160,7 +145,7 @@ html, body {
 /* ========================= */
 .social a {
     font-size: 20px;
-    margin: 0 4px;
+    margin: 0 5px;
     text-decoration: none;
 }
 
@@ -184,7 +169,7 @@ html, body {
 /* SEÇÃO PARCEIROS */
 /* ========================= */
 .parceiros {
-    margin-top: 40px;
+    margin-top: 50px;
     padding: 0 15px;
 }
 
@@ -194,7 +179,7 @@ html, body {
 
 .parceiros .row {
     --bs-gutter-x: 20px;
-    --bs-gutter-y: 15px;
+    --bs-gutter-y: 20px;
     margin-left: 0;
     margin-right: 0;
     justify-content: center;
@@ -202,7 +187,7 @@ html, body {
 
 .logo-parceiro,
 .logo-parceiro-grande {
-    height: 70px;
+    height: 75px;
     width: auto;
     max-width: 100%;
     object-fit: contain;
@@ -211,19 +196,41 @@ html, body {
     margin: 0 auto;
 }
 
-/* AJUSTES INDIVIDUAIS */
+/* AJUSTE PARA ALINHAMENTO DAS LOGOS NA PRIMEIRA LINHA */
+.parceiros-linha:first-of-type {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.parceiros-linha:first-of-type [class*="col-"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+}
+
+.parceiros-linha:first-of-type a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* ========================= */
+/* AJUSTES INDIVIDUAIS LOGOS */
+/* ========================= */
 .logo-uema-parceiro {
-    height: 80px;
-    max-width: 180px;
+    height: 85px;
 }
 
 .logo-proexae {
-    height: 60px;
+    height: 65px;
 }
 
 .logo-cct {
-    height: 65px;
-    transform: translateX(-2px);
+    height: 70px;
 }
 
 .logo-marandu {
@@ -255,14 +262,15 @@ html, body {
     height: 90px;
     background-color: #d9d9d9;
     border-radius: 50%;
-    border: 2px solid #2b3c50;
+    border: 3px solid #2b3c50;
     margin: 0 auto;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 12px;
-    color: #666;
+    font-weight: 500;
+    color: #2b3c50;
 }
 
 .foto-residente {
@@ -278,24 +286,25 @@ html, body {
     font-weight: 600;
     color: #2b3c50;
     margin-top: 8px;
-    margin-bottom: 0;
+    margin-bottom: 2px;
+}
+
+.formacao {
+    font-size: 12px;
+    color: #333;
+    margin-top: -3px;
+    margin-bottom: 8px;
 }
 
 .funcao {
     font-size: 12px;
     font-weight: 500;
-    margin: 2px 0 0;
-}
-
-.formacao {
-    font-size: 11px;
-    color: #555;
-    margin-top: -2px;
-    margin-bottom: 8px;
+    color: #2b3c50;
+    margin: 2px 0;
 }
 
 /* ========================= */
-/* FOOTER FIXO */
+/* FOOTER FIXO - CENTRALIZADO */
 /* ========================= */
 .footer-simpa {
     position: fixed;
@@ -304,7 +313,7 @@ html, body {
     width: 100%;
     background-color: #2b3c50;
     padding: 15px 0;
-    height: 120px; /* altura reduzida */
+    height: 140px;
     z-index: 1000;
 }
 
@@ -315,13 +324,13 @@ html, body {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: flex-start;
-    gap: 20px;
+    justify-content: center; /* CENTRALIZADO */
+    gap: 30px;
     height: 100%;
 }
 
 .footer-logo {
-    height: 80px;
+    height: 90px;
     width: auto;
     max-width: 100%;
     flex-shrink: 0;
@@ -329,10 +338,10 @@ html, body {
 
 .footer-text {
     color: #ffffff;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.5;
     text-align: left;
-    flex: 1;
+    max-width: 600px;
 }
 
 /* ========================= */
@@ -346,7 +355,7 @@ html, body {
 
 .parceiros a:hover {
     opacity: 0.85;
-    transform: scale(1.02);
+    transform: scale(1.03);
 }
 
 .parceiros a:hover img {
@@ -375,7 +384,7 @@ html, body {
 }
 
 /* ========================= */
-/* RESPONSIVIDADE - TABLET */
+/* RESPONSIVIDADE - TABLET (768px) */
 /* ========================= */
 @media (max-width: 768px) {
     .header-simpa {
@@ -383,193 +392,139 @@ html, body {
         min-height: 70px;
         padding: 8px 0;
     }
-    .conteudo-principal {
-        top: 70px;
-        bottom: 110px;
-    }
-    .footer-simpa {
-        height: 110px;
-    }
-
     .header-wrapper {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-        padding-top: 40px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
     }
-    
-    .logo-area {
-        position: static;
-        transform: none;
-        margin-bottom: 5px;
-    }
-    
     .logo-uema {
-        height: 50px;
+        height: 45px;
     }
-    
     .titulo-sistema {
         font-size: 20px;
     }
-    
     .subtitulo-sistema {
         font-size: 11px;
     }
-
     .botao-imprimir {
-        top: 5px;
-        right: 5px;
-        transform: none;
         flex-direction: row;
         gap: 5px;
-        padding: 4px 8px;
         min-width: auto;
+        padding: 4px 8px;
     }
-    
     .botao-imprimir i {
         font-size: 18px;
         margin-bottom: 0;
     }
-    
     .botao-imprimir span {
         font-size: 10px;
     }
-    
-    .texto-sobre {
-        font-size: 14px;
+    .conteudo-principal {
+        top: 110px;
+        bottom: 130px;
     }
-    
-    .parceiros .row {
-        --bs-gutter-x: 10px;
+    .footer-simpa {
+        height: 130px;
+        padding: 10px 0;
     }
-    
+    .footer-container {
+        gap: 15px;
+    }
+    .footer-logo {
+        height: 70px;
+    }
+    .footer-text {
+        font-size: 11px;
+    }
     .logo-parceiro,
-    .logo-parceiro-grande,
-    .logo-uema-parceiro,
-    .logo-proexae,
-    .logo-cct,
-    .logo-marandu,
-    .logo-brisa,
-    .logo-softex,
-    .logo-mcti,
-    .logo-mcti-futuro {
-        height: 50px;
-    }
-    
-    .logo-uema-parceiro {
+    .logo-parceiro-grande {
         height: 60px;
     }
-    
+    .logo-uema-parceiro {
+        height: 70px;
+    }
+    .logo-proexae {
+        height: 55px;
+    }
+    .logo-cct {
+        height: 60px;
+    }
+    .logo-marandu {
+        height: 60px;
+    }
+    .logo-brisa, .logo-softex {
+        height: 50px;
+    }
+    .logo-mcti, .logo-mcti-futuro {
+        height: 40px;
+    }
     .foto-placeholder {
         width: 80px;
         height: 80px;
     }
-    
     .nome-residente {
         font-size: 13px;
-    }
-    
-    .funcao {
-        font-size: 11px;
-    }
-    
-    .formacao {
-        font-size: 10px;
-    }
-    
-    .footer-container {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
-    }
-    
-    .footer-logo {
-        height: 60px;
-    }
-    
-    .footer-text {
-        font-size: 11px;
-        text-align: center;
     }
 }
 
 /* ========================= */
-/* RESPONSIVIDADE - CELULAR */
+/* RESPONSIVIDADE - CELULAR (480px) */
 /* ========================= */
 @media (max-width: 480px) {
-    .conteudo-principal {
-        bottom: 100px;
+    .header-wrapper {
+        flex-direction: column;
     }
-    .footer-simpa {
-        height: 100px;
-    }
-
     .logo-uema {
         height: 40px;
     }
-    
     .titulo-sistema {
         font-size: 18px;
     }
-    
     .subtitulo-sistema {
-        font-size: 9px;
+        font-size: 10px;
     }
-    
     .botao-imprimir span {
         display: none;
     }
-    
     .botao-imprimir {
         padding: 5px;
-        border-radius: 4px;
+        border-radius: 50%;
     }
-    
     .botao-imprimir i {
         font-size: 20px;
+        margin: 0;
     }
-    
-    .texto-sobre {
-        font-size: 13px;
+    .conteudo-principal {
+        top: 140px;
+        bottom: 120px;
     }
-    
+    .footer-simpa {
+        height: 120px;
+    }
+    .footer-container {
+        gap: 10px;
+    }
+    .footer-logo {
+        height: 60px;
+    }
+    .footer-text {
+        font-size: 10px;
+    }
     .logo-parceiro,
-    .logo-parceiro-grande,
-    .logo-uema-parceiro,
-    .logo-proexae,
-    .logo-cct,
-    .logo-marandu,
-    .logo-brisa,
-    .logo-softex,
-    .logo-mcti,
-    .logo-mcti-futuro {
-        height: 40px;
+    .logo-parceiro-grande {
+        height: 50px;
     }
-    
     .foto-placeholder {
         width: 70px;
         height: 70px;
     }
-    
     .nome-residente {
         font-size: 12px;
-    }
-    
-    .funcao, .formacao {
-        font-size: 9px;
-    }
-    
-    .footer-logo {
-        height: 50px;
-    }
-    
-    .footer-text {
-        font-size: 9px;
     }
 }
 
 /* ========================= */
-/* IMPRESSÃO A4 */
+/* IMPRESSÃO - @media print */
 /* ========================= */
 @media print {
     * {
@@ -582,17 +537,15 @@ html, body {
 
     /* Remove fixed positioning */
     .header-simpa,
-    .footer-simpa,
-    .conteudo-principal {
+    .conteudo-principal,
+    .footer-simpa {
         position: static !important;
         height: auto !important;
         overflow: visible !important;
     }
 
-    /* Esconde botão e interações */
-    .botao-imprimir,
-    .parceiros a:hover,
-    .parceiros a:hover img {
+    /* Esconde botão de imprimir */
+    .botao-imprimir {
         display: none !important;
     }
 
@@ -603,108 +556,104 @@ html, body {
         background: #fff;
         color: #000 !important;
         margin: 0;
+    }
+
+    .container {
+        max-width: 100%;
+        margin: 0;
         padding: 0.2in;
     }
 
+    /* HEADER na impressão */
     .header-simpa {
         border-bottom: 1px solid #000;
         padding: 0.1in 0;
         margin-bottom: 0.1in;
     }
-
     .header-wrapper {
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
-
     .logo-area {
-        position: static;
-        transform: none;
+        flex-shrink: 0;
     }
-
     .logo-uema {
         height: 0.5in;
         width: auto;
     }
-
     .titulo-area {
         text-align: center;
-        flex: 1;
+        flex-grow: 1;
     }
-
     .titulo-sistema {
         font-size: 14pt;
         font-weight: bold;
         color: #000 !important;
+        margin: 0;
     }
-
     .subtitulo-sistema {
-        font-size: 9pt;
+        font-size: 8pt;
         color: #000 !important;
+        margin: 0;
     }
 
+    /* Texto */
     .texto-sobre {
         font-size: 10pt;
         margin: 0.1in 0;
-        text-align: justify;
     }
 
+    /* Residentes */
     .residentes {
         display: flex;
         flex-wrap: nowrap;
         justify-content: space-between;
         margin: 0.1in 0;
     }
-
     .residente-card {
-        width: 0.9in;
+        width: 1.0in;
         margin: 0 0.02in;
         page-break-inside: avoid;
-        text-align: center;
     }
-
     .foto-placeholder {
-        width: 0.5in;
-        height: 0.5in;
+        width: 0.7in;
+        height: 0.7in;
         border: 1px solid #000;
-        border-radius: 50%;
-        margin: 0 auto;
-        background: #fff;
+        background: #fff !important;
     }
-
     .nome-residente {
-        font-size: 7pt;
+        font-size: 8pt;
         font-weight: bold;
+        color: #000 !important;
     }
-
     .funcao, .formacao {
-        font-size: 6pt;
+        font-size: 7pt;
+        color: #000 !important;
     }
 
+    /* Redes sociais */
     .social {
         display: block !important;
     }
-
     .social a {
         color: #000 !important;
         pointer-events: none;
     }
-
     .social i {
-        font-size: 8pt !important;
+        font-size: 9pt !important;
     }
 
+    /* Parceiros */
     .parceiros {
         margin: 0.1in 0;
         text-align: center;
         page-break-inside: avoid;
     }
-
     .parceiros h6 {
         font-size: 10pt;
+        color: #000 !important;
     }
-
     .parceiros .row {
         display: flex;
         flex-wrap: wrap;
@@ -712,13 +661,10 @@ html, body {
         gap: 0.1in;
         margin: 0;
     }
-
     .parceiros [class*="col-"] {
         width: auto;
         padding: 0;
-        flex: 0 0 auto;
     }
-
     .parceiros img {
         max-height: 0.35in;
         width: auto;
@@ -726,30 +672,32 @@ html, body {
         margin: 0 auto;
     }
 
+    /* Footer - CENTRALIZADO na impressão */
     .footer-simpa {
         background-color: #2b3c50 !important;
         padding: 0.1in 0;
         margin-top: 0.2in;
         border-top: none;
+        page-break-inside: avoid;
     }
-
     .footer-container {
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
+        justify-content: center; /* CENTRALIZADO */
         gap: 0.15in;
+        max-width: 100%;
+        margin: 0 auto;
     }
-
     .footer-logo {
         height: 0.45in;
         width: auto;
     }
-
     .footer-text {
         font-size: 7pt;
         color: #ffffff !important;
         text-align: left;
+        max-width: 4in;
     }
 
     @page {
