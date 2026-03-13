@@ -584,7 +584,18 @@ html, body {
         margin: 0;
     }
 
-    /* Aproximar texto do header */
+    /* Título SOBRE O SIMPA mais próximo do header */
+    .secao-titulo {
+        font-size: 12pt !important;
+        margin-top: 0.01in;  /* Reduzido para aproximar do header */
+        margin-bottom: 0.02in;
+    }
+
+    .subtitulo-residentes {
+        font-size: 9pt;
+        margin-bottom: 0.05in;
+    }
+
     .texto-sobre {
         font-size: 10pt;
         margin-top: 0.02in;
@@ -592,16 +603,6 @@ html, body {
     }
 
     /* RESIDENTES */
-    .secao-titulo {
-        font-size: 12pt !important;
-        margin-top: 0.05in;
-        margin-bottom: 0.02in;
-    }
-    .subtitulo-residentes {
-        font-size: 9pt;
-        margin-bottom: 0.05in;
-    }
-
     .residentes {
         display: flex;
         flex-wrap: nowrap;
@@ -641,37 +642,39 @@ html, body {
         font-size: 8pt !important;
     }
 
-    /* PARCEIROS - espaçamento uniforme */
+    /* PARCEIROS */
     .parceiros {
         margin-top: 0.02in !important;
         margin-bottom: 0.05in;
         text-align: center;
         page-break-inside: avoid;
     }
+
+    /* Título PARCEIROS mais próximo das logos */
     .parceiros h6 {
         font-size: 10pt;
         color: #000 !important;
-        margin-bottom: 0.02in;
+        margin-bottom: 0.02in; /* Reduzido para aproximar das logos */
     }
 
-    /* Remove gutter do Bootstrap e define espaçamento próprio */
+    /* Espaçamento uniforme entre todas as linhas de logos */
     .parceiros .row {
         --bs-gutter-x: 0 !important;
         --bs-gutter-y: 0 !important;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 0.15in 0.15in; /* mesmo espaçamento horizontal e vertical */
+        gap: 0.15in 0.15in; /* Mesmo espaçamento horizontal e vertical */
         margin: 0;
     }
 
     .parceiros-linha {
-        margin: 0; /* remove margens individuais, o gap controla */
+        margin: 0;
         width: 100%;
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        gap: inherit; /* herda o gap do .row */
+        gap: inherit; /* Herda o gap do .row */
     }
 
     .parceiros [class*="col-"] {
@@ -689,16 +692,15 @@ html, body {
         margin: 0 auto;
     }
 
-    /* FOOTER - desce até o limite da página */
+    /* FOOTER colado no rodapé */
     .footer-simpa {
         background-color: #2b3c50 !important;
         padding: 0.1in 0;
         margin-top: 0.05in;
-        margin-bottom: 0; /* sem margem inferior */
+        margin-bottom: 0; /* Sem margem inferior */
         border-top: none;
         page-break-inside: avoid;
         display: block !important;
-        /* garante que ocupe toda a largura e fique ao final */
         width: 100%;
         position: relative;
         bottom: 0;
