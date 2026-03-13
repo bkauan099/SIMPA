@@ -544,21 +544,22 @@ html, body {
     .container {
         max-width: 100%;
         margin: 0;
-        padding: 0.15in; /* reduzido para economizar espaço */
+        padding: 0.15in;
     }
 
-    /* HEADER na impressão */
+    /* HEADER centralizado na página */
     .header-simpa {
         border-bottom: 1px solid #000;
         padding: 0.1in 0;
-        margin-bottom: 0.05in; /* reduzido */
+        margin-bottom: 0.02in; /* reduzido para aproximar do conteúdo */
     }
     .header-wrapper {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center; /* centraliza todo o conteúdo */
         max-width: 100%;
         margin: 0 auto;
+        gap: 0.2in; /* espaço entre logo e título */
     }
     .logo-area {
         flex-shrink: 0;
@@ -569,7 +570,7 @@ html, body {
     }
     .titulo-area {
         text-align: center;
-        flex-grow: 1;
+        flex-grow: 0; /* não precisa ocupar todo espaço */
     }
     .titulo-sistema {
         font-size: 14pt;
@@ -586,7 +587,7 @@ html, body {
     /* Aproximar texto do header */
     .texto-sobre {
         font-size: 10pt;
-        margin-top: 0.02in;  /* mínimo */
+        margin-top: 0.02in;
         margin-bottom: 0.1in;
     }
 
@@ -640,7 +641,7 @@ html, body {
         font-size: 8pt !important;
     }
 
-    /* PARCEIROS - reduzir drasticamente o espaçamento */
+    /* PARCEIROS - espaçamento equidistante */
     .parceiros {
         margin-top: 0.02in !important;
         margin-bottom: 0.05in;
@@ -656,25 +657,26 @@ html, body {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 0.05in; /* reduzido */
+        gap: 0.1in 0.1in; /* horizontal e vertical iguais */
         margin: 0;
     }
     .parceiros [class*="col-"] {
         width: auto;
         padding: 0;
+        margin: 0;
     }
     .parceiros img {
-        max-height: 0.3in; /* levemente menor */
+        max-height: 0.3in;
         width: auto;
         display: block;
         margin: 0 auto;
     }
 
-    /* FOOTER - garantir que apareça completo */
+    /* FOOTER - subir um pouco */
     .footer-simpa {
         background-color: #2b3c50 !important;
         padding: 0.1in 0;
-        margin-top: 0.1in;
+        margin-top: 0.05in; /* reduzido para subir */
         border-top: none;
         page-break-inside: avoid;
         display: block !important;
@@ -689,11 +691,11 @@ html, body {
         margin: 0 auto;
     }
     .footer-logo {
-        height: 0.4in; /* reduzido para caber melhor */
+        height: 0.4in;
         width: auto;
     }
     .footer-text {
-        font-size: 6.5pt; /* reduzido */
+        font-size: 6.5pt;
         line-height: 1.2;
         color: #ffffff !important;
         text-align: left;
