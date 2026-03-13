@@ -584,7 +584,7 @@ html, body {
         margin: 0;
     }
 
-    /* Texto mais próximo do header */
+    /* Aproximar texto do header */
     .texto-sobre {
         font-size: 10pt;
         margin-top: 0.02in;
@@ -654,26 +654,34 @@ html, body {
         margin-bottom: 0.02in;
     }
 
-    /* Aplica espaçamento vertical igual entre as linhas */
-    .parceiros-linha {
-        margin-top: 0.1in; /* mesmo valor para todas as linhas */
-    }
-    .parceiros-linha:first-of-type {
-        margin-top: 0; /* a primeira não precisa de margem superior extra */
-    }
-
+    /* Remove gutter do Bootstrap e define espaçamento próprio */
     .parceiros .row {
+        --bs-gutter-x: 0 !important;
+        --bs-gutter-y: 0 !important;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 0.1in; /* mesmo espaçamento horizontal para todas as linhas */
+        gap: 0.15in 0.15in; /* mesmo espaçamento horizontal e vertical */
         margin: 0;
     }
+
+    .parceiros-linha {
+        margin: 0; /* remove margens individuais, o gap controla */
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: inherit; /* herda o gap do .row */
+    }
+
     .parceiros [class*="col-"] {
         width: auto;
         padding: 0;
         margin: 0;
+        display: flex;
+        justify-content: center;
     }
+
     .parceiros img {
         max-height: 0.3in;
         width: auto;
@@ -681,14 +689,19 @@ html, body {
         margin: 0 auto;
     }
 
-    /* FOOTER - descer até o limite da página */
+    /* FOOTER - desce até o limite da página */
     .footer-simpa {
         background-color: #2b3c50 !important;
         padding: 0.1in 0;
-        margin-top: 0.2in; /* aumenta para empurrar para baixo */
+        margin-top: 0.05in;
+        margin-bottom: 0; /* sem margem inferior */
         border-top: none;
         page-break-inside: avoid;
         display: block !important;
+        /* garante que ocupe toda a largura e fique ao final */
+        width: 100%;
+        position: relative;
+        bottom: 0;
     }
     .footer-container {
         display: flex;
