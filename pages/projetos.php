@@ -57,10 +57,10 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="fw-bold text-muted">#201</td>
-                    <td><span class="fw-medium">Equipe Baja UEMA</span></td>
+                    <td class="fw-bold text-muted">#200</td>
+                    <td><span class="fw-medium">Equipe SIMPA UEMA</span></td>
                     <td>Projeto Especial</td>
-                    <td>Engenharia Mecânica</td>
+                    <td>PROEXAE</td>
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" title="Editar Projeto"><i class="bi bi-pencil"></i></button>
@@ -73,6 +73,18 @@
                     <td><span class="fw-medium">Cálculo Jr. Consultoria</span></td>
                     <td>Empresa Júnior</td>
                     <td>Multidisciplinar</td>
+                    <td><span class="status-ativo">Ativo</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" title="Editar Projeto"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-info ms-1" title="Ver Produções"><i class="bi bi-file-earmark-text"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Arquivar"><i class="bi bi-archive"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-muted">#201</td>
+                    <td><span class="fw-medium">Equipe Baja UEMA</span></td>
+                    <td>Projeto Especial</td>
+                    <td>Engenharia Mecânica</td>
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" title="Editar Projeto"><i class="bi bi-pencil"></i></button>
