@@ -3,9 +3,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Página Sobre o SIMPA carregada com sucesso!");
 
-    // =============================
     // Hover nos cards dos residentes
-    // =============================
     const residentCards = document.querySelectorAll('.residente-card');
     residentCards.forEach(card => {
         card.addEventListener('mouseenter', () => {
@@ -17,9 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // =============================
     // Hover nas logos dos parceiros
-    // =============================
     const partnerLogos = document.querySelectorAll('.parceiros img');
     partnerLogos.forEach(logo => {
         logo.addEventListener('mouseenter', () => {
@@ -31,19 +27,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // =============================
     // Links sociais abrindo em nova aba
-    // =============================
     const socialLinks = document.querySelectorAll('.social a');
     socialLinks.forEach(link => {
         link.setAttribute('target', '_blank');
         link.setAttribute('rel', 'noopener noreferrer');
     });
-
-    // =============================
-    // Função de impressão (já chamada pelo onclick)
-    // =============================
-    window.imprimirPagina = function() {
-        window.print();
-    };
 });

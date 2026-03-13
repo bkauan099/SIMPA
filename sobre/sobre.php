@@ -35,7 +35,7 @@
                 © Sistema Integrado de Monitoramento de Projetos Acadêmicos
             </h2>
         </div>
-        <!-- BOTÃO DE IMPRIMIR -->
+        <!-- BOTÃO DE IMPRIMIR (ÍCONE + TEXTO) -->
         <div class="botao-imprimir" onclick="window.print()">
             <i class="bi bi-printer"></i>
             <span>IMPRIMIR PÁGINA</span>
@@ -128,6 +128,7 @@
         <!-- LOGOS PARCEIROS -->
         <div class="parceiros text-center mt-5">
             <h6>PARCEIROS</h6>
+
             <!-- LINHA 1 -->
             <div class="row justify-content-center align-items-center parceiros-linha">
                 <div class="col-md-2 col-6">
@@ -151,6 +152,7 @@
                     </a>
                 </div>
             </div>
+
             <!-- LINHA 2 -->
             <div class="row justify-content-center align-items-center parceiros-linha">
                 <div class="col-md-3 col-6">
@@ -164,7 +166,8 @@
                     </a>
                 </div>
             </div>
-            <!-- LINHA 3 – ajustada para aproximar as logos MCTI -->
+
+            <!-- LINHA 3 (com as duas logos MCTI) -->
             <div class="row justify-content-center align-items-center parceiros-linha">
                 <div class="col-auto">
                     <a href="https://mctifuturo.softex.br/" target="_blank" rel="noopener noreferrer">
