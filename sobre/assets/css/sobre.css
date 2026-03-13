@@ -69,7 +69,6 @@ html, body {
     font-size: 12px;
     font-weight: 400;
     color: #333;
-    line-height: 1.2;
 }
 
 /* ========================= */
@@ -94,22 +93,19 @@ html, body {
 .botao-imprimir i {
     font-size: 22px;
     margin-bottom: 2px;
-    color: #2b3c50;
 }
 
 .botao-imprimir span {
     font-size: 10px;
     font-weight: 500;
-    letter-spacing: 0.3px;
-    color: #2b3c50;
 }
 
 .botao-imprimir:hover {
-    background-color: rgba(43, 60, 80, 0.05);
+    background-color: rgba(43,60,80,0.05);
 }
 
 /* ========================= */
-/* CONTEÚDO PRINCIPAL ROLÁVEL */
+/* CONTEÚDO PRINCIPAL */
 /* ========================= */
 .conteudo-principal {
     position: fixed;
@@ -123,12 +119,10 @@ html, body {
 
 .container {
     max-width: 1140px;
-    margin: 0 auto;
-    padding: 0 15px;
 }
 
 /* ========================= */
-/* TEXTO INSTITUCIONAL */
+/* TEXTO */
 /* ========================= */
 .texto-sobre {
     max-width: 900px;
@@ -136,8 +130,6 @@ html, body {
     text-align: justify;
     font-size: 16px;
     line-height: 1.7;
-    color: #2b3c50;
-    padding: 0 15px;
 }
 
 /* ========================= */
@@ -149,564 +141,259 @@ html, body {
     text-decoration: none;
 }
 
-.social .bi-linkedin {
-    color: #0a66c2;
-}
+.social .bi-linkedin { color:#0a66c2; }
+.social .bi-github { color:#000; }
 
-.social .bi-github {
-    color: #000000;
-}
-
-.social .bi-linkedin:hover {
-    color: #084c94;
-}
-
-.social .bi-github:hover {
-    color: #333333;
-}
+.social .bi-linkedin:hover { color:#084c94; }
+.social .bi-github:hover { color:#333; }
 
 /* ========================= */
-/* SEÇÃO PARCEIROS */
+/* PARCEIROS */
 /* ========================= */
+
 .parceiros {
-    margin-top: 50px;
-    padding: 0 15px;
+    margin-top:50px;
+    text-align:center;
 }
 
-.parceiros-linha {
-    margin-top: 30px;
+.parceiros-linha{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:40px;
+    margin-top:35px;
 }
 
-.parceiros .row {
-    --bs-gutter-x: 20px;
-    --bs-gutter-y: 20px;
-    margin-left: 0;
-    margin-right: 0;
-    justify-content: center;
+.parceiros img{
+    display:block;
+    margin:auto;
+    width:auto;
+    max-width:100%;
 }
+
+/* alturas base */
 
 .logo-parceiro,
-.logo-parceiro-grande {
-    height: 75px;
-    width: auto;
-    max-width: 100%;
-    object-fit: contain;
-    transition: transform 0.2s ease;
-    display: block;
-    margin: 0 auto;
+.logo-parceiro-grande{
+    height:75px;
 }
 
-/* AJUSTE PARA ALINHAMENTO DAS LOGOS NA PRIMEIRA LINHA */
-.parceiros-linha:first-of-type {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+.logo-uema-parceiro{height:85px;}
+.logo-proexae{height:65px;}
+.logo-cct{height:70px;}
+.logo-marandu{height:70px;}
 
-.parceiros-linha:first-of-type [class*="col-"] {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100px;
-}
-
-.parceiros-linha:first-of-type a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-
-/* ========================= */
-/* AJUSTES INDIVIDUAIS LOGOS */
-/* ========================= */
-.logo-uema-parceiro {
-    height: 85px;
-}
-
-.logo-proexae {
-    height: 65px;
-}
-
-.logo-cct {
-    height: 70px;
-}
-
-.logo-marandu {
-    height: 70px;
-}
-
-.logo-brisa {
-    height: 60px;
-}
-
-.logo-softex {
-    height: 60px;
-}
+.logo-brisa{height:60px;}
+.logo-softex{height:60px;}
 
 .logo-mcti,
-.logo-mcti-futuro {
-    height: 50px;
+.logo-mcti-futuro{
+    height:50px;
+}
+
+/* hover */
+
+.parceiros a{
+    transition:all .25s ease;
+}
+
+.parceiros a:hover{
+    transform:scale(1.04);
+    opacity:.9;
 }
 
 /* ========================= */
 /* CARDS RESIDENTES */
 /* ========================= */
-.residente-card {
-    margin-bottom: 20px;
+
+.residente-card{
+    margin-bottom:20px;
 }
 
-.foto-placeholder {
-    width: 90px;
-    height: 90px;
-    background-color: #d9d9d9;
-    border-radius: 50%;
-    border: 3px solid #2b3c50;
-    margin: 0 auto;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 500;
-    color: #2b3c50;
+.foto-placeholder{
+    width:90px;
+    height:90px;
+    background:#d9d9d9;
+    border-radius:50%;
+    border:3px solid #2b3c50;
+    margin:auto;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
 }
 
-.foto-residente {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
+.foto-residente{
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
-.nome-residente {
-    font-size: 14px;
-    font-weight: 600;
-    color: #2b3c50;
-    margin-top: 8px;
-    margin-bottom: 2px;
+.nome-residente{
+    font-size:14px;
+    font-weight:600;
+    margin-top:8px;
 }
 
-.formacao {
-    font-size: 12px;
-    color: #333;
-    margin-top: -3px;
-    margin-bottom: 8px;
+.formacao{
+    font-size:12px;
 }
 
-.funcao {
-    font-size: 12px;
-    font-weight: 500;
-    color: #2b3c50;
-    margin: 2px 0;
+.funcao{
+    font-size:12px;
 }
 
 /* ========================= */
-/* FOOTER FIXO - CENTRALIZADO */
+/* FOOTER */
 /* ========================= */
-.footer-simpa {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: #2b3c50;
-    padding: 15px 0;
-    height: 140px;
-    z-index: 1000;
+
+.footer-simpa{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:#2b3c50;
+    padding:15px 0;
+    height:140px;
 }
 
-.footer-container {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 0 15px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
-    height: 100%;
+.footer-container{
+    max-width:1140px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:30px;
 }
 
-.footer-logo {
-    height: 90px;
-    width: auto;
-    max-width: 100%;
-    flex-shrink: 0;
+.footer-logo{
+    height:90px;
 }
 
-.footer-text {
-    color: #ffffff;
-    font-size: 13px;
-    line-height: 1.5;
-    text-align: left;
-    max-width: 600px;
+.footer-text{
+    color:#fff;
+    font-size:13px;
+    line-height:1.5;
+    max-width:600px;
 }
 
 /* ========================= */
-/* EFEITO HOVER LOGOS */
+/* RESPONSIVO */
 /* ========================= */
-.parceiros a {
-    display: block;
-    text-decoration: none;
-    transition: all 0.3s ease;
+
+@media(max-width:768px){
+
+.conteudo-principal{
+    top:110px;
+    bottom:130px;
 }
 
-.parceiros a:hover {
-    opacity: 0.85;
-    transform: scale(1.03);
+.logo-parceiro,
+.logo-parceiro-grande{
+    height:60px;
 }
 
-.parceiros a:hover img {
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+.parceiros-linha{
+    gap:25px;
+    margin-top:25px;
 }
 
-/* ========================= */
-/* RESPONSIVIDADE - TABLET (768px) */
-/* ========================= */
-@media (max-width: 768px) {
-    .header-simpa {
-        height: auto;
-        min-height: 70px;
-        padding: 8px 0;
-    }
-    .header-wrapper {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
-    }
-    .logo-uema {
-        height: 45px;
-    }
-    .titulo-sistema {
-        font-size: 20px;
-    }
-    .subtitulo-sistema {
-        font-size: 11px;
-    }
-    .botao-imprimir {
-        flex-direction: row;
-        gap: 5px;
-        min-width: auto;
-        padding: 4px 8px;
-    }
-    .botao-imprimir i {
-        font-size: 18px;
-        margin-bottom: 0;
-    }
-    .botao-imprimir span {
-        font-size: 10px;
-    }
-    .conteudo-principal {
-        top: 110px;
-        bottom: 130px;
-    }
-    .footer-simpa {
-        height: 130px;
-        padding: 10px 0;
-    }
-    .footer-container {
-        gap: 15px;
-    }
-    .footer-logo {
-        height: 70px;
-    }
-    .footer-text {
-        font-size: 11px;
-    }
-    .logo-parceiro,
-    .logo-parceiro-grande {
-        height: 60px;
-    }
-    .logo-uema-parceiro {
-        height: 70px;
-    }
-    .logo-proexae {
-        height: 55px;
-    }
-    .logo-cct {
-        height: 60px;
-    }
-    .logo-marandu {
-        height: 60px;
-    }
-    .logo-brisa, .logo-softex {
-        height: 50px;
-    }
-    .logo-mcti, .logo-mcti-futuro {
-        height: 40px;
-    }
-    .foto-placeholder {
-        width: 80px;
-        height: 80px;
-    }
-    .nome-residente {
-        font-size: 13px;
-    }
+.footer-logo{
+    height:70px;
+}
+
+.footer-text{
+    font-size:11px;
+}
+
+}
+
+@media(max-width:480px){
+
+.conteudo-principal{
+    top:140px;
+    bottom:120px;
+}
+
+.parceiros-linha{
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.logo-parceiro,
+.logo-parceiro-grande{
+    height:50px;
+}
+
+.footer-logo{
+    height:60px;
+}
+
+.footer-text{
+    font-size:10px;
+}
+
 }
 
 /* ========================= */
-/* RESPONSIVIDADE - CELULAR (480px) */
+/* IMPRESSÃO */
 /* ========================= */
-@media (max-width: 480px) {
-    .header-wrapper {
-        flex-direction: column;
-    }
-    .logo-uema {
-        height: 40px;
-    }
-    .titulo-sistema {
-        font-size: 18px;
-    }
-    .subtitulo-sistema {
-        font-size: 10px;
-    }
-    .botao-imprimir span {
-        display: none;
-    }
-    .botao-imprimir {
-        padding: 5px;
-        border-radius: 50%;
-    }
-    .botao-imprimir i {
-        font-size: 20px;
-        margin: 0;
-    }
-    .conteudo-principal {
-        top: 140px;
-        bottom: 120px;
-    }
-    .footer-simpa {
-        height: 120px;
-    }
-    .footer-container {
-        gap: 10px;
-    }
-    .footer-logo {
-        height: 60px;
-    }
-    .footer-text {
-        font-size: 10px;
-    }
-    .logo-parceiro,
-    .logo-parceiro-grande {
-        height: 50px;
-    }
-    .foto-placeholder {
-        width: 70px;
-        height: 70px;
-    }
-    .nome-residente {
-        font-size: 12px;
-    }
+
+@media print{
+
+html,body{
+    overflow:visible;
 }
 
-/* ========================= */
-/* IMPRESSÃO - @media print */
-/* ========================= */
-@media print {
-    * {
-        background-color: transparent !important;
-        box-shadow: none !important;
-        text-shadow: none !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
+.header-simpa,
+.conteudo-principal,
+.footer-simpa{
+    position:static !important;
+    height:auto !important;
+}
 
-    /* Remove fixed positioning */
-    .header-simpa,
-    .conteudo-principal,
-    .footer-simpa {
-        position: static !important;
-        height: auto !important;
-        overflow: visible !important;
-    }
+.botao-imprimir{
+    display:none;
+}
 
-    /* Esconde botão de imprimir */
-    .botao-imprimir {
-        display: none !important;
-    }
+body{
+    font-family:"Times New Roman",serif;
+    font-size:11pt;
+    background:#fff;
+}
 
-    body {
-        font-family: 'Times New Roman', Times, serif;
-        font-size: 11pt;
-        line-height: 1.3;
-        background: #fff;
-        color: #000 !important;
-        margin: 0;
-    }
+.container{
+    max-width:100%;
+    padding:.3in;
+}
 
-    .container {
-        max-width: 100%;
-        margin: 0;
-        padding: 0.2in;
-    }
+.parceiros-linha{
+    gap:.2in;
+    margin-top:.15in;
+}
 
-    /* HEADER centralizado */
-    .header-simpa {
-        border-bottom: 1px solid #000;
-        padding: 0.1in 0;
-        margin-bottom: 0.1in;
-    }
-    .header-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        max-width: 100%;
-        margin: 0 auto;
-        gap: 0.2in;
-    }
-    .logo-area {
-        flex-shrink: 0;
-    }
-    .logo-uema {
-        height: 0.5in;
-        width: auto;
-    }
-    .titulo-area {
-        text-align: center;
-        flex-grow: 0;
-    }
-    .titulo-sistema {
-        font-size: 14pt;
-        font-weight: bold;
-        color: #000 !important;
-        margin: 0;
-    }
-    .subtitulo-sistema {
-        font-size: 8pt;
-        color: #000 !important;
-        margin: 0;
-    }
+.footer-simpa{
+    display:block !important;
+    margin-top:.2in;
+    padding:.1in 0;
+}
 
-    /* TEXTO */
-    .texto-sobre {
-        font-size: 10pt;
-        margin: 0.1in 0;
-    }
+.footer-container{
+    justify-content:center;
+    gap:.15in;
+}
 
-    /* RESIDENTES */
-    .secao-titulo {
-        font-size: 12pt !important;
-        margin-top: 0.1in;
-        margin-bottom: 0.05in;
-    }
-    .subtitulo-residentes {
-        font-size: 9pt;
-        margin-bottom: 0.1in;
-    }
+.footer-logo{
+    height:.45in;
+}
 
-    .residentes {
-        display: flex;
-        flex-wrap: nowrap;
-        justify-content: space-between;
-        margin: 0.1in 0;
-    }
-    .residente-card {
-        width: 1.0in;
-        margin: 0 0.02in;
-        page-break-inside: avoid;
-    }
-    .foto-placeholder {
-        width: 0.7in;
-        height: 0.7in;
-        border: 1px solid #000;
-        background: #fff !important;
-    }
-    .nome-residente {
-        font-size: 7.5pt; /* reduzido para caber em uma linha */
-        font-weight: bold;
-        color: #000 !important;
-        white-space: nowrap; /* força o nome a ficar em uma única linha */
-        overflow: hidden;
-        text-overflow: ellipsis; /* opcional */
-    }
-    .funcao, .formacao {
-        font-size: 7pt;
-        color: #000 !important;
-    }
+.footer-text{
+    font-size:7pt;
+}
 
-    /* Redes sociais (ícones permanecem) */
-    .social a {
-        color: #000 !important;
-        pointer-events: none;
-    }
-    .social i {
-        font-size: 9pt !important;
-    }
+@page{
+    size:A4;
+    margin:.3in;
+}
 
-    /* PARCEIROS - espaçamento uniforme entre linhas */
-    .parceiros {
-        margin: 0.1in 0;
-        text-align: center;
-        page-break-inside: avoid;
-    }
-    .parceiros h6 {
-        font-size: 10pt;
-        color: #000 !important;
-        margin-bottom: 0.05in;
-    }
-
-    /* Remove margens padrão das linhas e aplica espaçamento inferior uniforme */
-    .parceiros-linha {
-        margin: 0 0 0.1in 0; /* margem inferior igual ao gap desejado */
-    }
-    .parceiros-linha:last-child {
-        margin-bottom: 0; /* remove margem da última linha */
-    }
-
-    .parceiros .row {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0.1in 0.1in; /* espaçamento horizontal e vertical entre itens da mesma linha */
-        margin: 0;
-    }
-
-    .parceiros [class*="col-"] {
-        width: auto;
-        padding: 0;
-    }
-
-    .parceiros img {
-        max-height: 0.35in;
-        width: auto;
-        display: block;
-        margin: 0 auto;
-    }
-
-    /* FOOTER */
-    .footer-simpa {
-        background-color: #2b3c50 !important;
-        padding: 0.1in 0;
-        margin-top: 0.2in;
-        border-top: none;
-        page-break-inside: avoid;
-        display: block !important;
-    }
-    .footer-container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 0.15in;
-        max-width: 100%;
-        margin: 0 auto;
-    }
-    .footer-logo {
-        height: 0.45in;
-        width: auto;
-    }
-    .footer-text {
-        font-size: 7pt;
-        color: #ffffff !important;
-        text-align: left;
-        max-width: 4in;
-    }
-
-    @page {
-        size: A4;
-        margin: 0.2in;
-    }
 }
