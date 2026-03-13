@@ -29,7 +29,7 @@
     <div class="header-wrapper">
 
         <div class="logo-area">
-            <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema">
+            <img src="assets/img/ue     -logo.png" alt="UEMA" class="logo-uema">
         </div>
 
         <div class="titulo-area">
@@ -46,7 +46,7 @@
 </header>
 
 <body>
-
+<main class="conteudo-principal">
 <div class="container py-5">
 
         <!-- TÍTULO -->
@@ -262,6 +262,7 @@
         </div>
 
     </div>
+</main>
 </footer>
 <!-- JS -->
     <script src="assets/js/sobre.js"></script>
