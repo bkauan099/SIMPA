@@ -48,4 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
         link.setAttribute('rel', 'noopener noreferrer');
     });
 
+    // Função para imprimir a página
+function imprimirPagina() {
+    window.print();
+}
 });

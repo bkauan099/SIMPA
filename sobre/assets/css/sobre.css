@@ -784,3 +784,85 @@ body {
     }
 }
 
+/* ========================= */
+/* BOTÃO IMPRIMIR */
+/* ========================= */
+.botao-imprimir {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #2b3c50;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.botao-imprimir i {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.botao-imprimir span {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.botao-imprimir:hover {
+    background-color: #3a4e66;
+    transform: translateY(-50%) scale(1.02);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .header-wrapper {
+        position: relative;
+        padding-top: 70px; /* Espaço para o botão */
+    }
+    
+    .botao-imprimir {
+        top: 10px;
+        right: 10px;
+        transform: none;
+        flex-direction: row;
+        gap: 8px;
+        padding: 6px 12px;
+        min-width: auto;
+    }
+    
+    .botao-imprimir i {
+        font-size: 20px;
+        margin-bottom: 0;
+    }
+    
+    .botao-imprimir span {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .botao-imprimir span {
+        display: none; /* Só o ícone aparece em telas muito pequenas */
+    }
+    
+    .botao-imprimir {
+        padding: 8px;
+        border-radius: 50%;
+    }
+    
+    .botao-imprimir i {
+        font-size: 22px;
+        margin: 0;
+    }
+}
