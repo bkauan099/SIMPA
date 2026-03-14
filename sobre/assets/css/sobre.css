@@ -506,122 +506,98 @@ html, body {
 /* IMPRESSÃO */
 /* ========================= */
 @media print {
+    /* Garante que cores de fundo sejam impressas */
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
+    }
 
-@page{
-size:A4 portrait;
-margin:8mm;
-}
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
 
-html,body{
-height:auto !important;
-overflow:visible !important;
-background:#ffffff;
-}
+    /* Remove posicionamento fixo para impressão */
+    .header-simpa,
+    .conteudo-principal,
+    .footer-simpa {
+        position: static !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
 
-/* reduz proporcionalmente o site */
-body{
-font-family:'Montserrat',sans-serif;
-transform:scale(0.90);
-transform-origin:top center;
-}
+    /* Esconde o botão de imprimir */
+    .botao-imprimir {
+        display: none !important;
+    }
 
-/* remove fixed apenas para impressão */
-.header-simpa,
-.conteudo-principal,
-.footer-simpa{
-position:static !important;
-height:auto !important;
-overflow:visible !important;
-}
+    /* Ajuste suave de escala para caber na página (opcional) */
+    body {
+        transform: scale(0.98);
+        transform-origin: top center;
+    }
 
-/* remove botão imprimir */
-.botao-imprimir{
-display:none !important;
-}
+    /* Mantém a estrutura original das logos parceiras */
+    .parceiros .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px; /* mesmo espaçamento do site */
+        margin: 0;
+    }
 
-/* compacta espaçamentos verticais */
-.texto-sobre{
-margin-bottom:15px;
-font-size:15px;
-}
+    /* Para a primeira linha (4 logos) */
+    .parceiros .col-md-2 {
+        width: calc(16.666% - 20px); /* ajuste fino para caber 4 */
+        flex: 0 0 auto;
+        max-width: 180px; /* opcional, para não crescer demais */
+    }
 
-.residente-card{
-margin-bottom:10px;
-}
+    /* Para a segunda linha (2 logos) */
+    .parceiros .col-md-3 {
+        width: calc(25% - 20px);
+        flex: 0 0 auto;
+        max-width: 220px;
+    }
 
-.foto-placeholder{
-width:75px;
-height:75px;
-}
+    /* Para a terceira linha (2 logos MCTI) */
+    .parceiros .col-auto {
+        width: auto;
+        flex: 0 0 auto;
+        padding: 0 10px; /* espaçamento lateral */
+    }
 
-.nome-residente{
-font-size:13px;
-}
+    /* Redimensiona as imagens proporcionalmente */
+    .logo-parceiro,
+    .logo-parceiro-grande {
+        height: 60px; /* ajuste conforme necessário */
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+    }
 
-.funcao{
-font-size:11px;
-}
+    /* Ajustes individuais para manter proporções */
+    .logo-uema-parceiro { height: 70px; }
+    .logo-proexae { height: 55px; }
+    .logo-cct { height: 60px; }
+    .logo-marandu { height: 60px; }
+    .logo-brisa { height: 50px; }
+    .logo-softex { height: 50px; }
+    .logo-mcti,
+    .logo-mcti-futuro { height: 45px; }
 
-.formacao{
-font-size:11px;
-}
-
-/* mantém a mesma distribuição das logos */
-
-.parceiros{
-margin-top:15px;
-}
-
-.parceiros-linha{
-margin-top:12px;
-}
-
-/* reduz tamanho das logos sem alterar espaçamento horizontal */
-
-.logo-uema-parceiro{
-height:70px;
-}
-
-.logo-proexae{
-height:55px;
-}
-
-.logo-cct{
-height:60px;
-}
-
-.logo-marandu{
-height:60px;
-}
-
-.logo-brisa{
-height:50px;
-}
-
-.logo-softex{
-height:50px;
-}
-
-.logo-mcti,
-.logo-mcti-futuro{
-height:45px;
-}
-
-/* footer */
-
-.footer-simpa{
-background-color:#2b3c50 !important;
-margin-top:15px;
-padding:12px 0;
-}
-
-.footer-logo{
-height:70px;
-}
-
-.footer-text{
-font-size:11px;
-color:#ffffff !important;
-}
-
+    /* FOOTER com fundo garantido */
+    .footer-simpa {
+        background-color: #2b3c50 !important;
+        margin-top: 20px;
+        padding: 15px 0;
+    }
+    .footer-logo {
+        height: 70px;
+    }
+    .footer-text {
+        color: #ffffff !important;
+        font-size: 11px;
+    }
 }
