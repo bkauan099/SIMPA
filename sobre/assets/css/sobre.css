@@ -157,6 +157,14 @@ html, body {
     color: #000000;
 }
 
+.social .bi-linkedin:hover {
+    color: #084c94;
+}
+
+.social .bi-github:hover {
+    color: #333333;
+}
+
 /* ========================= */
 /* SEÇÃO PARCEIROS */
 /* ========================= */
@@ -310,7 +318,7 @@ html, body {
 }
 
 .footer-container {
-    max-width: 100%;
+    max-width: 1140px;
     margin: 0 auto;
     padding: 0 15px;
     display: flex;
@@ -430,8 +438,8 @@ html, body {
         height: 40px;
     }
     .foto-placeholder {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
     }
     .nome-residente {
         font-size: 13px;
@@ -495,15 +503,14 @@ html, body {
 }
 
 /* ========================= */
-/* IMPRESSÃO A4 - MESMO LAYOUT DO SITE */
+/* IMPRESSÃO - MESMO LAYOUT DA TELA */
 /* ========================= */
-
 @media print {
     /* Força cores de fundo */
     * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        color-adjust: exact !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
     }
 
     @page {
@@ -520,11 +527,11 @@ html, body {
     body {
         font-family: 'Montserrat', sans-serif;
         color: #2b3c50;
-        /* Remova o transform temporariamente para teste */
-        /* transform: scale(0.90); */
-        /* transform-origin: top center; */
+        /* Remove qualquer transform que possa distorcer */
+        transform: none !important;
     }
 
+    /* Remove fixed positioning */
     .header-simpa,
     .conteudo-principal,
     .footer-simpa {
@@ -533,81 +540,123 @@ html, body {
         overflow: visible !important;
     }
 
+    /* Esconde botão de imprimir */
     .botao-imprimir {
         display: none !important;
     }
 
+    /* Mantém exatamente o mesmo layout do site */
+    .container {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
     .texto-sobre {
-        margin-bottom: 15px;
-        font-size: 15px;
+        max-width: 900px;
+        margin: 0 auto 30px;
+        font-size: 16px;
+        line-height: 1.7;
     }
 
     .residente-card {
-        margin-bottom: 10px;
+        margin-bottom: 25px;
     }
 
     .foto-placeholder {
-        width: 75px;
-        height: 75px;
+        width: 90px;
+        height: 90px;
+        border: 3px solid #2b3c50;
     }
 
     .nome-residente {
-        font-size: 13px;
+        font-size: 14px;
     }
 
     .funcao, .formacao {
-        font-size: 11px;
+        font-size: 12px;
     }
 
+    /* Parceiros – mantém o grid do Bootstrap */
     .parceiros {
-        margin-top: 15px;
+        margin-top: 50px;
+        padding: 0 15px;
     }
 
     .parceiros-linha {
-        margin-top: 12px;
+        margin-top: 30px;
     }
 
-    /* Força o layout das logos */
     .parceiros .row {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        gap: 15px;
-        margin: 0 !important;
+        --bs-gutter-x: 20px;
+        --bs-gutter-y: 20px;
+        margin-left: 0;
+        margin-right: 0;
+        justify-content: center;
     }
 
-    .parceiros [class*="col-"] {
-        width: auto !important;
-        flex: 0 0 auto !important;
-        padding: 0 !important;
+    .logo-parceiro,
+    .logo-parceiro-grande {
+        height: 75px;
+        width: auto;
+        max-width: 100%;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto;
     }
 
-    /* Tamanhos das logos */
-    .logo-uema-parceiro { height: 70px; }
-    .logo-proexae { height: 55px; }
-    .logo-cct { height: 60px; }
-    .logo-marandu { height: 60px; }
-    .logo-brisa { height: 50px; }
-    .logo-softex { height: 50px; }
-    .logo-mcti, .logo-mcti-futuro { height: 45px; }
+    /* Ajustes individuais (mesmos da tela) */
+    .logo-uema-parceiro {
+        height: 85px;
+    }
+    .logo-proexae {
+        height: 65px;
+    }
+    .logo-cct {
+        height: 70px;
+    }
+    .logo-marandu {
+        height: 70px;
+    }
+    .logo-brisa {
+        height: 60px;
+    }
+    .logo-softex {
+        height: 60px;
+    }
+    .logo-mcti,
+    .logo-mcti-futuro {
+        height: 50px;
+    }
 
     /* FOOTER com fundo garantido */
     .footer-simpa {
         background-color: #2b3c50 !important;
-        margin-top: 15px;
-        padding: 12px 0;
-        /* Força a renderização de fundo */
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        color-adjust: exact !important;
+        margin-top: 50px;
+        padding: 15px 0;
+        height: auto;
+    }
+
+    .footer-container {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 0 15px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
     }
 
     .footer-logo {
-        height: 70px;
+        height: 90px;
+        width: auto;
     }
 
     .footer-text {
-        font-size: 11px;
+        font-size: 13px;
         color: #ffffff !important;
+        text-align: left;
+        max-width: 600px;
     }
 }
