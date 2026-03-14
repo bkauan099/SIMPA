@@ -553,7 +553,7 @@ html, body {
     /* Mantém a estrutura original das logos parceiras */
     .parceiros title {
      font-size: 12px;
-     
+
     }
     .parceiros .row {
         display: flex;
@@ -587,7 +587,7 @@ html, body {
     /* Redimensiona as imagens proporcionalmente */
     .logo-parceiro,
     .logo-parceiro-grande {
-        height: 60px; /* ajuste conforme necessário */
+        height: 60px;
         width: auto;
         max-width: 100%;
         object-fit: contain;
