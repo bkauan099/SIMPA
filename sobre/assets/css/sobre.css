@@ -502,9 +502,6 @@ html, body {
     }
 }
 
-/* ========================= */
-/* IMPRESSÃO */
-/* ========================= */
 @media print {
     /* Garante que cores de fundo sejam impressas */
     * {
