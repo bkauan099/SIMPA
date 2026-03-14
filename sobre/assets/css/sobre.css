@@ -499,173 +499,157 @@ html, body {
 /* ========================= */
 
 @media print {
+    /* Força a impressão de cores de fundo */
+    * {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
 
-@page{
-size:A4 portrait;
-margin:8mm;
-}
+    @page {
+        size: A4 portrait;
+        margin: 8mm;
+    }
 
-html,body{
-height:auto !important;
-overflow:visible !important;
-background:#ffffff;
-}
+    html, body {
+        height: auto !important;
+        overflow: visible !important;
+        background: #ffffff;
+    }
 
-/* reduz proporcionalmente o site */
-body{
-font-family:'Montserrat',sans-serif;
-color:#2b3c50;
-transform:scale(0.90);
-transform-origin:top center;
-}
+    /* reduz proporcionalmente o site */
+    body {
+        font-family: 'Montserrat', sans-serif;
+        color: #2b3c50;
+        transform: scale(0.90);
+        transform-origin: top center;
+    }
 
-/* remove fixed apenas para impressão */
-.header-simpa,
-.conteudo-principal,
-.footer-simpa{
-position:static !important;
-height:auto !important;
-overflow:visible !important;
-}
+    /* remove fixed apenas para impressão */
+    .header-simpa,
+    .conteudo-principal,
+    .footer-simpa {
+        position: static !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
 
-/* remove botão imprimir */
-.botao-imprimir{
-display:none !important;
-}
+    /* remove botão imprimir */
+    .botao-imprimir {
+        display: none !important;
+    }
 
-/* compacta espaçamentos verticais */
+    /* compacta espaçamentos verticais */
+    .texto-sobre {
+        margin-bottom: 15px;
+        font-size: 15px;
+    }
 
-.texto-sobre{
-margin-bottom:15px;
-font-size:15px;
-}
+    .residente-card {
+        margin-bottom: 10px;
+    }
 
-.residente-card{
-margin-bottom:10px;
-}
+    .foto-placeholder {
+        width: 75px;
+        height: 75px;
+    }
 
-.foto-placeholder{
-width:75px;
-height:75px;
-}
+    .nome-residente {
+        font-size: 13px;
+    }
 
-.nome-residente{
-font-size:13px;
-}
+    .funcao {
+        font-size: 11px;
+    }
 
-.funcao{
-font-size:11px;
-}
+    .formacao {
+        font-size: 11px;
+    }
 
-.formacao{
-font-size:11px;
-}
+    /* ========================= */
+    /* PARCEIROS – FORÇA O MESMO ALINHAMENTO DO SITE */
+    /* ========================= */
+    .parceiros {
+        margin-top: 15px;
+    }
 
-/* ===== PARCEIROS NA IMPRESSÃO ===== */
-.parceiros{
-margin-top:15px;
-}
+    .parceiros-linha {
+        margin-top: 12px;
+    }
 
-/* Remove o gutter do Bootstrap e define o layout flexível */
-.parceiros .row {
-    --bs-gutter-x: 0 !important;
-    --bs-gutter-y: 0 !important;
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 15px 20px; /* vertical 15px, horizontal 20px - ajuste conforme necessário */
-    margin: 0 !important;
-}
+    /* Remove o gutter do Bootstrap e aplica flex com gap */
+    .parceiros .row {
+        display: flex !important;
+        flex-wrap: nowrap !important; /* impede quebra de linha */
+        justify-content: center !important;
+        gap: 20px; /* espaçamento entre as logos */
+        margin: 0 !important;
+    }
 
-/* Cada linha de parceiros (se houver) pode ter margem removida */
-.parceiros-linha {
-    margin-top: 0 !important; /* o gap já cuida do espaçamento */
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: inherit;
-}
+    /* Define larguras fixas para cada tipo de coluna, baseado no original */
+    .parceiros .col-md-2 {
+        width: 16% !important;   /* aproximadamente 1/6 da largura */
+        flex: 0 0 auto !important;
+        padding: 0 !important;
+    }
 
-/* Define a largura das colunas para controlar quantas por linha */
-.parceiros .col-md-2 {
-    width: 160px; /* largura fixa para as logos menores - ajuste se necessário */
-    flex: 0 0 auto;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-}
+    .parceiros .col-md-3 {
+        width: 24% !important;   /* aproximadamente 1/4 */
+        flex: 0 0 auto !important;
+        padding: 0 !important;
+    }
 
-.parceiros .col-md-3 {
-    width: 200px; /* largura para as logos Brisa/Softex - ajuste */
-    flex: 0 0 auto;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-}
+    .parceiros .col-auto {
+        width: auto !important;
+        flex: 0 0 auto !important;
+        padding: 0 !important;
+    }
 
-.parceiros .col-auto {
-    width: auto; /* para as logos MCTI */
-    flex: 0 0 auto;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-}
+    /* Reduz tamanho das logos */
+    .logo-uema-parceiro {
+        height: 70px;
+    }
 
-/* Ajusta tamanho das imagens dentro das colunas */
-.logo-uema-parceiro{
-height:70px;
-width:auto;
-}
+    .logo-proexae {
+        height: 55px;
+    }
 
-.logo-proexae{
-height:55px;
-width:auto;
-}
+    .logo-cct {
+        height: 60px;
+    }
 
-.logo-cct{
-height:60px;
-width:auto;
-}
+    .logo-marandu {
+        height: 60px;
+    }
 
-.logo-marandu{
-height:60px;
-width:auto;
-}
+    .logo-brisa {
+        height: 50px;
+    }
 
-.logo-brisa{
-height:50px;
-width:auto;
-}
+    .logo-softex {
+        height: 50px;
+    }
 
-.logo-softex{
-height:50px;
-width:auto;
-}
+    .logo-mcti,
+    .logo-mcti-futuro {
+        height: 45px;
+    }
 
-.logo-mcti,
-.logo-mcti-futuro{
-height:45px;
-width:auto;
-}
+    /* ========================= */
+    /* FOOTER – COR DE FUNDO GARANTIDA */
+    /* ========================= */
+    .footer-simpa {
+        background-color: #2b3c50 !important;
+        margin-top: 15px;
+        padding: 12px 0;
+        /* já herdou a regra de ajuste de cor do início */
+    }
 
-/* ===== FIM PARCEIROS ===== */
+    .footer-logo {
+        height: 70px;
+    }
 
-/* footer */
-
-.footer-simpa{
-background-color:#2b3c50 !important;
-margin-top:15px;
-padding:12px 0;
-}
-
-.footer-logo{
-height:70px;
-}
-
-.footer-text{
-font-size:11px;
-color:#ffffff !important;
-}
-
+    .footer-text {
+        font-size: 11px;
+        color: #ffffff !important;
+    }
 }
