@@ -502,7 +502,7 @@ html, body {
     }
 }
 
-@media print
+@media print {
     /* Garante que cores de fundo sejam impressas */
     * {
         -webkit-print-color-adjust: exact;
@@ -538,28 +538,17 @@ html, body {
     font-size:12px !important;
 }
 /* RESIDENTES */
-    .subtitulo-residentes
-    font-size:12px !important
-    
     .residentes .row{
     display:flex !important;
     flex-wrap:nowrap !important;
     justify-content:center;
 }
-    .residentes{
-    page-break-inside { avoid;
-    break-inside: avoid;
-    
-}
 
     .residente-card{
     flex:0 0 auto;
-    width: 30px;
-
-    .foto-placeholder {
-        width: 30px;
-        height: 30px;
-    }
+    width:110px;
+}
+    ;
 }
     /* Mantém a estrutura original das logos parceiras */
     .parceiros .row {
