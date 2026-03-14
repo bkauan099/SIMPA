@@ -157,14 +157,6 @@ html, body {
     color: #000000;
 }
 
-.social .bi-linkedin:hover {
-    color: #084c94;
-}
-
-.social .bi-github:hover {
-    color: #333333;
-}
-
 /* ========================= */
 /* SEÇÃO PARCEIROS */
 /* ========================= */
@@ -318,7 +310,7 @@ html, body {
 }
 
 .footer-container {
-    max-width: 1140px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 0 15px;
     display: flex;
@@ -438,8 +430,8 @@ html, body {
         height: 40px;
     }
     .foto-placeholder {
-        width: 80px;
-        height: 80px;
+        width: 60px;
+        height: 60px;
     }
     .nome-residente {
         font-size: 13px;
@@ -569,46 +561,95 @@ font-size:11px;
 font-size:11px;
 }
 
-/* mantém a mesma distribuição das logos */
-
+/* ===== PARCEIROS NA IMPRESSÃO ===== */
 .parceiros{
 margin-top:15px;
 }
 
-.parceiros-linha{
-margin-top:12px;
+/* Remove o gutter do Bootstrap e define o layout flexível */
+.parceiros .row {
+    --bs-gutter-x: 0 !important;
+    --bs-gutter-y: 0 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 15px 20px; /* vertical 15px, horizontal 20px - ajuste conforme necessário */
+    margin: 0 !important;
 }
 
-/* reduz tamanho das logos sem alterar espaçamento horizontal */
+/* Cada linha de parceiros (se houver) pode ter margem removida */
+.parceiros-linha {
+    margin-top: 0 !important; /* o gap já cuida do espaçamento */
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: inherit;
+}
 
+/* Define a largura das colunas para controlar quantas por linha */
+.parceiros .col-md-2 {
+    width: 160px; /* largura fixa para as logos menores - ajuste se necessário */
+    flex: 0 0 auto;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.parceiros .col-md-3 {
+    width: 200px; /* largura para as logos Brisa/Softex - ajuste */
+    flex: 0 0 auto;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.parceiros .col-auto {
+    width: auto; /* para as logos MCTI */
+    flex: 0 0 auto;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Ajusta tamanho das imagens dentro das colunas */
 .logo-uema-parceiro{
 height:70px;
+width:auto;
 }
 
 .logo-proexae{
 height:55px;
+width:auto;
 }
 
 .logo-cct{
 height:60px;
+width:auto;
 }
 
 .logo-marandu{
 height:60px;
+width:auto;
 }
 
 .logo-brisa{
 height:50px;
+width:auto;
 }
 
 .logo-softex{
 height:50px;
+width:auto;
 }
 
 .logo-mcti,
 .logo-mcti-futuro{
 height:45px;
+width:auto;
 }
+
+/* ===== FIM PARCEIROS ===== */
 
 /* footer */
 
