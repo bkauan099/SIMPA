@@ -503,7 +503,7 @@ html, body {
 }
 
 /* ========================= */
-/* IMPRESSÃO - MESMO LAYOUT DA TELA */
+/* IMPRESSÃO */
 /* ========================= */
 @media print {
 
@@ -521,7 +521,6 @@ background:#ffffff;
 /* reduz proporcionalmente o site */
 body{
 font-family:'Montserrat',sans-serif;
-color:#2b3c50;
 transform:scale(0.90);
 transform-origin:top center;
 }
@@ -541,7 +540,6 @@ display:none !important;
 }
 
 /* compacta espaçamentos verticais */
-
 .texto-sobre{
 margin-bottom:15px;
 font-size:15px;
