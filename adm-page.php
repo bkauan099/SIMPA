@@ -54,7 +54,8 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                             class="bi bi-diagram-3"></i> Participações</a></li>
                 <li><a href="?page=projetos" class="<?= $page == 'projetos' ? 'active' : '' ?>"><i
                             class="bi bi-folder"></i> Projetos</a></li>
-                <li><a href="#"><i class="bi bi-file-earmark-text"></i> Documentos</a></li>
+                <li><a href="?page=documentos" class="<?= $page == 'documentos' ? 'active' : '' ?>"><i class="bi bi-file-earmark-text"></i> Documentos</a></li>
+                <li><a a href="?page=visitas" class="<?= $page == 'visitas' ? 'active' : '' ?>"><i class="bi bi-bar-chart-fill"></i> Visitas </a></li>
                 <li class="mt-auto"><a href="#"><i class="bi bi-box-arrow-left"></i> Sair</a></li>
             </ul>
         </nav>
@@ -81,7 +82,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
             <div class="dashboard-container">
                 <?php
-                $allowed_pages = ['dashboard', 'usuarios', 'participacoes', 'projetos'];
+                $allowed_pages = ['dashboard', 'usuarios', 'participacoes', 'projetos','documentos','visitas'];
                 
                 if (in_array($page, $allowed_pages)) {
                     include "pages/{$page}.php";
