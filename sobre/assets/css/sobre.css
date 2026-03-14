@@ -501,8 +501,9 @@ html, body {
 @media print {
     /* Força a impressão de cores de fundo */
     * {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
     }
 
     @page {
@@ -641,7 +642,7 @@ html, body {
         background-color: #2b3c50 !important;
         margin-top: 15px;
         padding: 12px 0;
-        /* já herdou a regra de ajuste de cor do início */
+       
     }
 
     .footer-logo {
