@@ -529,12 +529,38 @@ html, body {
         display: none !important;
     }
 
-    /* Ajuste suave de escala para caber na página (opcional) */
+    /* Ajuste suave de escala para caber na página */
     body {
         transform: scale(0.98);
         transform-origin: top center;
     }
+    .secao-titulo{
+    font-size:12px !important;
+}
+/* RESIDENTES */
+    .subtitulo-residentes{
+    font-size:12px !important
+    
+    .residentes .row{
+    display:flex !important;
+    flex-wrap:nowrap !important;
+    justify-content:center;
+}
+    .residentes{
+    page-break-inside { avoid;
+    break-inside: avoid;
+    
+}
 
+    .residente-card{
+    flex:0 0 auto;
+    width: 60px;
+
+    .foto-placeholder {
+        width: 60px;
+        height: 60px;
+    }
+}
     /* Mantém a estrutura original das logos parceiras */
     .parceiros .row {
         display: flex;
@@ -589,6 +615,10 @@ html, body {
         background-color: #2b3c50 !important;
         margin-top: 20px;
         padding: 15px 0;
+        .footer-simpa{
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
+        }
     }
     .footer-logo {
         height: 70px;
