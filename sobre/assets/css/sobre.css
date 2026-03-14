@@ -554,11 +554,11 @@ html, body {
 
     .residente-card{
     flex:0 0 auto;
-    width: 60px;
+    width: 30px;
 
     .foto-placeholder {
-        width: 60px;
-        height: 60px;
+        width: 30px;
+        height: 30px;
     }
 }
     /* Mantém a estrutura original das logos parceiras */
