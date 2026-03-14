@@ -551,6 +551,10 @@ html, body {
     ;
 }
     /* Mantém a estrutura original das logos parceiras */
+    .parceiros title {
+     font-size: 12px;
+     
+    }
     .parceiros .row {
         display: flex;
         flex-wrap: wrap;
