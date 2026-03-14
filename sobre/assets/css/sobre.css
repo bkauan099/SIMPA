@@ -502,7 +502,7 @@ html, body {
     }
 }
 
-@media print {
+@media print
     /* Garante que cores de fundo sejam impressas */
     * {
         -webkit-print-color-adjust: exact;
