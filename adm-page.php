@@ -85,7 +85,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                 $allowed_pages = ['dashboard', 'usuarios', 'participacoes', 'projetos','documentos','visitas'];
                 
                 if (in_array($page, $allowed_pages)) {
-                    include "pages/{$page}.php";
+                    include "pages-adm/{$page}.php";
                 } else {
                     echo "<div class='alert alert-danger'>Página não encontrada.</div>";
                 }
