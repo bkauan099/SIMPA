@@ -140,3 +140,46 @@ body::before {
     transition: 0.3s;
 
 }
+
+.campo{
+    position: relative;
+}
+
+.erro{
+    position: absolute;
+    left: 5px;
+    top: -20px;
+
+    color: red;
+    font-size: 12px;
+
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all .3s ease;
+
+    pointer-events: none;
+}
+
+.erro.show{
+    opacity: 1;
+    transform: translateY(0);
+    display: flex;
+}
+
+.btn-redefinir{
+    display:block;
+    text-align:center;
+    margin-top:15px;
+
+    color:#6c757d;
+    text-decoration:none;
+    font-size:13px;
+}
+
+.btn-redefinir:hover{
+    color:#0d6efd;
+}
