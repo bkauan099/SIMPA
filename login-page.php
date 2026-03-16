@@ -14,7 +14,7 @@
 
     <main class="container">
 
-        <form action="processa_login.php" method="POST">
+        <form id="formLogin" action="processa_login.php" method="post">
             <h1 class="uema">
                 <img src=assets/img/uema-logo.png class="logo">
                 <img src=assets/img/Proexae.png class="logo">
@@ -53,17 +53,31 @@
                 </div>
 
             </div>
-            <button type="submit" class="login" href="aluno-page.php">Entrar</a></button>
+            <button type="submit" class="login">
+
+                <span class="texto">Entrar</span>
+                <span class="loader"></span>
+
+            </button>
 
             <a href="#" class="btn-redefinir">
                 Redefinir senha
-                </a>
+            </a>
 
         </form>
 
     </main>
-    <script src="assets/js/verificacao-login.js"></script>
 
+    <script src="assets/js/verificacao-login.js"></script>
+    <script>
+        window.addEventListener("pageshow", function(event) {
+
+            if (event.persisted) {
+                window.location.reload();
+            }
+
+        });
+    </script>
 </body>
 
 </html>
