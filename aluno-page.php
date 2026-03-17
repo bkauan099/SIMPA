@@ -15,7 +15,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/adm-page.css">
+    <link rel="stylesheet" href="assets/css/aluno-page.css">
     <style>
         .status-ativo {
             background-color: #d1e7dd;
@@ -46,16 +46,50 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
             </div>
 
             <ul class="list-unstyled components">
-                <li><a href="?page=dashboard" class="<?= $page == 'dashboard' ? 'active' : '' ?>"><i
-                            class="bi bi-house-door"></i> Dashboard</a></li>
-                <li><a href="?page=usuarios" class="<?= $page == 'usuarios' ? 'active' : '' ?>"><i
-                            class="bi bi-people"></i> Usuários</a></li>
-                <li><a href="?page=participacoes" class="<?= $page == 'participacoes' ? 'active' : '' ?>"><i
-                            class="bi bi-diagram-3"></i> Participações</a></li>
-                <li><a href="?page=projetos" class="<?= $page == 'projetos' ? 'active' : '' ?>"><i
-                            class="bi bi-folder"></i> Projetos</a></li>
-                <li><a href="?page=documentos" class="<?= $page == 'documentos' ? 'active' : '' ?>"><i class="bi bi-file-earmark-text"></i> Documentos</a></li>
-                <li><a a href="?page=visitas" class="<?= $page == 'visitas' ? 'active' : '' ?>"><i class="bi bi-bar-chart-fill"></i> Visitas </a></li>
+             <li>
+        <a href="?page=dashboard" class="<?= $page == 'dashboard' ? 'active' : '' ?>">
+            <i class="bi bi-house-door"></i> Dashboard
+        </a>
+    </li>
+
+    <li>
+        <a href="?page=gerenciar-projetos" class="<?= $page == 'gerenciar-projetos' ? 'active' : '' ?>">
+            <i class="bi bi-folder"></i> Gerenciar Projetos
+        </a>
+    </li>
+
+    <li>
+        <a href="?page=participacoes" class="<?= $page == 'participacoes' ? 'active' : '' ?>">
+            <i class="bi bi-diagram-3"></i> Minhas Participações
+        </a>
+    </li>
+
+    <li>
+        <a href="?page=tarefas" class="<?= $page == 'tarefas' ? 'active' : '' ?>">
+            <i class="bi bi-check2-square"></i> Minhas Tarefas
+        </a>
+    </li>
+
+    <li>
+        <a href="?page=cronograma" class="<?= $page == 'cronograma' ? 'active' : '' ?>">
+            <i class="bi bi-calendar-event"></i> Cronograma
+        </a>
+    </li>
+
+    <li>
+        <a href="?page=documentos" class="<?= $page == 'documentos' ? 'active' : '' ?>">
+            <i class="bi bi-file-earmark-text"></i> Documentos
+        </a>
+    </li>
+
+    <li>
+        <a href="?page=certificados" class="<?= $page == 'certificados' ? 'active' : '' ?>">
+            <i class="bi bi-award"></i> Certificados
+        </a>
+    </li>
+
+                
+                
                 <li class="mt-auto"><a href="#"><i class="bi bi-box-arrow-left"></i> Sair</a></li>
             </ul>
         </nav>
@@ -85,7 +119,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                 $allowed_pages = ['dashboard', 'usuarios', 'participacoes', 'projetos','documentos','visitas'];
                 
                 if (in_array($page, $allowed_pages)) {
-                    include "pages-adm/{$page}.php";
+                    include "pages-aluno/{$page}.php";
                 } else {
                     echo "<div class='alert alert-danger'>Página não encontrada.</div>";
                 }
