@@ -9,18 +9,14 @@
 
     /* Cores atualizadas baseadas na imagem da UEMA */
 
-    --fundo-azul-uema: #2F3F54;
-
-    --azul-ativo: #435A76; /* Um tom um pouco mais claro para o botão ativo */
-
-   
-
-    --fundo-cinza-claro: #f8fafc;
-
+   :root {
+    --fundo-azul-uema: #0F2557; 
+    --azul-ativo: #193A82; 
+    --fundo-cinza-claro: #f4f7f6;
     --texto-escuro: #1e293b;
-
     --texto-mutado: #64748b;
-
+    --branco: #ffffff;
+}
 }
 
 
