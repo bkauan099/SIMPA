@@ -15,7 +15,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/aluno-page.css">
+    <link rel="stylesheet" href="assets/css/adm-page.css">
     <style>
         .status-ativo {
             background-color: #d1e7dd;
