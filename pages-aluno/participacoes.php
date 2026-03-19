@@ -16,7 +16,7 @@
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-blue"><i class="bi bi-coin"></i></div>
-            <div><h4 class="mb-0 fw-bold">1</h4><small class="text-muted">Proj. com Bolsa</small></div>
+            <div><h4 class="mb-0 fw-bold">2</h4><small class="text-muted">Eventos Participados</small></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
@@ -52,7 +52,7 @@
                     <td class="fw-medium">Projeto Social Comunitário</td>
                     <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td>Pesquisador</td>
-                    <td>Jun/2025 – Atual</td>
+                    <td>Jun/2025</td>
                     <td>85h</td>
                     <td><span class="status-ativo">Ativo</span></td>
                 </tr>
@@ -60,7 +60,7 @@
                     <td class="fw-medium">Equipe SIMPA UEMA</td>
                     <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td>Desenvolvedor</td>
-                    <td>Jan/2026 – Atual</td>
+                    <td>Jan/2026</td>
                     <td>120h</td>
                     <td><span class="status-ativo">Ativo</span></td>
                 </tr>
@@ -68,7 +68,7 @@
                     <td class="fw-medium">Inovação Tecnológica Ambiental</td>
                     <td><span class="badge bg-light text-dark border">Ligas Acadêmicas</span></td>
                     <td>Colaborador</td>
-                    <td>Mar/2025 – Atual</td>
+                    <td>Mar/2025</td>
                     <td>80h</td>
                     <td><span class="status-ativo">Ativo</span></td>
                 </tr>

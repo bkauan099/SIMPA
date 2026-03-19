@@ -1,12 +1,12 @@
 <?php
-$page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
+$page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMPA - UEMA</title>
+    <title>SIMPA ALUNO - UEMA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -33,8 +33,8 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
         </div>
 
         <ul class="list-unstyled components">
-            <li><a href="?page=dashboard" class="<?= $page=='dashboard'?'active':'' ?>" title="Dashboard">
-                <i class="bi bi-house-door"></i><span class="nav-label">Dashboard</span></a></li>
+            <li><a href="?page=pagina-inicial" class="<?= $page=='pagina-inicial'?'active':'' ?>" title="Página Inicial">
+                <i class="bi bi-house-door"></i><span class="nav-label">Página Inicial</span></a></li>
             <li><a href="?page=gerenciar-projetos" class="<?= $page=='gerenciar-projetos'?'active':'' ?>" title="Gerenciar Projetos">
                 <i class="bi bi-folder"></i><span class="nav-label">Gerenciar Projetos</span></a></li>
             <li><a href="?page=participacoes" class="<?= $page=='participacoes'?'active':'' ?>" title="Minhas Participações">
@@ -80,7 +80,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
         <div class="dashboard-container">
             <?php
-            $allowed_pages = ['dashboard','gerenciar-projetos','participacoes','tarefas','cronograma','seletivos','documentos','certificados'];
+            $allowed_pages = ['pagina-inicial','gerenciar-projetos','participacoes','tarefas','cronograma','seletivos','documentos','certificados'];
             if (in_array($page, $allowed_pages)) {
                 include "pages-aluno/{$page}.php";
             } else {
@@ -95,10 +95,14 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 <script>
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebarOverlay');
-const isMobile = () => window.innerWidth < 768;
+
+function isOverlayMode() {
+    return window.innerWidth < 768 ||
+           (window.innerWidth < 992 && window.innerHeight > window.innerWidth);
+}
 
 function toggleSidebar() {
-    if (isMobile()) {
+    if (isOverlayMode()) {
         sidebar.classList.toggle('open');
         overlay.classList.toggle('active');
     } else {
@@ -110,10 +114,19 @@ function closeSidebar() {
     overlay.classList.remove('active');
 }
 window.addEventListener('resize', () => {
-    if (!isMobile()) {
+    if (!isOverlayMode()) {
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
     }
+});
+// Fechar ao mudar orientação
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        if (!isOverlayMode()) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+    }, 150);
 });
 </script>
 </body>

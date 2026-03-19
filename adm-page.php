@@ -1,5 +1,5 @@
 <?php
-$page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
+$page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -33,8 +33,8 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
         </div>
 
         <ul class="list-unstyled components">
-            <li><a href="?page=dashboard" class="<?= $page=='dashboard'?'active':'' ?>" title="Dashboard">
-                <i class="bi bi-house-door"></i><span class="nav-label">Dashboard</span></a></li>
+            <li><a href="?page=pagina-inicial" class="<?= $page=='pagina-inicial'?'active':'' ?>" title="Página Inicial">
+                <i class="bi bi-house-door"></i><span class="nav-label">Página Inicial</span></a></li>
             <li><a href="?page=usuarios" class="<?= $page=='usuarios'?'active':'' ?>" title="Usuários">
                 <i class="bi bi-people"></i><span class="nav-label">Usuários</span></a></li>
             <li><a href="?page=participacoes" class="<?= $page=='participacoes'?'active':'' ?>" title="Participações">
@@ -72,7 +72,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
         <div class="dashboard-container">
             <?php
-            $allowed_pages = ['dashboard','usuarios','participacoes','projetos','documentos','visitas'];
+            $allowed_pages = ['pagina-inicial','usuarios','participacoes','projetos','documentos','visitas'];
             if (in_array($page, $allowed_pages)) {
                 include "pages-adm/{$page}.php";
             } else {
@@ -87,10 +87,14 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 <script>
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebarOverlay');
-const isMobile = () => window.innerWidth < 768;
+
+function isOverlayMode() {
+    return window.innerWidth < 768 ||
+           (window.innerWidth < 992 && window.innerHeight > window.innerWidth);
+}
 
 function toggleSidebar() {
-    if (isMobile()) {
+    if (isOverlayMode()) {
         sidebar.classList.toggle('open');
         overlay.classList.toggle('active');
     } else {
@@ -102,10 +106,19 @@ function closeSidebar() {
     overlay.classList.remove('active');
 }
 window.addEventListener('resize', () => {
-    if (!isMobile()) {
+    if (!isOverlayMode()) {
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
     }
+});
+// Fechar ao mudar orientação
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        if (!isOverlayMode()) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+    }, 150);
 });
 </script>
 </body>

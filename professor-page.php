@@ -1,12 +1,12 @@
 <?php
-$page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
+$page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMPA - Professor</title>
+    <title>SIMPA PROFESSOR - UEMA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,9 +34,9 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
         <ul class="list-unstyled components">
             <li>
-                <a href="?page=dashboard" class="<?= $page=='dashboard'?'active':'' ?>" title="Dashboard">
+                <a href="?page=pagina-inicial" class="<?= $page=='pagina-inicial'?'active':'' ?>" title="Página Inicial">
                     <i class="bi bi-house-door"></i>
-                    <span class="nav-label">Dashboard</span>
+                    <span class="nav-label">Página Inicial</span>
                 </a>
             </li>
             <li>
@@ -88,7 +88,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
     <div id="content">
         <header class="navbar-custom">
             <div class="topbar-left">
-                <img src="assets/img/logo-uema-semfundo.png"      alt="UEMA"    class="logo-uema-top">
+                <img src="assets/img/logo-uema.png"      alt="UEMA"    class="logo-uema-top">
                 <div class="logo-sep"></div>
                 <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">
             </div>
@@ -106,7 +106,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
         <div class="dashboard-container">
             <?php
-            $allowed_pages = ['dashboard','meus-projetos','alunos','tarefas','cronograma','documentos','relatorios'];
+            $allowed_pages = ['pagina-inicial','meus-projetos','alunos','tarefas','cronograma','documentos','relatorios'];
             if (in_array($page, $allowed_pages)) {
                 include "pages-professor/{$page}.php";
             } else {
@@ -121,10 +121,14 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 <script>
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebarOverlay');
-const isMobile = () => window.innerWidth < 768;
+
+function isOverlayMode() {
+    return window.innerWidth < 768 ||
+           (window.innerWidth < 992 && window.innerHeight > window.innerWidth);
+}
 
 function toggleSidebar() {
-    if (isMobile()) {
+    if (isOverlayMode()) {
         sidebar.classList.toggle('open');
         overlay.classList.toggle('active');
     } else {
@@ -136,10 +140,19 @@ function closeSidebar() {
     overlay.classList.remove('active');
 }
 window.addEventListener('resize', () => {
-    if (!isMobile()) {
+    if (!isOverlayMode()) {
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
     }
+});
+// Fechar ao mudar orientação
+window.addEventListener('orientationchange', () => {
+    setTimeout(() => {
+        if (!isOverlayMode()) {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+    }, 150);
 });
 </script>
 </body>
