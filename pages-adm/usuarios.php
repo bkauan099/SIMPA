@@ -56,7 +56,7 @@
                 <option value="">Perfil (Todos)</option>
                 <option>Administrador</option>
                 <option>Professor Orientador</option>
-                <option>Aluno Bolsista</option>
+                <option>Aluno</option>
             </select>
         </div>
     </div>
@@ -121,7 +121,7 @@
                         </div>
                     </td>
                     <td>augusto@uema.br</td>
-                    <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">Bolsista</span></td>
+                    <td><span class="badge bg-light text-dark border">Aluno</span></td>
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></button>
@@ -138,7 +138,7 @@
                         </div>
                     </td>
                     <td>aian@uema.br</td>
-                    <td><span class="badge" style="background:#f3e8ff;color:#7e22ce;">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Aluno</span></td>
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></button>
@@ -155,7 +155,7 @@
                         </div>
                     </td>
                     <td>jose.kauan@uema.br</td>
-                    <td><span class="badge" style="background:#dbeafe;color:#1d4ed8;">Bolsista</span></td>
+                    <td><span class="badge bg-light text-dark border">Aluno</span></td>
                     <td><span class="status-inativo">Inativo</span></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" title="Editar"><i class="bi bi-pencil"></i></button>

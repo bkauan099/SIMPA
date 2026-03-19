@@ -3,9 +3,9 @@
 * { font-family: 'Montserrat', sans-serif; box-sizing: border-box; }
 
 :root {
-    --azul-uema:     #2B3C50;
-    --azul-hover:    #435A76;
-    --fundo-cinza:   #f0f2f5;
+    --azul-uema:     #0F2557;
+    --azul-hover:    #193A82;
+    --fundo-cinza:   #f4f7f6;
     --branco:        #ffffff;
     --texto-escuro:  #1e293b;
     --texto-mutado:  #64748b;
@@ -29,20 +29,12 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 }
 .topbar-left  { display:flex; align-items:center; gap:14px; }
 .topbar-right { display:flex; align-items:center; gap:16px; }
-.logo-uema-top    { max-height:52px; width:auto; }
+.logo-uema-top    { max-height:72px; width:auto; }
 .logo-proexae-top { max-height:52px; width:auto; }
 .logo-sep { width:1px; height:32px; background:rgba(255,255,255,0.25); }
 
-/* Hambúrguer no topbar — só mobile */
-.topbar-toggle {
-    display: none;
-    background:none; border:none; color:white;
-    font-size:1.5rem; cursor:pointer;
-    padding:4px 6px; border-radius:6px; line-height:1;
-    transition:background 0.2s;
-    align-items:center; justify-content:center;
-}
-.topbar-toggle:hover { background:rgba(255,255,255,0.1); }
+/* topbar-toggle não existe mais */
+.topbar-toggle { display: none; }
 
 /* ══ SIDEBAR ══ */
 #sidebar {
@@ -59,20 +51,75 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 #sidebar.expanded { width:var(--sidebar-full); min-width:var(--sidebar-full); }
 
 .sidebar-toggle-wrap {
-    display:flex; align-items:center; justify-content:center;
+    display:flex;
+    align-items:center;
     height:var(--topbar-height);
-    border-bottom:1px solid rgba(255,255,255,0.08);
+    border-bottom:1px solid rgba(255,255,255,0.12);
     flex-shrink:0;
+    overflow:hidden;
 }
+
+/* ☰ ocupa exatamente a mesma largura que os ícones dos links */
 .sidebar-toggle {
-    background:none; border:none;
-    color:rgba(255,255,255,0.8);
-    font-size:1.4rem; cursor:pointer;
-    padding:6px 8px; border-radius:8px; line-height:1;
-    transition:background 0.2s, color 0.2s;
-    display:flex; align-items:center; justify-content:center;
+    width: var(--sidebar-min);
+    min-width: var(--sidebar-min);
+    height: 100%;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.85);
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s;
 }
-.sidebar-toggle:hover { background:rgba(255,255,255,0.1); color:white; }
+.sidebar-toggle:hover { background:rgba(255,255,255,0.08); color:white; }
+
+/* Nome do sistema ao lado do ☰ — aparece ao expandir */
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.2s ease, transform 0.25s ease;
+    pointer-events: none;
+}
+.sidebar-brand-icon {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 800;
+    color: white;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+}
+.sidebar-brand-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.04em;
+}
+.sidebar-brand-sub {
+    font-size: 0.58rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.01em;
+    text-transform: none;
+    line-height: 1.3;
+    display: block;
+    margin-top: 2px;
+    white-space: normal;
+    max-width: 170px;
+}
+#sidebar.expanded .sidebar-brand {
+    opacity: 1;
+    transform: translateX(0);
+}
 
 #sidebar ul.components {
     padding:8px 0; margin:0;
@@ -201,7 +248,6 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 
 /* ══ RESPONSIVIDADE ══ */
 @media (max-width: 767px) {
-    .topbar-toggle { display:flex; }
     #sidebar {
         position:fixed; top:0; left:0; height:100vh;
         z-index:300;
@@ -214,11 +260,10 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     #sidebar.open .nav-label { display:inline; }
     #sidebar.open ul li a { justify-content:flex-start; padding:12px 20px; }
     #sidebar.open ul li a i { width:28px; }
-    .sidebar-toggle-wrap { display:none; }
     .navbar-custom { padding:0 14px; }
     .dashboard-container { padding:12px; }
-    .logo-uema-top    { max-height:34px; }
-    .logo-proexae-top { max-height:34px; }
+    .logo-uema-top    { max-height:52px; }
+    .logo-proexae-top { max-height:38px; }
     .col-lg-8, .col-lg-4 { flex:0 0 100% !important; max-width:100% !important; }
     .table-responsive { overflow-x:auto; }
     .seletivo-card .d-flex.justify-content-between { flex-direction:column; }

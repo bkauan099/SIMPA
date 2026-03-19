@@ -16,13 +16,13 @@
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-blue"><i class="bi bi-coin"></i></div>
-            <div><h4 class="mb-0 fw-bold">8</h4><small class="text-muted">Bolsistas Ativos</small></div>
+            <div><h4 class="mb-0 fw-bold">8</h4><small class="text-muted">Com Bolsa Ativa</small></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-orange"><i class="bi bi-heart"></i></div>
-            <div><h4 class="mb-0 fw-bold">16</h4><small class="text-muted">Voluntários</small></div>
+            <div><h4 class="mb-0 fw-bold">16</h4><small class="text-muted">Participações Ativas</small></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
@@ -43,9 +43,11 @@
         </div>
         <div class="col-6 col-md-2">
             <select class="form-select">
-                <option>Vínculo</option>
-                <option>Bolsista</option>
-                <option>Voluntário</option>
+                <option>Tipo</option>
+                <option>Projeto Especial</option>
+                <option>Ligas Acadêmicas</option>
+                <option>Empresa Jr</option>
+                <option>Atlética</option>
             </select>
         </div>
         <div class="col-6 col-md-2">
@@ -74,7 +76,7 @@
         <table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr class="text-muted small">
-                    <th>PROJETO</th><th>USUÁRIO</th><th>VÍNCULO</th><th>FUNÇÃO</th><th>CARGA</th><th>ENTRADA</th><th class="text-center">AÇÕES</th>
+                    <th>PROJETO</th><th>USUÁRIO</th><th>TIPO</th><th>FUNÇÃO</th><th>CARGA</th><th>ENTRADA</th><th class="text-center">AÇÕES</th>
                 </tr>
             </thead>
             <tbody>
@@ -86,7 +88,7 @@
                             Andre Nunes
                         </div>
                     </td>
-                    <td><span class="badge-voluntario">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td><span class="badge bg-info text-dark">Coordenador</span></td>
                     <td>120h</td>
                     <td>10/01/2026</td>
@@ -103,7 +105,7 @@
                             Augusto Nicácio
                         </div>
                     </td>
-                    <td><span class="badge-bolsista">Bolsista</span></td>
+                    <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td><span class="badge bg-warning text-dark">Pesquisador</span></td>
                     <td>85h</td>
                     <td>06/01/2026</td>
@@ -120,7 +122,7 @@
                             Bruno Kauan
                         </div>
                     </td>
-                    <td><span class="badge-voluntario">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Ligas Acadêmicas</span></td>
                     <td><span class="badge bg-success">Colaborador</span></td>
                     <td>80h</td>
                     <td>20/01/2026</td>
@@ -137,7 +139,7 @@
                             Aian
                         </div>
                     </td>
-                    <td><span class="badge-voluntario">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td><span class="badge bg-info text-dark">Desenvolvedor</span></td>
                     <td>60h</td>
                     <td>18/01/2026</td>
@@ -154,7 +156,7 @@
                             Jose Kauan
                         </div>
                     </td>
-                    <td><span class="badge-bolsista">Bolsista</span></td>
+                    <td><span class="badge bg-light text-dark border">Atlética</span></td>
                     <td><span class="badge bg-secondary">Membro</span></td>
                     <td>40h</td>
                     <td>15/01/2026</td>

@@ -10,13 +10,13 @@
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-blue"><i class="bi bi-folder-fill"></i></div>
-            <div><h4 class="mb-0 fw-bold">1</h4><small class="text-muted">Projeto Bolsista</small></div>
+            <div><h4 class="mb-0 fw-bold">1</h4><small class="text-muted">Projeto Ativo (Bolsa)</small></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-orange"><i class="bi bi-heart"></i></div>
-            <div><h4 class="mb-0 fw-bold">2</h4><small class="text-muted">Projetos Voluntário</small></div>
+            <div><h4 class="mb-0 fw-bold">2</h4><small class="text-muted">Projetos Participando</small></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
@@ -40,7 +40,7 @@
             <thead class="table-light">
                 <tr class="text-muted small">
                     <th>TÍTULO</th>
-                    <th>VÍNCULO</th>
+                    <th>TIPO</th>
                     <th>FUNÇÃO</th>
                     <th>ORIENTADOR</th>
                     <th>CARGA</th>
@@ -51,7 +51,7 @@
             <tbody>
                 <tr>
                     <td class="fw-medium">Projeto Social Comunitário</td>
-                    <td><span class="badge-bolsista">Bolsista</span></td>
+                    <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td>Pesquisador</td>
                     <td>Prof. João Varela</td>
                     <td>85h</td>
@@ -63,7 +63,7 @@
                 </tr>
                 <tr>
                     <td class="fw-medium">Equipe SIMPA UEMA</td>
-                    <td><span class="badge-voluntario">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td>Desenvolvedor</td>
                     <td>Prof. André Nunes</td>
                     <td>120h</td>
@@ -75,7 +75,7 @@
                 </tr>
                 <tr>
                     <td class="fw-medium">Inovação Tecnológica Ambiental</td>
-                    <td><span class="badge-voluntario">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Ligas Acadêmicas</span></td>
                     <td>Colaborador</td>
                     <td>Profª Ana Bezerra</td>
                     <td>80h</td>
@@ -87,7 +87,7 @@
                 </tr>
                 <tr>
                     <td class="fw-medium">Atlética Predadores</td>
-                    <td><span class="badge-voluntario">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Atlética</span></td>
                     <td>Membro</td>
                     <td>—</td>
                     <td>40h</td>

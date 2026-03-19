@@ -16,13 +16,13 @@
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-blue"><i class="bi bi-coin"></i></div>
-            <div><h4 class="mb-0 fw-bold">1</h4><small class="text-muted">Como Bolsista</small></div>
+            <div><h4 class="mb-0 fw-bold">1</h4><small class="text-muted">Proj. com Bolsa</small></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-orange"><i class="bi bi-heart"></i></div>
-            <div><h4 class="mb-0 fw-bold">3</h4><small class="text-muted">Como Voluntário</small></div>
+            <div><h4 class="mb-0 fw-bold">3</h4><small class="text-muted">Participações Ativas</small></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
@@ -41,7 +41,6 @@
                 <tr class="text-muted small">
                     <th>PROJETO / EVENTO</th>
                     <th>TIPO</th>
-                    <th>VÍNCULO</th>
                     <th>FUNÇÃO</th>
                     <th>PERÍODO</th>
                     <th>CARGA</th>
@@ -51,8 +50,7 @@
             <tbody>
                 <tr>
                     <td class="fw-medium">Projeto Social Comunitário</td>
-                    <td><span class="badge bg-primary">Projeto</span></td>
-                    <td><span class="badge-bolsista">Bolsista</span></td>
+                    <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td>Pesquisador</td>
                     <td>Jun/2025 – Atual</td>
                     <td>85h</td>
@@ -60,8 +58,7 @@
                 </tr>
                 <tr>
                     <td class="fw-medium">Equipe SIMPA UEMA</td>
-                    <td><span class="badge bg-primary">Projeto</span></td>
-                    <td><span class="badge-voluntario">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td>Desenvolvedor</td>
                     <td>Jan/2026 – Atual</td>
                     <td>120h</td>
@@ -69,8 +66,7 @@
                 </tr>
                 <tr>
                     <td class="fw-medium">Inovação Tecnológica Ambiental</td>
-                    <td><span class="badge bg-primary">Projeto</span></td>
-                    <td><span class="badge-voluntario">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Ligas Acadêmicas</span></td>
                     <td>Colaborador</td>
                     <td>Mar/2025 – Atual</td>
                     <td>80h</td>
@@ -79,7 +75,6 @@
                 <tr>
                     <td class="fw-medium">Workshop Engenharia de Software</td>
                     <td><span class="badge bg-success">Evento</span></td>
-                    <td>—</td>
                     <td>Participante</td>
                     <td>28/11/2023</td>
                     <td>8h</td>
@@ -88,7 +83,6 @@
                 <tr>
                     <td class="fw-medium">Apresentação Final PROEXAE</td>
                     <td><span class="badge bg-success">Evento</span></td>
-                    <td>—</td>
                     <td>Apresentador</td>
                     <td>25/11/2023</td>
                     <td>4h</td>
@@ -96,8 +90,7 @@
                 </tr>
                 <tr>
                     <td class="fw-medium">Atlética Predadores</td>
-                    <td><span class="badge bg-primary">Projeto</span></td>
-                    <td><span class="badge-voluntario">Voluntário</span></td>
+                    <td><span class="badge bg-light text-dark border">Atlética</span></td>
                     <td>Membro</td>
                     <td>Ago/2024 – Dez/2024</td>
                     <td>40h</td>

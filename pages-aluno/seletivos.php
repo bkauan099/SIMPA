@@ -20,16 +20,15 @@
         <div class="col-6 col-md-3">
             <select class="form-select" id="filtroTipo">
                 <option value="">Tipo (Todos)</option>
-                <option value="ic">Iniciação Científica</option>
-                <option value="ext">Extensão</option>
                 <option value="esp">Projeto Especial</option>
+                <option value="liga">Ligas Acadêmicas</option>
+                <option value="jr">Empresa Jr</option>
+                <option value="atl">Atlética</option>
             </select>
         </div>
         <div class="col-6 col-md-2">
             <select class="form-select" id="filtroVinculo">
                 <option value="">Vínculo</option>
-                <option value="bolsista">Bolsista</option>
-                <option value="voluntario">Voluntário</option>
             </select>
         </div>
         <div class="col-12 col-md-2">
@@ -46,8 +45,7 @@
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
             <div>
                 <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                    <span class="badge" style="background:#ede9fe;color:#7c3aed;">Iniciação Científica</span>
-                    <span class="badge-bolsista">Bolsista CNPq</span>
+                    <span class="badge" style="background:#ede9fe;color:#7c3aed;">Ligas Acadêmicas</span>
                     <span class="prazo-badge prazo-urgente">Encerra em 3 dias</span>
                 </div>
                 <h5 class="fw-bold mb-1">Análise de Algoritmos de IA aplicados à Agricultura de Precisão</h5>
@@ -55,10 +53,6 @@
                     <i class="bi bi-person me-1"></i>Prof. Dr. Carlos Mendes &nbsp;·&nbsp;
                     <i class="bi bi-building me-1"></i>Dep. de Computação
                 </p>
-            </div>
-            <div class="text-end">
-                <div class="fw-bold" style="color:#7c3aed;font-size:1.1rem;">R$ 700<small class="text-muted fw-normal">/mês</small></div>
-                <small class="text-muted">12 meses</small>
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
@@ -80,8 +74,7 @@
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
             <div>
                 <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                    <span class="badge" style="background:#ede9fe;color:#7c3aed;">Iniciação Científica</span>
-                    <span class="badge-voluntario">Voluntário</span>
+                    <span class="badge" style="background:#ede9fe;color:#7c3aed;">Projeto Especial</span>
                     <span class="prazo-badge prazo-breve">Encerra em 10 dias</span>
                 </div>
                 <h5 class="fw-bold mb-1">Impacto das Mudanças Climáticas na Biodiversidade do Cerrado Maranhense</h5>
@@ -110,8 +103,7 @@
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
             <div>
                 <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                    <span class="badge" style="background:#d1fae5;color:#065f46;">Extensão</span>
-                    <span class="badge-bolsista">Bolsista PROEXAE</span>
+                    <span class="badge" style="background:#d1fae5;color:#065f46;">Empresa Jr</span>
                     <span class="prazo-badge prazo-normal">Encerra em 15 dias</span>
                 </div>
                 <h5 class="fw-bold mb-1">Projeto Inclui — Tecnologia Assistiva para Pessoas com Deficiência</h5>
@@ -119,10 +111,6 @@
                     <i class="bi bi-person me-1"></i>Prof. Dr. Ricardo Alves &nbsp;·&nbsp;
                     <i class="bi bi-building me-1"></i>PROEXAE / Computação
                 </p>
-            </div>
-            <div class="text-end">
-                <div class="fw-bold" style="color:#059669;font-size:1.1rem;">R$ 500<small class="text-muted fw-normal">/mês</small></div>
-                <small class="text-muted">6 meses</small>
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
@@ -144,8 +132,7 @@
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
             <div>
                 <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                    <span class="badge" style="background:#fef3c7;color:#92400e;">Projeto Especial</span>
-                    <span class="badge-voluntario">Voluntário</span>
+                    <span class="badge" style="background:#fef3c7;color:#92400e;">Atlética</span>
                     <span class="prazo-badge prazo-normal">Encerra em 20 dias</span>
                 </div>
                 <h5 class="fw-bold mb-1">Equipe Baja UEMA — Engenharia Off-Road 2026</h5>
@@ -174,8 +161,7 @@
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
             <div>
                 <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                    <span class="badge" style="background:#d1fae5;color:#065f46;">Extensão</span>
-                    <span class="badge-voluntario">Voluntário</span>
+                    <span class="badge" style="background:#d1fae5;color:#065f46;">Empresa Jr</span>
                     <span class="prazo-badge prazo-normal">Encerra em 25 dias</span>
                 </div>
                 <h5 class="fw-bold mb-1">Monitoria de Programação para Alunos do Ensino Médio</h5>

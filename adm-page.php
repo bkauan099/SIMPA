@@ -21,9 +21,15 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
     <!-- SIDEBAR -->
     <nav id="sidebar">
         <div class="sidebar-toggle-wrap">
-            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Expandir menu">
+            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menu">
                 <i class="bi bi-list"></i>
             </button>
+            <div class="sidebar-brand">
+                <div>
+                    <span class="sidebar-brand-text">SIMPA</span>
+                    <span class="sidebar-brand-sub">Sistema Integrado de Monitoramento de Projetos Acadêmicos</span>
+                </div>
+            </div>
         </div>
 
         <ul class="list-unstyled components">
@@ -48,10 +54,6 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
     <div id="content">
         <header class="navbar-custom">
             <div class="topbar-left">
-                <!-- Hambúrguer no topbar (só aparece no mobile via CSS) -->
-                <button class="topbar-toggle" onclick="toggleSidebar()" aria-label="Menu">
-                    <i class="bi bi-list"></i>
-                </button>
                 <img src="assets/img/logo-uema-semfundo.png"      alt="UEMA"    class="logo-uema-top">
                 <div class="logo-sep"></div>
                 <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">

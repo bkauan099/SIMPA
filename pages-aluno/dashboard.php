@@ -11,7 +11,7 @@
                      style="background:#f8fafc;border:1px solid #e2e8f0;">
                     <i class="bi bi-person-badge text-primary"></i>
                     <span class="fw-medium" style="font-size:0.9rem;">Projeto Social Comunitário</span>
-                    <span class="badge-bolsista ms-1">Bolsista</span>
+                    <span class="badge bg-light text-dark border ms-1">Projeto Especial</span>
                     <span class="text-muted" style="font-size:0.8rem;">· Prof. João Varela</span>
                 </div>
 

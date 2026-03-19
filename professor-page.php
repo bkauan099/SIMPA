@@ -6,11 +6,11 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMPA - UEMA</title>
+    <title>SIMPA - Professor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/aluno-page.css">
+    <link rel="stylesheet" href="assets/css/professor-page.css">
 </head>
 <body>
 
@@ -18,7 +18,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
 <div class="wrapper">
 
-    <!-- SIDEBAR: começa minimizada (só ícones) -->
+    <!-- SIDEBAR -->
     <nav id="sidebar">
         <div class="sidebar-toggle-wrap">
             <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menu">
@@ -33,28 +33,54 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
         </div>
 
         <ul class="list-unstyled components">
-            <li><a href="?page=dashboard" class="<?= $page=='dashboard'?'active':'' ?>" title="Dashboard">
-                <i class="bi bi-house-door"></i><span class="nav-label">Dashboard</span></a></li>
-            <li><a href="?page=gerenciar-projetos" class="<?= $page=='gerenciar-projetos'?'active':'' ?>" title="Gerenciar Projetos">
-                <i class="bi bi-folder"></i><span class="nav-label">Gerenciar Projetos</span></a></li>
-            <li><a href="?page=participacoes" class="<?= $page=='participacoes'?'active':'' ?>" title="Minhas Participações">
-                <i class="bi bi-diagram-3"></i><span class="nav-label">Minhas Participações</span></a></li>
-            <li><a href="?page=tarefas" class="<?= $page=='tarefas'?'active':'' ?>" title="Minhas Tarefas">
-                <i class="bi bi-check2-square"></i><span class="nav-label">Minhas Tarefas</span></a></li>
-            <li><a href="?page=cronograma" class="<?= $page=='cronograma'?'active':'' ?>" title="Cronograma">
-                <i class="bi bi-calendar-event"></i><span class="nav-label">Cronograma</span></a></li>
-            <li><a href="?page=seletivos" class="<?= $page=='seletivos'?'active':'' ?>" title="Seletivos">
-                <i class="bi bi-megaphone"></i>
-                <span class="badge-icon">3</span>
-                <span class="nav-label">Seletivos</span>
-                <span class="badge bg-danger ms-auto badge-text" style="font-size:0.65rem;">3</span>
-            </a></li>
-            <li><a href="?page=documentos" class="<?= $page=='documentos'?'active':'' ?>" title="Documentos">
-                <i class="bi bi-file-earmark-text"></i><span class="nav-label">Documentos</span></a></li>
-            <li><a href="?page=certificados" class="<?= $page=='certificados'?'active':'' ?>" title="Certificados">
-                <i class="bi bi-award"></i><span class="nav-label">Certificados</span></a></li>
-            <li class="sidebar-sair"><a href="#" title="Sair">
-                <i class="bi bi-box-arrow-left"></i><span class="nav-label">Sair</span></a></li>
+            <li>
+                <a href="?page=dashboard" class="<?= $page=='dashboard'?'active':'' ?>" title="Dashboard">
+                    <i class="bi bi-house-door"></i>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=meus-projetos" class="<?= $page=='meus-projetos'?'active':'' ?>" title="Meus Projetos">
+                    <i class="bi bi-folder"></i>
+                    <span class="nav-label">Meus Projetos</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=alunos" class="<?= $page=='alunos'?'active':'' ?>" title="Meus Alunos">
+                    <i class="bi bi-people"></i>
+                    <span class="nav-label">Meus Alunos</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=tarefas" class="<?= $page=='tarefas'?'active':'' ?>" title="Tarefas">
+                    <i class="bi bi-check2-square"></i>
+                    <span class="nav-label">Tarefas</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=cronograma" class="<?= $page=='cronograma'?'active':'' ?>" title="Cronograma">
+                    <i class="bi bi-calendar-event"></i>
+                    <span class="nav-label">Cronograma</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=documentos" class="<?= $page=='documentos'?'active':'' ?>" title="Documentos">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span class="nav-label">Documentos</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=relatorios" class="<?= $page=='relatorios'?'active':'' ?>" title="Relatórios">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span class="nav-label">Relatórios</span>
+                </a>
+            </li>
+            <li class="sidebar-sair">
+                <a href="#" title="Sair">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span class="nav-label">Sair</span>
+                </a>
+            </li>
         </ul>
     </nav>
 
@@ -62,7 +88,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
     <div id="content">
         <header class="navbar-custom">
             <div class="topbar-left">
-                <img src="assets/img/logo-uema.png"      alt="UEMA"    class="logo-uema-top">
+                <img src="assets/img/logo-uema-semfundo.png"      alt="UEMA"    class="logo-uema-top">
                 <div class="logo-sep"></div>
                 <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">
             </div>
@@ -72,17 +98,17 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">2</span>
                 </div>
                 <div class="d-flex align-items-center gap-2" style="cursor:pointer">
-                    <img src="https://ui-avatars.com/api/?name=João&background=random" class="rounded-circle" width="34">
-                    <span class="fw-medium d-none d-sm-inline">João <i class="bi bi-chevron-down small"></i></span>
+                    <img src="https://ui-avatars.com/api/?name=Professor&background=random" class="rounded-circle" width="34">
+                    <span class="fw-medium d-none d-sm-inline">Professor <i class="bi bi-chevron-down small"></i></span>
                 </div>
             </div>
         </header>
 
         <div class="dashboard-container">
             <?php
-            $allowed_pages = ['dashboard','gerenciar-projetos','participacoes','tarefas','cronograma','seletivos','documentos','certificados'];
+            $allowed_pages = ['dashboard','meus-projetos','alunos','tarefas','cronograma','documentos','relatorios'];
             if (in_array($page, $allowed_pages)) {
-                include "pages-aluno/{$page}.php";
+                include "pages-professor/{$page}.php";
             } else {
                 echo "<div class='alert alert-danger'>Página não encontrada.</div>";
             }
