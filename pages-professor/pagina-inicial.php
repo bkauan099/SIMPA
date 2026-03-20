@@ -1,7 +1,7 @@
 <!-- CABEÇALHO -->
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
-        <h3 class="fw-bold mb-1">Olá, Professor 👋</h3>
+        <h3 class="fw-bold mb-1">Página Inicial</h3>
         <p class="text-muted mb-0" id="dataHoje"></p>
     </div>
 </div>

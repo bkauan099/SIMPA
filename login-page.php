@@ -37,7 +37,7 @@
                 </span>
 
                 <div class="input-box">
-                    <input id="email" placeholder="Usuário" type="email" name="email">
+                    <input id="email" placeholder="Email" type="email" name="email">
                 </div>
 
             </div>
