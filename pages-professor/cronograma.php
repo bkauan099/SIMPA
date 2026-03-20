@@ -105,6 +105,9 @@
 .cal-day:hover { background: #f1f5f9; }
 .cal-day.hoje { background: #0F2557; color: white; font-weight: 700; }
 .cal-day.hoje:hover { background: #193A82; }
+.cal-day.selecionado { background: #3b82f6; color: white; font-weight: 600; }
+.cal-day.selecionado:hover { background: #2563eb; }
+.cal-day.hoje.selecionado { background: #0F2557; outline: 3px solid #3b82f6; outline-offset: -2px; }
 .cal-day.tem-evento .dots { display: flex; gap: 2px; }
 .dots { display: flex; gap: 2px; min-height: 6px; }
 .dot-ev {
@@ -227,6 +230,12 @@
             cell.appendChild(dots);
 
             cell.addEventListener('click', function() {
+                // Remover seleção anterior
+                document.querySelectorAll('.cal-day.selecionado').forEach(function(el) {
+                    el.classList.remove('selecionado');
+                });
+                // Selecionar dia clicado
+                this.classList.add('selecionado');
                 renderLista(d);
             });
 
