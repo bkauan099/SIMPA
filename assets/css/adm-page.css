@@ -33,8 +33,6 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .logo-proexae-top { max-height:52px; width:auto; }
 .logo-sep { width:1px; height:32px; background:rgba(255,255,255,0.25); }
 
-.topbar-toggle { display: none; }
-
 /* ══ SIDEBAR ══ */
 #sidebar {
     width: var(--sidebar-min);
@@ -205,131 +203,40 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .badge-voluntario{ background:#f3e8ff; color:#7e22ce; padding:3px 10px; border-radius:6px; font-size:0.78rem; font-weight:600; }
 .btn-detail-outline { border:1px solid #dee2e6; color:#6c757d; background:transparent; }
 
-/* ══ CALENDÁRIO (exclusivo aluno) ══ */
-.calendar-day {
-    width: 14.28%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2px;
-    padding: 6px 2px 4px;
-    cursor: pointer;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    position: relative;
-    min-height: 36px;
-}
-.calendar-day:hover { background-color:#0d6efd; color:white; }
-.calendar-day:hover .dot-compromisso { background:white; }
-.today { background-color:#0d6efd; color:white; font-weight:bold; }
-.today .dot-compromisso { background:white; }
-.dot-compromisso {
-    width:5px; height:5px; border-radius:50%;
-    background:#3b82f6; display:block; flex-shrink:0;
-}
 
-/* ══ SELETIVOS (exclusivo aluno) ══ */
-.seletivo-card {
-    background:var(--branco); border-radius:12px; padding:20px;
-    box-shadow:0 2px 12px rgba(0,0,0,0.05);
-    border-left:4px solid #3b82f6; margin-bottom:16px;
-    transition:box-shadow 0.2s;
-}
-.seletivo-card:hover { box-shadow:0 4px 20px rgba(0,0,0,0.1); }
-.seletivo-card.ic  { border-left-color:#7c3aed; }
-.seletivo-card.ext { border-left-color:#059669; }
-.seletivo-card.esp { border-left-color:#d97706; }
-.prazo-badge { font-size:0.75rem; font-weight:600; padding:3px 10px; border-radius:20px; }
-.prazo-urgente { background:#fee2e2; color:#dc2626; }
-.prazo-normal  { background:#dcfce7; color:#16a34a; }
-.prazo-breve   { background:#ffedd5; color:#ea580c; }
 
-/* ══ RESPONSIVIDADE COMPLETA ══ */
-
-/* ── Landscape pequeno (celular deitado) ── */
-@media (max-width: 767px), (max-height: 500px) and (orientation: landscape) {
-    /* Sidebar vira overlay */
+/* ══ RESPONSIVIDADE ══ */
+@media (max-width: 767px) {
     #sidebar {
-        position: fixed;
-        top: 0; left: 0;
-        height: 100vh;
-        z-index: 300;
-        transform: translateX(-100%);
-        transition: transform 0.25s ease;
-        width: var(--sidebar-full) !important;
-        min-width: var(--sidebar-full) !important;
+        position:fixed; top:0; left:0; height:100vh;
+        z-index:300;
+        transform:translateX(-100%);
+        transition:transform 0.25s ease;
+        width:var(--sidebar-full) !important;
+        min-width:var(--sidebar-full) !important;
     }
-    #sidebar.open { transform: translateX(0); }
-    #sidebar.open .nav-label { display: inline; }
-    #sidebar.open ul li a { justify-content: flex-start; padding: 12px 20px; }
-    #sidebar.open ul li a i { width: 28px; }
-    .topbar-toggle:hover { background: rgba(255,255,255,0.1); }
+    #sidebar.open { transform:translateX(0); }
+    #sidebar.open .nav-label { display:inline; }
+    #sidebar.open ul li a { justify-content:flex-start; padding:12px 20px; }
+    #sidebar.open ul li a i { width:28px; }
+    .navbar-custom { padding:0 14px; }
+    .dashboard-container { padding:12px; }
+    .logo-uema-top    { max-height:52px; }
+    .logo-proexae-top { max-height:38px; }
+    .col-lg-8, .col-lg-4 { flex:0 0 100% !important; max-width:100% !important; }
+    .table-responsive { overflow-x:auto; }
 
-    /* Sidebar interna some no mobile */
-    .sidebar-toggle-wrap { display: none !important; }
-
-    .navbar-custom { padding: 0 12px; }
-    .dashboard-container { padding: 12px; }
-    .logo-uema-top    { max-height: 40px; }
-    .logo-proexae-top { max-height: 30px; }
-    .logo-sep { display: none; }
-
-    /* Colunas em bloco único */
-    .col-lg-8, .col-lg-4,
-    .col-md-3, .col-md-4, .col-md-6 {
-        flex: 0 0 100% !important;
-        max-width: 100% !important;
-    }
-    .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .seletivo-card .d-flex.justify-content-between { flex-direction: column; }
-    .seletivo-card button { width: 100%; margin-top: 10px; }
 }
 
-/* ── Tablet vertical (768–991px) ── */
-@media (min-width: 768px) and (max-width: 991px) and (orientation: portrait) {
-    #sidebar {
-        position: fixed;
-        top: 0; left: 0;
-        height: 100vh;
-        z-index: 300;
-        transform: translateX(-100%);
-        transition: transform 0.25s ease;
-        width: var(--sidebar-full) !important;
-        min-width: var(--sidebar-full) !important;
-    }
-    #sidebar.open { transform: translateX(0); }
-    #sidebar.open .nav-label { display: inline; }
-    #sidebar.open ul li a { justify-content: flex-start; padding: 12px 20px; }
-    #sidebar.open ul li a i { width: 28px; }
-    .topbar-toggle:hover { background: rgba(255,255,255,0.1); }
-    .sidebar-toggle-wrap { display: none !important; }
-
-    #content { margin-left: 0; }
-    .dashboard-container { padding: 16px; }
-    .logo-uema-top    { max-height: 48px; }
-    .logo-proexae-top { max-height: 36px; }
-    .col-lg-8, .col-lg-4 { flex: 0 0 100% !important; max-width: 100% !important; }
-    .col-lg-3 { flex: 0 0 50% !important; max-width: 50% !important; }
+@media (min-width: 768px) and (max-width: 991px) {
+    .dashboard-container { padding:16px; }
+    .col-lg-8, .col-lg-4 { flex:0 0 100% !important; max-width:100% !important; }
+    .col-lg-3 { flex:0 0 50% !important; max-width:50% !important; }
 }
 
-/* ── Tablet deitado / desktop pequeno (768–991px landscape) ── */
-@media (min-width: 768px) and (max-width: 991px) and (orientation: landscape) {
-    .dashboard-container { padding: 16px; }
-    .col-lg-3 { flex: 0 0 50% !important; max-width: 50% !important; }
-    .col-lg-8 { flex: 0 0 66.666% !important; max-width: 66.666% !important; }
-    .col-lg-4 { flex: 0 0 33.333% !important; max-width: 33.333% !important; }
-}
-
-/* ── Tela muito pequena (< 480px) ── */
 @media (max-width: 480px) {
-    .dashboard-container { padding: 10px; }
-    .content-card { padding: 14px; }
-    .stat-card { padding: 12px; font-size: 0.9rem; }
-    .icon-circle { width: 40px; height: 40px; font-size: 1rem; margin-right: 10px; }
-    h3.fw-bold { font-size: 1.2rem; }
-    .navbar-custom { height: 56px; }
-    .col-sm-6 { flex: 0 0 100% !important; max-width: 100% !important; }
-    .logo-uema-top    { max-height: 34px; }
-    .logo-proexae-top { max-height: 26px; }
+    .dashboard-container { padding:10px; }
+    .content-card { padding:14px; }
+    .stat-card { padding:12px; }
+    .col-sm-6 { flex:0 0 100% !important; max-width:100% !important; }
 }
