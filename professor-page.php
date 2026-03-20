@@ -6,11 +6,11 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIMPA ADM - UEMA</title>
+    <title>SIMPA PROFESSOR - UEMA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/adm-page.css">
+    <link rel="stylesheet" href="assets/css/professor-page.css">
 </head>
 <body>
 
@@ -33,20 +33,54 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
         </div>
 
         <ul class="list-unstyled components">
-            <li><a href="?page=pagina-inicial" class="<?= $page=='pagina-inicial'?'active':'' ?>" title="Página Inicial">
-                <i class="bi bi-house-door"></i><span class="nav-label">Página Inicial</span></a></li>
-            <li><a href="?page=usuarios" class="<?= $page=='usuarios'?'active':'' ?>" title="Usuários">
-                <i class="bi bi-people"></i><span class="nav-label">Usuários</span></a></li>
-            <li><a href="?page=participacoes" class="<?= $page=='participacoes'?'active':'' ?>" title="Participações">
-                <i class="bi bi-diagram-3"></i><span class="nav-label">Participações</span></a></li>
-            <li><a href="?page=projetos" class="<?= $page=='projetos'?'active':'' ?>" title="Projetos">
-                <i class="bi bi-folder"></i><span class="nav-label">Projetos</span></a></li>
-            <li><a href="?page=documentos" class="<?= $page=='documentos'?'active':'' ?>" title="Documentos">
-                <i class="bi bi-file-earmark-text"></i><span class="nav-label">Documentos</span></a></li>
-            <li><a href="?page=visitas" class="<?= $page=='visitas'?'active':'' ?>" title="Visitas">
-                <i class="bi bi-bar-chart-fill"></i><span class="nav-label">Visitas</span></a></li>
-            <li class="sidebar-sair"><a href="#" title="Sair">
-                <i class="bi bi-box-arrow-left"></i><span class="nav-label">Sair</span></a></li>
+            <li>
+                <a href="?page=pagina-inicial" class="<?= $page=='pagina-inicial'?'active':'' ?>" title="Página Inicial">
+                    <i class="bi bi-house-door"></i>
+                    <span class="nav-label">Página Inicial</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=meus-projetos" class="<?= $page=='meus-projetos'?'active':'' ?>" title="Meus Projetos">
+                    <i class="bi bi-folder"></i>
+                    <span class="nav-label">Meus Projetos</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=alunos" class="<?= $page=='alunos'?'active':'' ?>" title="Meus Alunos">
+                    <i class="bi bi-people"></i>
+                    <span class="nav-label">Meus Alunos</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=tarefas" class="<?= $page=='tarefas'?'active':'' ?>" title="Tarefas">
+                    <i class="bi bi-check2-square"></i>
+                    <span class="nav-label">Tarefas</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=cronograma" class="<?= $page=='cronograma'?'active':'' ?>" title="Cronograma">
+                    <i class="bi bi-calendar-event"></i>
+                    <span class="nav-label">Cronograma</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=documentos" class="<?= $page=='documentos'?'active':'' ?>" title="Documentos">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span class="nav-label">Documentos</span>
+                </a>
+            </li>
+            <li>
+                <a href="?page=relatorios" class="<?= $page=='relatorios'?'active':'' ?>" title="Relatórios">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span class="nav-label">Relatórios</span>
+                </a>
+            </li>
+            <li class="sidebar-sair">
+                <a href="#" title="Sair">
+                    <i class="bi bi-box-arrow-left"></i>
+                    <span class="nav-label">Sair</span>
+                </a>
+            </li>
         </ul>
     </nav>
 
@@ -64,17 +98,17 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">2</span>
                 </div>
                 <div class="d-flex align-items-center gap-2" style="cursor:pointer">
-                    <img src="https://ui-avatars.com/api/?name=João&background=random" class="rounded-circle" width="34">
-                    <span class="fw-medium d-none d-sm-inline">João <i class="bi bi-chevron-down small"></i></span>
+                    <img src="https://ui-avatars.com/api/?name=Professor&background=random" class="rounded-circle" width="34">
+                    <span class="fw-medium d-none d-sm-inline">Professor <i class="bi bi-chevron-down small"></i></span>
                 </div>
             </div>
         </header>
 
         <div class="dashboard-container">
             <?php
-            $allowed_pages = ['pagina-inicial','usuarios','participacoes','projetos','documentos','visitas'];
+            $allowed_pages = ['pagina-inicial','meus-projetos','alunos','tarefas','cronograma','documentos','relatorios'];
             if (in_array($page, $allowed_pages)) {
-                include "pages-adm/{$page}.php";
+                include "pages-professor/{$page}.php";
             } else {
                 echo "<div class='alert alert-danger'>Página não encontrada.</div>";
             }
