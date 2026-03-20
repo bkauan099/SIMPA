@@ -62,7 +62,7 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
     <div id="content">
         <header class="navbar-custom">
             <div class="topbar-left">
-                <img src="assets/img/logo-uema.png"      alt="UEMA"    class="logo-uema-top">
+                <img src="assets/img/uema-logo.png"      alt="UEMA"    class="logo-uema-top">
                 <div class="logo-sep"></div>
                 <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">
             </div>
