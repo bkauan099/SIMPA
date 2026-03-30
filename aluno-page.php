@@ -19,8 +19,29 @@ if (!empty($_GET['ajax'])) {
     exit;
 }
 ?>
-
-<body>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPA ALUNO - UEMA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/aluno-page.css?v=4">
+    <script>
+        if (localStorage.getItem('sidebarExpanded') === 'true') {
+            document.documentElement.classList.add('sidebar-pre-expanded');
+        }
+    </script>
+    <style>
+        .sidebar-pre-expanded #sidebar { width: 240px; min-width: 240px; }
+        .sidebar-pre-expanded #sidebar .nav-label { display: inline; }
+        .sidebar-pre-expanded #sidebar ul li a { justify-content: flex-start; padding: 12px 20px; }
+        .sidebar-pre-expanded #sidebar ul li a i { width: 28px; margin-right: 4px; }
+        .sidebar-pre-expanded #sidebar .sidebar-brand { opacity: 1; transform: translateX(0); }
+    </style>
+</head><body>
 
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
