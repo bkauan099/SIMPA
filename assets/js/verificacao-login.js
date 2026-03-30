@@ -46,10 +46,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         enviando = true;
 
-        // ⏳ espera 2 segundos
+        // ⏳ espera 1 segundo
         setTimeout(() => {
             form.submit();
-        }, 2000);
+        }, 1000);
 
     });
 
