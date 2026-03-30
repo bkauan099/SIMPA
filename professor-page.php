@@ -1,7 +1,13 @@
 <?php
+session_start();
+
+if(!isset($_SESSION["usuario"]) || $_SESSION["tipo"] != "professor"){
+    header("Location: login-page.php");
+    exit();
+}
+
 $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
 
-// AJAX: retorna só o fragmento, sem layout
 if (!empty($_GET['ajax'])) {
     $allowed_pages = ['pagina-inicial','meus-projetos','alunos','tarefas','cronograma','documentos','relatorios'];
     if (in_array($page, $allowed_pages)) {
@@ -100,7 +106,7 @@ if (!empty($_GET['ajax'])) {
                 </a>
             </li>
             <li class="sidebar-sair">
-                <a href="#" title="Sair">
+                <a href="logout.php" title="Sair">
                     <i class="bi bi-box-arrow-left"></i>
                     <span class="nav-label">Sair</span>
                 </a>
@@ -198,6 +204,6 @@ window.addEventListener('orientationchange', () => {
     }, 150);
 });
 </script>
-<script src="assets/js/ajax-nav.js"></script>
+<script src="assets/js/ajax-nav.js"></script> 
 </body>
 </html>
