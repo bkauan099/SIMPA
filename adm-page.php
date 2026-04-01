@@ -156,8 +156,8 @@ function carregarPagina(abaSolicitada) {
             break;
     }
 
-    // Faz a chamada e injeta no HTML
-    fetch(arquivoParaCarregar)
+    // Faz a chamada e injeta no HTML (AGORA COM BLOQUEIO DE CACHE!)
+    fetch(arquivoParaCarregar, { cache: 'no-store' })
         .then(response => {
             if (!response.ok) throw new Error('Erro na requisição');
             return response.text();
