@@ -1,6 +1,3 @@
-<?php
-$page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -18,7 +15,6 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
 
 <div class="wrapper">
 
-    <!-- SIDEBAR -->
     <nav id="sidebar">
         <div class="sidebar-toggle-wrap">
             <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menu">
@@ -33,24 +29,23 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
         </div>
 
         <ul class="list-unstyled components">
-            <li><a href="?page=pagina-inicial" class="<?= $page=='pagina-inicial'?'active':'' ?>" title="Página Inicial">
+            <li><a href="#" id="menu-pagina-inicial" onclick="carregarPagina('pagina-inicial')" title="Página Inicial">
                 <i class="bi bi-house-door"></i><span class="nav-label">Página Inicial</span></a></li>
-            <li><a href="?page=usuarios" class="<?= $page=='usuarios'?'active':'' ?>" title="Usuários">
+            <li><a href="#" id="menu-usuarios" onclick="carregarPagina('usuarios')" title="Usuários">
                 <i class="bi bi-people"></i><span class="nav-label">Usuários</span></a></li>
-            <li><a href="?page=participacoes" class="<?= $page=='participacoes'?'active':'' ?>" title="Participações">
+            <li><a href="#" id="menu-participacoes" onclick="carregarPagina('participacoes')" title="Participações">
                 <i class="bi bi-diagram-3"></i><span class="nav-label">Participações</span></a></li>
-            <li><a href="?page=projetos" class="<?= $page=='projetos'?'active':'' ?>" title="Projetos">
+            <li><a href="#" id="menu-projetos" onclick="carregarPagina('projetos')" title="Projetos">
                 <i class="bi bi-folder"></i><span class="nav-label">Projetos</span></a></li>
-            <li><a href="?page=documentos" class="<?= $page=='documentos'?'active':'' ?>" title="Documentos">
+            <li><a href="#" id="menu-documentos" onclick="carregarPagina('documentos')" title="Documentos">
                 <i class="bi bi-file-earmark-text"></i><span class="nav-label">Documentos</span></a></li>
-            <li><a href="?page=visitas" class="<?= $page=='visitas'?'active':'' ?>" title="Visitas">
+            <li><a href="#" id="menu-visitas" onclick="carregarPagina('visitas')" title="Visitas">
                 <i class="bi bi-bar-chart-fill"></i><span class="nav-label">Visitas</span></a></li>
             <li class="sidebar-sair"><a href="#" title="Sair">
                 <i class="bi bi-box-arrow-left"></i><span class="nav-label">Sair</span></a></li>
         </ul>
     </nav>
 
-    <!-- CONTEÚDO -->
     <div id="content">
         <header class="navbar-custom">
             <div class="topbar-left">
@@ -70,15 +65,12 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
             </div>
         </header>
 
-        <div class="dashboard-container">
-            <?php
-            $allowed_pages = ['pagina-inicial','usuarios','participacoes','projetos','documentos','visitas'];
-            if (in_array($page, $allowed_pages)) {
-                include "pages-adm/{$page}.php";
-            } else {
-                echo "<div class='alert alert-danger'>Página não encontrada.</div>";
-            }
-            ?>
+        <div class="dashboard-container" id="conteudo-dinamico">
+            <div class="text-center mt-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -101,17 +93,19 @@ function toggleSidebar() {
         sidebar.classList.toggle('expanded');
     }
 }
+
 function closeSidebar() {
     sidebar.classList.remove('open');
     overlay.classList.remove('active');
 }
+
 window.addEventListener('resize', () => {
     if (!isOverlayMode()) {
         sidebar.classList.remove('open');
         overlay.classList.remove('active');
     }
 });
-// Fechar ao mudar orientação
+
 window.addEventListener('orientationchange', () => {
     setTimeout(() => {
         if (!isOverlayMode()) {
@@ -119,6 +113,67 @@ window.addEventListener('orientationchange', () => {
             overlay.classList.remove('active');
         }
     }, 150);
+});
+
+// --- FUNÇÃO DO SWITCH CASE PARA CARREGAR AS PÁGINAS ---
+function carregarPagina(abaSolicitada) {
+    // Tira a classe 'active' de todo mundo
+    const linksMenu = document.querySelectorAll('#sidebar ul li a');
+    linksMenu.forEach(link => link.classList.remove('active'));
+    
+    // Coloca 'active' só em quem foi clicado
+    const menuClicado = document.getElementById('menu-' + abaSolicitada);
+    if(menuClicado) menuClicado.classList.add('active');
+
+    // Se estiver no celular (overlay mode), fecha o menu ao clicar
+    if (isOverlayMode()) {
+        closeSidebar();
+    }
+
+    // O SWITCH CASE EXIGIDO
+    let arquivoParaCarregar = '';
+    switch (abaSolicitada) {
+        case 'pagina-inicial': 
+            arquivoParaCarregar = 'pages-adm/pagina-inicial.php'; 
+            break;
+        case 'usuarios': 
+            arquivoParaCarregar = 'pages-adm/usuarios.php'; 
+            break;
+        case 'participacoes': 
+            arquivoParaCarregar = 'pages-adm/participacoes.php'; 
+            break;
+        case 'projetos': 
+            arquivoParaCarregar = 'pages-adm/projetos.php'; 
+            break;
+        case 'documentos': 
+            arquivoParaCarregar = 'pages-adm/documentos.php'; 
+            break;
+        case 'visitas': 
+            arquivoParaCarregar = 'pages-adm/visitas.php'; 
+            break;
+        default: 
+            arquivoParaCarregar = 'pages-adm/pagina-inicial.php'; 
+            break;
+    }
+
+    // Faz a chamada e injeta no HTML
+    fetch(arquivoParaCarregar)
+        .then(response => {
+            if (!response.ok) throw new Error('Erro na requisição');
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('conteudo-dinamico').innerHTML = html;
+        })
+        .catch(error => {
+            console.error(error);
+            document.getElementById('conteudo-dinamico').innerHTML = `<div class='alert alert-danger'>Erro ao carregar a página: ${abaSolicitada}</div>`;
+        });
+}
+
+// Carrega a página inicial automaticamente ao abrir o sistema
+document.addEventListener("DOMContentLoaded", function() {
+    carregarPagina('pagina-inicial');
 });
 </script>
 </body>
