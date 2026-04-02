@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UEMA Login</title>
     <link rel="stylesheet" href="assets/css/login-page.css">
@@ -14,20 +15,12 @@
 
     <main class="container">
 
-        <form id="formLogin" action="processa_login.php" method="post">
+        <form id="formLogin">
             <h1 class="uema">
                 <img src=assets/img/uema-logo2.png class="logo">
                 <img src=assets/img/Proexae.png class="logo">
 
             </h1>
-
-            <?php if (isset($_GET['erro'])): ?>
-
-                <div class="alert alert-danger" role="alert" style="color: red; margin-bottom: 15px;">
-                    Usuário ou senha incorretos!
-                </div>
-
-            <?php endif; ?>
 
             <div class="campo">
 
@@ -48,11 +41,16 @@
                     <span class="msg">Digite a senha</span>
                 </span>
 
-                <div class="input-box">
+                <div class="input-box senha-box">
                     <input id="senha" placeholder="Senha" type="password" name="senha">
+
+                    <button type="button" id="toggleSenha" class="toggle-senha">
+                        <i class="fa-solid fa-eye"></i>
+                    </button>
                 </div>
 
             </div>
+
             <button type="submit" class="login">
 
                 <span class="texto">Entrar</span>
@@ -69,15 +67,6 @@
     </main>
 
     <script src="assets/js/verificacao-login.js"></script>
-    <script>
-        window.addEventListener("pageshow", function(event) {
-
-            if (event.persisted) {
-                window.location.reload();
-            }
-
-        });
-    </script>
 </body>
 
 </html>

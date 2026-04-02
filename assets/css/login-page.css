@@ -11,7 +11,7 @@
 }
 
 body {
-    
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,7 +25,7 @@ body {
     background-size: cover;
     background-position: center;
 
-    
+
 }
 
 body::before {
@@ -39,14 +39,14 @@ body::before {
 
 .container {
     width: 500px;
-    
+
     background-color: transparent;
     border: 2px solid;
     border-radius: 10px;
     color: black;
     padding: 30PX 40PX;
-    box-shadow:rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-  
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
     background: #ffffff;
 }
 
@@ -56,11 +56,11 @@ body::before {
     margin: 0 auto 20px auto;
     background: url(uema-logo.png) no-repeat center;
     background: url(Proexae.png) no-repeat center;
-  
-    
+
+
 }
 
-.uema{
+.uema {
     display: flex;
     justify-content: space-between;
 }
@@ -71,12 +71,11 @@ body::before {
     width: 100%;
     height: 50px;
     margin: 30px 0;
-  
+
 
 }
 
 .input-box input {
-    position: absolute;
     width: 100%;
     height: 100%;
     background: transparent;
@@ -84,11 +83,12 @@ body::before {
     border: 2px solid rgb(145, 145, 145);
     outline: none;
     font-size: 16px;
-    padding: 0 10px;
+    padding: 0 45px 0 10px;
+    /* 🔥 espaço pro botão */
     color: black;
 }
 
-.input-box input::placeholder{
+.input-box input::placeholder {
     color: rgb(101, 101, 101);
 }
 
@@ -101,7 +101,7 @@ body::before {
     font-size: 18px;
     border-radius: 40px;
     cursor: pointer;
-   
+
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 }
 
@@ -121,7 +121,7 @@ body::before {
 }
 
 
-.create{
+.create {
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
@@ -141,11 +141,11 @@ body::before {
 
 }
 
-.campo{
+.campo {
     position: relative;
 }
 
-.erro{
+.erro {
     position: absolute;
     left: 5px;
     top: -20px;
@@ -164,37 +164,88 @@ body::before {
     pointer-events: none;
 }
 
-.erro.show{
+.erro.show {
     opacity: 1;
     transform: translateY(0);
     display: flex;
 }
 
-.btn-redefinir{
-    display:block;
-    text-align:center;
-    margin-top:15px;
+.btn-redefinir {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
 
-    color:#6c757d;
-    text-decoration:none;
-    font-size:13px;
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 13px;
 }
 
-.btn-redefinir:hover{
-    color:#0d6efd;
+.btn-redefinir:hover {
+    color: #0d6efd;
 }
 
-.loader{
-    width:18px;
-    height:18px;
-    border:3px solid white;
-    border-top:3px solid transparent;
-    border-radius:50%;
-    display:none;
+.loader {
+    width: 18px;
+    height: 18px;
+    border: 3px solid white;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    display: none;
     animation: girar 1s linear infinite;
 }
 
-@keyframes girar{
-    from{ transform:rotate(0deg); }
-    to{ transform:rotate(360deg); }
+@keyframes girar {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.toggle-senha {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    font-size: 14px;
+    color: #666;
+
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    z-index: 2;
+    pointer-events: auto;
+    /* 🔥 garante clique */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.toggle-senha.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.toggle-senha:hover {
+    color: #000;
+}
+
+.toggle-senha:focus {
+    outline: none;
+}
+
+.toggle-senha:focus-visible {
+    outline: none;
+    box-shadow: none;
 }
