@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     enviando = false;
                 });
 
-        }, 500);
+        }, 0);
 
     });
     // 👁️ mostrar botão só quando digitar
