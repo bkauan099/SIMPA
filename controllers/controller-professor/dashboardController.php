@@ -1,7 +1,7 @@
 <?php
-// Backend/controllers/controller-professor/dashboardController.php
+// controllers/controller-professor/dashboardController.php
 
-require_once __DIR__ . '/../../model/model-professor/Projeto.php';
+require_once __DIR__ . '/../../model/Projeto.php';
 
 class DashboardController {
     private $pdo;
