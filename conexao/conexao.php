@@ -1,10 +1,10 @@
 <?php
 
-$host = 'db.mjudzspubsmoeedejrlw.supabase.co'; // host
-$port = '5432'; // porta padrao
-$dbname = 'postgres'; // nome do banco de dados no Supabase
-$user = 'postgres'; // usuário do supabase
-$pass = 'Simpas@2026'; // senha do supabase
+$host = 'db.mjudzspubsmoeedejrlw.supabase.co';
+$port = '5432';
+$dbname = 'postgres';
+$user = 'postgres';
+$pass = 'Simpas@2026';
 
 try {
     // Usamos 'pgsql:' pois o Supabase roda PostgreSQL por baixo dos panos

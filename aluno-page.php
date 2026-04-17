@@ -1,5 +1,13 @@
 <?php
+session_start();
 $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
+
+require_once 'conexao/conexao.php';
+$id_usuario = $_SESSION['id_usuario'] ?? 3;
+$stmt = $pdo->prepare("SELECT nome FROM usuarios WHERE id_usuario = :id");
+$stmt->execute([':id' => $id_usuario]);
+$nomeUsuario  = $stmt->fetchColumn() ?: 'Usuário';
+$primeiroNome = explode(' ', $nomeUsuario)[0];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -72,8 +80,8 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">2</span>
                 </div>
                 <div class="d-flex align-items-center gap-2" style="cursor:pointer">
-                    <img src="https://ui-avatars.com/api/?name=João&background=random" class="rounded-circle" width="34">
-                    <span class="fw-medium d-none d-sm-inline">João <i class="bi bi-chevron-down small"></i></span>
+                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($nomeUsuario) ?>&background=random" class="rounded-circle" width="34">
+                    <span class="fw-medium d-none d-sm-inline"><?= htmlspecialchars($primeiroNome) ?> <i class="bi bi-chevron-down small"></i></span>
                 </div>
             </div>
         </header>

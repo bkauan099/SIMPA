@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ping -n 2 db.mjudzspubsmoeedejrlw.supabase.co)",
+      "Bash(nslookup db.mjudzspubsmoeedejrlw.supabase.co)",
+      "Bash(php -v)",
+      "Bash(psql --version)",
+      "Bash(/c/xampp/php/php.exe -r ' *)"
+    ]
+  }
+}
