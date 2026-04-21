@@ -20,7 +20,11 @@
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
                         <thead class="table-primary">
-                            <tr><th>Título</th><th>Data</th><th>Hora</th></tr>
+                            <tr>
+                                <th style="width:50%">Título</th>
+                                <th style="width:30%">Data</th>
+                                <th style="width:20%">Hora</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($tarefas)): ?>
@@ -43,7 +47,11 @@
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
                         <thead class="table-success">
-                            <tr><th>Título</th><th>Data</th><th>Hora</th></tr>
+                            <tr>
+                                <th style="width:50%">Título</th>
+                                <th style="width:30%">Data</th>
+                                <th style="width:20%">Hora</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($eventos)): ?>

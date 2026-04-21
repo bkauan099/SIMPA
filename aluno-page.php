@@ -3,7 +3,7 @@ session_start();
 $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
 
 require_once 'conexao/conexao.php';
-$id_usuario = $_SESSION['id_usuario'] ?? 4;
+$id_usuario = $_SESSION['id_usuario'] ?? 3;
 $stmt = $pdo->prepare("SELECT nome FROM usuarios WHERE id_usuario = :id");
 $stmt->execute([':id' => $id_usuario]);
 $nomeUsuario  = $stmt->fetchColumn() ?: 'Usuário';

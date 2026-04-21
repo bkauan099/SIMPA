@@ -33,6 +33,53 @@ class Aluno {
         return $stmt->fetchColumn();
     }
 
+    public function obterEstatisticasProjetos($id_usuario) {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM participacao WHERE id_usuario = :id AND status = 'ativo'");
+        $stmt->execute([':id' => $id_usuario]);
+        $ativos = $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM participacao WHERE id_usuario = :id AND status = 'concluido'");
+        $stmt->execute([':id' => $id_usuario]);
+        $concluidos = $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("SELECT COALESCE(SUM(carga_horaria), 0) FROM participacao WHERE id_usuario = :id");
+        $stmt->execute([':id' => $id_usuario]);
+        $cargaTotal = $stmt->fetchColumn();
+
+        return [
+            'ativos'     => $ativos,
+            'total'      => $ativos + $concluidos,
+            'concluidos' => $concluidos,
+            'carga'      => $cargaTotal,
+        ];
+    }
+
+    public function listarProjetosAluno($id_usuario) {
+        $sql = "
+            SELECT
+                p.titulo,
+                tp.nome      AS tipo,
+                pa.funcao,
+                pa.carga_horaria,
+                pa.status,
+                (
+                    SELECT u.nome FROM participacao po
+                    JOIN usuarios u ON po.id_usuario = u.id_usuario
+                    WHERE po.id_projeto = p.id_projeto
+                      AND po.funcao ILIKE '%orientador%'
+                    LIMIT 1
+                ) AS orientador
+            FROM participacao pa
+            JOIN projetos p     ON pa.id_projeto = p.id_projeto
+            LEFT JOIN tipo_projetos tp ON p.id_tipo = tp.id_tipo
+            WHERE pa.id_usuario = :id
+            ORDER BY pa.status ASC, p.titulo ASC
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id_usuario]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function obterAgenda($id_usuario) {
         $sql = "
             SELECT titulo, data, hora, tipo
