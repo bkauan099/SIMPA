@@ -3,32 +3,42 @@
         <h3 class="fw-bold mb-1">Gestão de Projetos</h3>
         <p class="text-muted mb-0">Cadastre, organize e acompanhe os projetos da instituição</p>
     </div>
-    <button class="btn btn-primary"><i class="bi bi-folder-plus me-2"></i>Novo Projeto</button>
+    <button class="btn btn-primary" onclick="abrirModal()">
+        <i class="bi bi-plus-circle me-2"></i>Novo Projeto
+    </button>
 </div>
 
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-blue"><i class="bi bi-folder-fill"></i></div>
-            <div><h4 class="mb-0 fw-bold">12</h4><small class="text-muted">Projetos Ativos</small></div>
+            <div>
+                <h4 class="mb-0 fw-bold">12</h4><small class="text-muted">Projetos Ativos</small>
+            </div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-orange"><i class="bi bi-hourglass-split"></i></div>
-            <div><h4 class="mb-0 fw-bold">3</h4><small class="text-muted">Aguardando Aprovação</small></div>
+            <div>
+                <h4 class="mb-0 fw-bold">3</h4><small class="text-muted">Aguardando Aprovação</small>
+            </div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-blue"><i class="bi bi-check2-all"></i></div>
-            <div><h4 class="mb-0 fw-bold">8</h4><small class="text-muted">Concluídos</small></div>
+            <div>
+                <h4 class="mb-0 fw-bold">8</h4><small class="text-muted">Concluídos</small>
+            </div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-orange"><i class="bi bi-people"></i></div>
-            <div><h4 class="mb-0 fw-bold">48</h4><small class="text-muted">Participantes</small></div>
+            <div>
+                <h4 class="mb-0 fw-bold">48</h4><small class="text-muted">Participantes</small>
+            </div>
         </div>
     </div>
 </div>
@@ -76,7 +86,13 @@
         <table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr class="text-muted small">
-                    <th>ID</th><th>TÍTULO</th><th>TIPO</th><th>ORIENTADOR</th><th>PARTICIPANTES</th><th>STATUS</th><th class="text-center">AÇÕES</th>
+                    <th>ID</th>
+                    <th>TÍTULO</th>
+                    <th>TIPO</th>
+                    <th>ORIENTADOR</th>
+                    <th>PARTICIPANTES</th>
+                    <th>STATUS</th>
+                    <th class="text-center">AÇÕES</th>
                 </tr>
             </thead>
             <tbody>

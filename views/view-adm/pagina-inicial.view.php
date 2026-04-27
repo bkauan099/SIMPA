@@ -3,32 +3,42 @@
         <h3 class="fw-bold mb-1">Página Inicial</h3>
         <p class="text-muted mb-0">Visão geral do sistema e projetos ativos</p>
     </div>
-    <button class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Novo Projeto</button>
+    <button class="btn btn-primary" onclick="abrirModal()">
+        <i class="bi bi-plus-circle me-2"></i>Novo Projeto
+    </button>
 </div>
 
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-blue"><i class="bi bi-journal-text"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $estatisticas['projetos_ativos'] ?></h4><small class="text-muted">Projetos Ativos</small></div>
+            <div>
+                <h4 class="mb-0 fw-bold"><?= $estatisticas['projetos_ativos'] ?></h4><small class="text-muted">Projetos Ativos</small>
+            </div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-blue"><i class="bi bi-people"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $estatisticas['total_usuarios'] ?></h4><small class="text-muted">Usuários Cadastrados</small></div>
+            <div>
+                <h4 class="mb-0 fw-bold"><?= $estatisticas['total_usuarios'] ?></h4><small class="text-muted">Usuários Cadastrados</small>
+            </div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-orange"><i class="bi bi-hourglass-split"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $estatisticas['pendencias'] ?></h4><small class="text-muted">Pendências</small></div>
+            <div>
+                <h4 class="mb-0 fw-bold"><?= $estatisticas['pendencias'] ?></h4><small class="text-muted">Pendências</small>
+            </div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
         <div class="stat-card">
             <div class="icon-circle bg-light-orange"><i class="bi bi-bell-fill"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $estatisticas['notificacoes'] ?></h4><small class="text-muted">Notificações</small></div>
+            <div>
+                <h4 class="mb-0 fw-bold"><?= $estatisticas['notificacoes'] ?></h4><small class="text-muted">Notificações</small>
+            </div>
         </div>
     </div>
 </div>
@@ -42,12 +52,19 @@
         <table class="table table-hover align-middle">
             <thead class="table-light">
                 <tr class="text-muted small">
-                    <th>ID</th><th>TÍTULO</th><th>ORIENTADOR</th><th>PARTICIPANTES</th><th>STATUS</th><th class="text-center">AÇÕES</th>
+                    <th>ID</th>
+                    <th>TÍTULO</th>
+                    <th>ORIENTADOR</th>
+                    <th>PARTICIPANTES</th>
+                    <th>STATUS</th>
+                    <th class="text-center">AÇÕES</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($projetosAtivos)): ?>
-                    <tr><td colspan="6" class="text-center py-4 text-muted">Nenhum projeto ativo no momento.</td></tr>
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">Nenhum projeto ativo no momento.</td>
+                    </tr>
                 <?php else: ?>
                     <?php foreach ($projetosAtivos as $projeto): ?>
                         <tr>
