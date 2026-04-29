@@ -8,8 +8,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // 1. Instancia a classe Projeto passando a conexão $pdo
     $projetoModel = new Projeto($pdo);
 
-    // 2. Chama o método cadastrar passando os dados do formulário ($_POST)
-    if ($projetoModel->cadastrar($_POST)) {
+    // 2. Chama o método cadastrar
+    // IMPORTANTE: Passamos null no 2º parâmetro para o ADM não ser vinculado como orientador
+    if ($projetoModel->cadastrar($_POST, null)) {
+        
         // Pega a página onde você estava antes de abrir o modal
         $origem = isset($_POST['pagina_origem']) ? $_POST['pagina_origem'] : 'pagina-inicial';
 

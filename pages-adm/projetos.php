@@ -105,8 +105,10 @@
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" title="Ver"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Editar"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-outline-warning ms-1" title="Arquivar"><i class="bi bi-archive"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Editar"><i
+                                class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-warning ms-1" title="Arquivar"><i
+                                class="bi bi-archive"></i></button>
                     </td>
                 </tr>
                 <tr>
@@ -118,8 +120,10 @@
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" title="Ver"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Editar"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-outline-warning ms-1" title="Arquivar"><i class="bi bi-archive"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Editar"><i
+                                class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-warning ms-1" title="Arquivar"><i
+                                class="bi bi-archive"></i></button>
                     </td>
                 </tr>
                 <tr>
@@ -131,8 +135,10 @@
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" title="Ver"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Editar"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-outline-warning ms-1" title="Arquivar"><i class="bi bi-archive"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Editar"><i
+                                class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-warning ms-1" title="Arquivar"><i
+                                class="bi bi-archive"></i></button>
                     </td>
                 </tr>
                 <tr>
@@ -144,8 +150,10 @@
                     <td><span class="badge bg-secondary text-white">Concluído</span></td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" title="Ver"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Editar"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-sm btn-outline-success ms-1" title="Reativar"><i class="bi bi-check-circle"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Editar"><i
+                                class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-success ms-1" title="Reativar"><i
+                                class="bi bi-check-circle"></i></button>
                     </td>
                 </tr>
             </tbody>

@@ -282,3 +282,73 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     .stat-card { padding:12px; }
     .col-sm-6 { flex:0 0 100% !important; max-width:100% !important; }
 }
+
+/* ══ MODAL CUSTOMIZADO ══ */
+.modal-container {
+    display: none; /* Controlado pelo JS */
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 2000; /* Acima de tudo */
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background: var(--branco);
+    width: 100%;
+    max-width: 650px;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    position: relative;
+    border: none;
+    animation: modalShow 0.3s ease-out;
+}
+
+@keyframes modalShow {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajustes nos inputs para não ficarem gigantes */
+.modal-content .form-control, 
+.modal-content .form-select {
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.modal-content .form-control:focus {
+    border-color: var(--azul-uema);
+    box-shadow: 0 0 0 3px rgba(15, 37, 87, 0.1);
+}
+
+.modal-content label {
+    color: var(--azul-uema);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.modal-content h4 {
+    color: var(--azul-uema);
+    font-size: 1.25rem;
+}
+
+/* Ajuste das linhas do formulário */
+.modal-content .row {
+    margin-top: 15px;
+}
+
+/* ══ RESPONSIVIDADE DO MODAL ══ */
+@media (max-width: 576px) {
+    .modal-content {
+        padding: 20px;
+        margin: 10px;
+    }
+}
