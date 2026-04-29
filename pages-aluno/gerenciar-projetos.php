@@ -3,7 +3,12 @@
         <h3 class="fw-bold mb-1">Gerenciar Projetos</h3>
         <p class="text-muted mb-0">Projetos em que você participa</p>
     </div>
-    <button class="btn btn-primary"><i class="bi bi-folder-plus me-2"></i>Solicitar Novo Projeto</button>
+
+    <button class="btn btn-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modalNovoProjeto">
+        <i class="bi bi-folder-plus me-2"></i>Solicitar Novo Projeto
+    </button>
 </div>
 
 <div class="row g-3 mb-4">
@@ -57,8 +62,12 @@
                     <td>85h</td>
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-primary" title="Ver detalhes"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Documentos"><i class="bi bi-file-earmark-text"></i></button>
+                        <a href="assets/docs/projeto-social.pdf" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="assets/docs/projeto-social.pdf" download class="btn btn-sm btn-outline-secondary ms-1">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </a>
                     </td>
                 </tr>
                 <tr>
@@ -69,8 +78,12 @@
                     <td>120h</td>
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-primary" title="Ver detalhes"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Documentos"><i class="bi bi-file-earmark-text"></i></button>
+                        <a href="assets/docs/simpa.pdf" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="assets/docs/simpa.pdf" download class="btn btn-sm btn-outline-secondary ms-1">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </a>
                     </td>
                 </tr>
                 <tr>
@@ -81,8 +94,8 @@
                     <td>80h</td>
                     <td><span class="status-ativo">Ativo</span></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-primary" title="Ver detalhes"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Documentos"><i class="bi bi-file-earmark-text"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary disabled"><i class="bi bi-eye-slash"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary ms-1 disabled"><i class="bi bi-file-earmark-x"></i></button>
                     </td>
                 </tr>
                 <tr>
@@ -93,11 +106,78 @@
                     <td>40h</td>
                     <td><span class="badge bg-secondary text-white">Concluído</span></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-primary" title="Ver detalhes"><i class="bi bi-eye"></i></button>
-                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Documentos"><i class="bi bi-file-earmark-text"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary disabled"><i class="bi bi-eye-slash"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary ms-1 disabled"><i class="bi bi-file-earmark-x"></i></button>
                     </td>
                 </tr>
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- MODAL NOVO PROJETO -->
+<div class="modal fade" id="modalNovoProjeto" tabindex="-1" aria-labelledby="modalNovoProjetoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-novo-projeto">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalNovoProjetoLabel">
+                    <i class="bi bi-folder-plus me-2 text-primary"></i>Solicitar Novo Projeto
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row g-3">
+
+                    <!-- Título + Tipo (mesma linha) -->
+                    <div class="col-12 col-md-7">
+                        <label class="form-label">Título do Projeto</label>
+                        <input type="text" class="form-control" placeholder="Nome do projeto">
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <label class="form-label">Tipo de Projeto</label>
+                        <select class="form-select">
+                            <option value="">Selecione...</option>
+                            <option>Projeto Especial</option>
+                            <option>Empresa Júnior</option>
+                            <option>Liga Acadêmica</option>
+                            <option>Extensão</option>
+                        </select>
+                    </div>
+
+                    <!-- Descrição (linha inteira) -->
+                    <div class="col-12">
+                        <label class="form-label">Descrição</label>
+                        <textarea class="form-control" rows="3" placeholder="Descreva brevemente o projeto..."></textarea>
+                    </div>
+
+                    <!-- Orientador + Carga (mesma linha) -->
+                    <div class="col-12 col-md-7">
+                        <label class="form-label">Orientador</label>
+                        <input type="text" class="form-control" placeholder="Nome do orientador">
+                    </div>
+                    <div class="col-12 col-md-5">
+                        <label class="form-label">Carga Horária</label>
+                        <input type="number" class="form-control" placeholder="Ex: 120">
+                    </div>
+
+                    <!-- Anexo (linha inteira) -->
+                    <div class="col-12">
+                        <label class="form-label">Anexar Documento</label>
+                        <input type="file" class="form-control">
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="bi bi-send me-1"></i>SOLICITAR
+                </button>
+            </div>
+
+        </div>
     </div>
 </div>
