@@ -100,5 +100,19 @@ class Aluno {
         }
         return ['tarefas' => $tarefas, 'eventos' => $eventos];
     }
+
+    public function obterParticipacoes($id_usuario){
+        $sql="
+            SELECT
+            p.titulo AS projeto,
+            tp.nome AS tipo,
+            pa.funcao,
+            pa.carga_horaria,
+            pa.status
+            FROM participacao pa
+            JOIN projetos p ON pa.id_projeto=p.id_projeto
+            LEFT JOIN tipo_projetos tp ON p.id_tipo
+
+    }
 }
 ?>
