@@ -111,8 +111,13 @@ class Aluno {
             pa.status
             FROM participacao pa
             JOIN projetos p ON pa.id_projeto=p.id_projeto
-            LEFT JOIN tipo_projetos tp ON p.id_tipo
-
+            LEFT JOIN tipo_projetos tp ON p.id_tipo = tp.id_tipo
+            WHERE pa.id_usuario= :id
+            ORDER BY pa.status ASC, p.titulo ASC
+            ";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':id'=>$id_usuario]);
+            return $stmt->fetchALL(PDO::FETCH_ASSOC);
     }
 }
 ?>
