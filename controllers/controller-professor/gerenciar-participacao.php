@@ -20,14 +20,17 @@ if (!$id_usuario || !$id_projeto) {
 }
 
 if ($acao == 'vincular') {
-    // O Model retorna true/false direto, então checamos assim:
-    $sucesso = $usuarioModel->vincularAoProjeto($id_usuario, $id_projeto, $carga_horaria);
+    $resultado = $usuarioModel->vincularAoProjeto($id_usuario, $id_projeto, $carga_horaria);
 
-    if ($sucesso) {
+    if ($resultado['sucesso']) {
         echo json_encode(['sucesso' => true]);
     } else {
-        // Se deu erro, geralmente no seu banco é por duplicidade ou erro de constraint
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao vincular ou aluno já cadastrado.']);
+        // Se o erro for 'duplicado', avisamos o professor
+        $mensagem = (isset($resultado['erro']) && $resultado['erro'] === 'duplicado')
+            ? "Este aluno já está cadastrado neste projeto."
+            : "Erro técnico ao vincular aluno.";
+
+        echo json_encode(['sucesso' => false, 'mensagem' => $mensagem]);
     }
     exit;
 }

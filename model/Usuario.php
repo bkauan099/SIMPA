@@ -26,14 +26,24 @@ class Usuario
     // Vincula um aluno ao projeto (Tabela participacao)
     public function vincularAoProjeto($id_usuario, $id_projeto, $carga_horaria)
     {
-        // Força a carga horária a ser um número para o banco não dar erro
-        $ch = (int)$carga_horaria;
+        // 1. Verificar se o aluno já está vinculado a este projeto específico
+        $sqlCheck = "SELECT 1 FROM participacao WHERE id_usuario = ? AND id_projeto = ?";
+        $stmtCheck = $this->pdo->prepare($sqlCheck);
+        $stmtCheck->execute([$id_usuario, $id_projeto]);
 
+        if ($stmtCheck->fetch()) {
+            // Retorna um código de erro específico para o Controller tratar
+            return ['sucesso' => false, 'erro' => 'duplicado'];
+        }
+
+        // 2. Se não existir, realiza o cadastro
         $sql = "INSERT INTO participacao (id_usuario, id_projeto, carga_horaria, data_entrada, funcao) 
             VALUES (?, ?, ?, CURRENT_DATE, 'Bolsista')";
 
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute([$id_usuario, $id_projeto, $ch]);
+        $sucesso = $stmt->execute([$id_usuario, $id_projeto, (int)$carga_horaria]);
+
+        return ['sucesso' => $sucesso];
     }
 
     // Remove um aluno do projeto

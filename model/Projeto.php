@@ -199,8 +199,8 @@ class Projeto
     }
     public function listarParticipantes($id_projeto)
     {
-        // Filtramos pelo perfil 'aluno' e buscamos a carga_horaria da tabela participacao
-        $sql = "SELECT u.id_usuario, u.nome, u.matricula, u.curso, p.carga_horaria 
+        // Adicionamos 'u.status' na consulta
+        $sql = "SELECT u.id_usuario, u.nome, u.matricula, u.curso, u.status, p.carga_horaria 
             FROM participacao p 
             JOIN usuarios u ON p.id_usuario = u.id_usuario
             WHERE p.id_projeto = ? 

@@ -44,26 +44,29 @@ if (isset($_GET['id_projeto']) && $_GET['id_projeto'] !== 'null' && is_numeric($
         echo "<tr><td colspan='6' class='text-center py-4 text-muted'>Este projeto ainda não possui alunos vinculados.</td></tr>";
     } else {
         foreach ($participantes as $p) {
-            // --- DEFINIÇÃO DAS VARIÁVEIS PARA O BOTÃO REMOVER ---
-            $uid = $p['id_usuario']; 
-            $pid = $id_projeto; 
-            // ----------------------------------------------------
+            $uid = $p['id_usuario'];
+            $pid = $id_projeto;
 
             $chValor = (isset($p['carga_horaria']) && $p['carga_horaria'] !== null) ? $p['carga_horaria'] : 0;
             $chFormatada = $chValor . 'h';
 
+            // --- LÓGICA DINÂMICA DE STATUS ---
+            // Verifica se o status no BD é 'ativo'. Caso contrário, define como Inativo.
+            $statusUsuario = (isset($p['status']) && strtolower($p['status']) === 'ativo') ? 'Ativo' : 'Inativo';
+            $classeBadge = ($statusUsuario === 'Ativo') ? 'bg-success' : 'bg-danger';
+            // ---------------------------------
+
             echo "<tr>
-                <td>" . htmlspecialchars($p['nome']) . "</td>
-                <td>" . htmlspecialchars($p['matricula']) . "</td>
-                <td>" . htmlspecialchars($p['curso']) . "</td>
-                <td><span class='fw-bold text-primary'>$chFormatada</span></td> 
-                <td><span class='badge bg-success'>Ativo</span></td>
-                <td class='text-center'>
-                    <button type='button' class='btn btn-sm btn-outline-danger' onclick='removerAluno($uid, $pid)'>
-                        <i class='bi bi-trash'></i>
-                    </button>
-                </td>
-              </tr>";
+        <td>" . htmlspecialchars($p['nome']) . "</td>
+        <td>" . htmlspecialchars($p['matricula']) . "</td>
+        <td>" . htmlspecialchars($p['curso']) . "</td>
+        <td><span class='fw-bold text-primary'>$chFormatada</span></td> 
+        <td><span class='badge $classeBadge'>$statusUsuario</span></td> <td class='text-center'>
+            <button type='button' class='btn btn-sm btn-outline-danger' onclick='removerAluno($uid, $pid)'>
+                <i class='bi bi-trash'></i>
+            </button>
+        </td>
+      </tr>";
         }
     }
     echo '</tbody></table>';

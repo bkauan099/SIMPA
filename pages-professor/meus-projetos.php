@@ -72,15 +72,17 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
                 <option>Tipo (Todos)</option>
                 <option>Projeto Especial</option>
                 <option>Ligas Acadêmicas</option>
-                <option>Empresa Jr</option>
-                <option>Atlética</option>
+                <option>Inovação TIC</option>
+                <option>Extensão</option>
             </select>
         </div>
         <div class="col-6 col-md-3">
             <select class="form-select">
                 <option>Status (Todos)</option>
                 <option>Ativo</option>
+                <option>Pendente</option>
                 <option>Concluído</option>
+                <option>Inativo</option>
             </select>
         </div>
     </div>
@@ -142,13 +144,13 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
 
                             <td class="text-center">
                                 <button class="btn btn-sm btn-outline-primary"
-                                        onclick="abrirModalAlunos(<?= $projeto['id_projeto'] ?>)"
-                                        title="Ver alunos">
+                                    onclick="abrirModalAlunos(<?= $projeto['id_projeto'] ?>)"
+                                    title="Ver alunos">
                                     <i class="bi bi-people"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-secondary ms-1" 
-                                        onclick='abrirModalEditar(<?= htmlspecialchars(json_encode($projeto)) ?>)'
-                                        title="Editar">
+                                <button class="btn btn-sm btn-outline-secondary ms-1"
+                                    onclick='abrirModalEditar(<?= htmlspecialchars(json_encode($projeto)) ?>)'
+                                    title="Editar">
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-info ms-1" title="Documentos">

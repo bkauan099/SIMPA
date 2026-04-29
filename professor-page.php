@@ -432,6 +432,20 @@ if (!empty($_GET['ajax'])) {
         </div>
     </div>
 
+    <div id="modalAvisoDuplicado" class="modal-simpa" style="display: none;">
+        <div class="modal-content-simpa" style="max-width: 380px; text-align: center;">
+            <div class="mb-4">
+                <i class="bi bi-person-fill-exclamation text-warning" style="font-size: 3rem;"></i>
+                <h4 class="fw-bold mt-3">Vínculo já existente</h4>
+                <p class="text-muted">Este aluno já está participando deste projeto. Não é possível adicioná-lo duas vezes.</p>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-warning px-5 fw-bold text-white" onclick="fecharAvisoDuplicado()">ENTENDI</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/ajax-nav.js"></script>
 
@@ -615,7 +629,7 @@ if (!empty($_GET['ajax'])) {
             formData.append('acao', 'vincular');
             formData.append('id_usuario', idUsuario);
             formData.append('id_projeto', idProjeto);
-            formData.append('carga_horaria', chAluno); // Envia para o servidor
+            formData.append('carga_horaria', chAluno);
 
             fetch('controllers/controller-professor/gerenciar-participacao.php', {
                     method: 'POST',
@@ -625,14 +639,36 @@ if (!empty($_GET['ajax'])) {
                 .then(data => {
                     if (data.sucesso) {
                         houveAlteracaoNoBanco = true;
-                        document.getElementById('busca_aluno').value = '';
-                        document.getElementById('id_aluno_selecionado').value = '';
-                        document.getElementById('ch_aluno').value = ''; // Limpa o campo CH
+                        // Reset de sucesso
+                        resetarEstadoBusca();
                         abrirModalAlunos(idProjeto);
                     } else {
-                        alert(data.mensagem || "Erro ao vincular.");
+                        // Se houver erro, mostramos o modal e resetamos o estado inicial
+                        if (data.mensagem.includes("já está cadastrado")) {
+                            document.getElementById('modalAvisoDuplicado').style.display = 'flex';
+                        } else {
+                            alert(data.mensagem || "Erro ao vincular.");
+                        }
+
+                        // RESETAR PARA O ESTADO INICIAL MESMO EM CASO DE ERRO
+                        resetarEstadoBusca();
                     }
                 });
+        }
+
+        function resetarEstadoBusca() {
+            const buscaInput = document.getElementById('busca_aluno');
+            const idInput = document.getElementById('id_aluno_selecionado');
+            const chInput = document.getElementById('ch_aluno');
+            const resultados = document.getElementById('resultados_busca');
+
+            if (buscaInput) buscaInput.value = '';
+            if (idInput) idInput.value = '';
+            if (chInput) chInput.value = '';
+            if (resultados) resultados.style.display = 'none';
+
+            // Devolve o foco para o campo de busca para facilitar a nova tentativa
+            if (buscaInput) buscaInput.focus();
         }
 
         function removerAluno(idUsuario, idProjeto) {
@@ -737,19 +773,28 @@ if (!empty($_GET['ajax'])) {
             document.getElementById('busca_aluno').focus();
         }
 
+        function fecharAvisoDuplicado() {
+            document.getElementById('modalAvisoDuplicado').style.display = 'none';
+        }
+
         document.addEventListener('keydown', function(e) {
             if (e.key === "Escape") {
                 const modalConfirm = document.getElementById('modalConfirmacao');
                 const modalAvisoCH = document.getElementById('modalAvisoCH');
                 const modalAvisoSel = document.getElementById('modalAvisoSelecao');
+                const modalDuplicado = document.getElementById('modalAvisoDuplicado'); // Adicionado
 
+                // Usamos uma estrutura única de if/else if
                 if (modalConfirm && modalConfirm.style.display === 'flex') {
                     fecharConfirmacao();
                 } else if (modalAvisoCH && modalAvisoCH.style.display === 'flex') {
                     fecharAvisoCH();
                 } else if (modalAvisoSel && modalAvisoSel.style.display === 'flex') {
                     fecharAvisoSelecao();
+                } else if (modalDuplicado && modalDuplicado.style.display === 'flex') {
+                    fecharAvisoDuplicado(); // Adicionado na sequência correta
                 } else {
+                    // Se nenhum dos avisos estiver aberto, tenta fechar os modais principais (Projeto/Alunos)
                     fecharQualquerModal();
                 }
             }
