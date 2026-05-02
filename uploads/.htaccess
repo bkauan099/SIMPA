@@ -1,0 +1,4 @@
+# Bloquear execução de PHP em uploads para segurança
+<FilesMatch "\.(php|php3|php4|php5|phtml)$">
+    deny from all
+</FilesMatch>
