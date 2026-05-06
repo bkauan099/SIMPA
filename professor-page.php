@@ -263,7 +263,7 @@ if (!empty($_GET['ajax'])) {
                             <i class="bi bi-check-circle-fill me-2 fs-5"></i>
                             <div><strong>Projeto cadastrado com sucesso!</strong></div>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="limparUrlSucesso()"></button>
                     </div>
                 <?php endif; ?>
 
@@ -279,7 +279,7 @@ if (!empty($_GET['ajax'])) {
         </div>
     </div>
 
-    <div id="modalProjeto" class="modal-container">
+    <div id="modalNovoProjeto" class="modal-container">
         <div class="modal-content">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="m-0" style="color: var(--azul-uema); font-weight: 700;">Novo Projeto</h4>
@@ -348,8 +348,79 @@ if (!empty($_GET['ajax'])) {
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">
-                    <button type="button" onclick="fecharModal()" class="btn btn-light border">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Cadastrar Projeto</button>
+                    <button type="button" onclick="fecharQualquerModal()" class="btn btn-light border">Cancelar</button>
+                    <button type="submit" id="btnSalvarProjeto" class="btn btn-primary">Cadastrar Projeto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDITAR PROJETO -->
+    <div id="modalEditarProjeto" class="modal-container" style="display: none;">
+        <div class="modal-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="m-0" style="color: var(--azul-uema); font-weight: 700;">Editar Projeto</h4>
+                <button type="button" onclick="fecharQualquerModal()" class="btn-close"></button>
+            </div>
+
+            <form action="controllers/controller-professor/editar-projeto.php" method="POST">
+                <!-- ID Oculto para o Banco de Dados -->
+                <input type="hidden" name="id_projeto" id="edit_id_projeto">
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Título do Projeto</label>
+                    <input type="text" name="titulo" id="edit_titulo" class="form-control" required>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Área</label>
+                        <input type="text" name="area" id="edit_area" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Tipo</label>
+                        <select name="id_tipo" id="edit_id_tipo" class="form-select" required>
+                            <option value="" disabled>Selecione o tipo...</option>
+                            <?php foreach ($tipos as $tipo): ?>
+                                <option value="<?= $tipo['id_tipo'] ?>"><?= htmlspecialchars($tipo['nome']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Descrição</label>
+                    <textarea name="descricao" id="edit_descricao" class="form-control" rows="3"></textarea>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Data de Início</label>
+                        <div class="input-group">
+                            <input type="text" name="data_inicio" id="edit_data_inicio" class="form-control date-mask" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-text btn-calendar" id="btn_edit_inicio" style="cursor: pointer;"><i class="bi bi-calendar3"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Data de Término</label>
+                        <div class="input-group">
+                            <input type="text" name="data_fim" id="edit_data_fim" class="form-control date-mask" placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-text btn-calendar" id="btn_edit_fim" style="cursor: pointer;"><i class="bi bi-calendar3"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Carga Horária (Horas)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-clock"></i></span>
+                        <input type="number" name="carga_horaria" id="edit_carga_horaria" class="form-control" min="1" required>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" onclick="fecharQualquerModal()" class="btn btn-light border">Cancelar</button>
+                    <button type="submit" id="btnAplicarAlteracoes" class="btn btn-primary">Aplicar Alterações</button>
                 </div>
             </form>
         </div>
@@ -375,7 +446,7 @@ if (!empty($_GET['ajax'])) {
                             <input type="number" id="ch_aluno" class="form-control" placeholder="CH (Horas)" min="1">
                         </div>
                         <div class="col-md-2">
-                            <button type="button" class="btn btn-primary w-100" onclick="dispararVinculo()">
+                            <button type="button" id="btnAdicionarAluno" class="btn btn-primary w-100" onclick="dispararVinculo()">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
                         </div>
@@ -389,17 +460,16 @@ if (!empty($_GET['ajax'])) {
         </div>
     </div>
 
-    <div id="modalConfirmacao" class="modal-simpa" style="display: none;">
+    <div id="modalConfirmarExclusaoAluno" class="modal-simpa" style="display: none;">
         <div class="modal-content-simpa" style="max-width: 400px; text-align: center;">
             <div class="mb-4">
-                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
-                <h4 class="fw-bold mt-3">Confirmar Exclusão</h4>
-                <p class="text-muted">Tem certeza que deseja remover este aluno do projeto? Esta ação não pode ser desfeita.</p>
+                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
+                <h4 class="fw-bold mt-3">Remover Aluno?</h4>
+                <p class="text-muted">O aluno será desvinculado do projeto.</p>
             </div>
-
-            <div class="d-flex gap-2">
-                <button type="button" id="btnConfirmarRemocao" class="btn btn-success w-100 fw-bold">SIM</button>
-                <button type="button" class="btn btn-danger w-100 fw-bold" onclick="fecharConfirmacao()">NÃO</button>
+            <div class="d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-light border px-4" onclick="document.getElementById('modalConfirmarExclusaoAluno').style.display='none'">Cancelar</button>
+                <button type="button" id="btnConfirmarExclusaoAlunoReal" class="btn btn-danger px-4" onclick="executarExclusaoAlunoReal()">Remover Agora</button>
             </div>
         </div>
     </div>
@@ -446,15 +516,107 @@ if (!empty($_GET['ajax'])) {
         </div>
     </div>
 
+    <!-- Modal Anexar Arquivo -->
+    <!-- Modal Gerenciar Documentos -->
+    <div id="modalDocumentos" class="modal-container" style="display: none;">
+        <div class="modal-content modal-lg" style="max-width: 700px;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="m-0 text-primary fw-bold">Documentos do Projeto</h4>
+                <button type="button" onclick="fecharQualquerModal()" class="btn-close"></button>
+            </div>
+
+            <!-- Seção 1: Formulário de Upload -->
+            <div class="card bg-light border-0 mb-4">
+                <div class="card-body">
+                    <h6 class="fw-bold mb-3">Anexar Novo Arquivo</h6>
+                    <form id="formUploadDoc" enctype="multipart/form-data">
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <input type="file" name="arquivo" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="descricao" class="form-control" placeholder="Descrição (ex: Relatório Mensal)">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" id="btnEnviarDoc" class="btn btn-primary w-100" onclick="realizarUpload()">
+                                    <i class="bi bi-upload"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <small class="text-muted mt-2 d-block">Formatos: PDF, DOCX, JPG, PNG (Máx. 5MB).</small>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Seção 2: Listagem de Arquivos -->
+            <div class="documentos-lista">
+                <h6 class="fw-bold mb-3">Arquivos Presentes</h6>
+                <div id="lista_documentos_projeto" class="table-responsive">
+                    <!-- Tabela visual de exemplo (Será preenchida via JS futuramente) -->
+                    <table class="table table-sm table-hover align-middle">
+                        <thead class="table-light">
+                            <tr class="small text-muted">
+                                <th>NOME DO ARQUIVO</th>
+                                <th>DESCRIÇÃO</th>
+                                <th>DATA</th>
+                                <th class="text-center">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3" class="text-center py-3 text-muted">Nenhum documento anexado ainda.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button type="button" onclick="fecharQualquerModal()" class="btn btn-secondary px-4">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Sucesso (Feedback Visual) -->
+    <div id="modalSucessoDoc" class="modal-simpa" style="display: none;">
+        <div class="modal-content-simpa" style="max-width: 400px; text-align: center;">
+            <div class="mb-4">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                <h4 class="fw-bold mt-3">Documento enviado!</h4>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-success px-5 fw-bold" onclick="fecharSucessoDoc()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="modalConfirmarExclusaoDoc" class="modal-simpa" style="display: none;">
+        <div class="modal-content-simpa" style="max-width: 400px; text-align: center;">
+            <div class="mb-4">
+                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 4rem;"></i>
+                <h4 class="fw-bold mt-3">Tem certeza?</h4>
+                <p class="fw-bold mt-3">Esta ação não pode ser desfeita. O arquivo será excluído permanentemente.</p>
+            </div>
+            <div class="d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-light border px-4" onclick="fecharModalConfirmacaoDoc()">Cancelar</button>
+                <button type="button" id="btnConfirmarExclusaoReal" class="btn btn-danger px-4" onclick="executarExclusaoReal()">Excluir Agora</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/ajax-nav.js"></script>
 
     <script>
-        // 1. Variáveis Globais e Configurações
+        // 1. VARIÁVEIS GLOBAIS E CONFIGURAÇÕES
         let houveAlteracaoNoBanco = false;
         let fpInicio, fpFim;
-        let alunoParaRemover = null;
-        let projetoParaRemover = null;
+        let dadosOriginaisEdicao = ""; // Variável para controle do botão editar
+
+        // Variáveis de controle para exclusão
+        let itemParaRemover = null;
+        let projetoDeOrigem = null;
 
         const configFlatpickr = {
             locale: "pt",
@@ -482,13 +644,43 @@ if (!empty($_GET['ajax'])) {
             }
         };
 
+        function fecharAvisoDuplicado() {
+            const modalAviso = document.getElementById('modalAvisoDuplicado');
+            if (modalAviso) {
+                modalAviso.style.display = 'none'; // Fecha apenas este modal
+            }
+
+            // Importante: Não limpamos o backdrop aqui, porque o modal de alunos 
+            // ainda está aberto atrás e precisa que o fundo continue bloqueado.
+
+            // Opcional: focar novamente no campo de busca para facilitar para o professor
+            if (document.getElementById('busca_aluno')) {
+                document.getElementById('busca_aluno').focus();
+            }
+        }
+
         // 2. FUNÇÃO UNIVERSAL DE FECHAMENTO
         function fecharQualquerModal() {
-            const modais = ['modalProjeto', 'modalAlunos', 'modalConfirmacao'];
+            const modais = [
+                'modalEditarProjeto', 'modalNovoProjeto', 'modalAlunos', 'modalDocumentos',
+                'modalSucessoDoc', 'modalConfirmarExclusaoDoc',
+                'modalConfirmarExclusaoAluno', 'modalAvisoCH',
+                'modalAvisoSelecao', 'modalAvisoDuplicado'
+            ];
+
             modais.forEach(id => {
                 const m = document.getElementById(id);
-                if (m) m.style.display = 'none';
+                if (m) {
+                    // Se estiver usando Bootstrap 5, o ideal é usar a API dele para fechar
+                    m.style.display = 'none';
+                }
             });
+
+            // LIMPEZA CRÍTICA DO BOOTSTRAP (Remove o fundo escuro que trava o clique)
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
 
             if (document.getElementById('busca_aluno')) {
                 document.getElementById('busca_aluno').value = '';
@@ -496,121 +688,188 @@ if (!empty($_GET['ajax'])) {
                 document.getElementById('resultados_busca').style.display = 'none';
             }
 
-            if (houveAlteracaoNoBanco) {
-                window.location.reload();
-            }
-        }
-        // 4. Inicialização da Busca de Alunos (AJAX)
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputBusca = document.getElementById('busca_aluno');
-            const divResultados = document.getElementById('resultados_busca');
-            let debounceTimer;
-            let abortController;
-
-            if (inputBusca) {
-                inputBusca.addEventListener('input', function() {
-                    this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, "");
-                    let termo = this.value.trim().toLowerCase();
-                    if (termo.length < 1) {
-                        divResultados.style.display = 'none';
-                        return;
-                    }
-
-                    clearTimeout(debounceTimer);
-                    debounceTimer = setTimeout(() => {
-                        if (abortController) abortController.abort();
-                        abortController = new AbortController();
-                        fetch(`controllers/controller-professor/buscar-alunos.php?busca=${termo}`, {
-                                signal: abortController.signal
-                            })
-                            .then(res => res.text())
-                            .then(html => {
-                                divResultados.innerHTML = html;
-                                divResultados.style.display = 'block';
-                            });
-                    }, 300);
-                });
-            }
-            document.addEventListener('click', (e) => {
-                if (divResultados && e.target !== inputBusca) divResultados.style.display = 'none';
-            });
-        });
-
-        // 5. FUNÇÕES DE PROJETO (NOVO / EDITAR)
-        function inicializarComponentes() {
-            if (fpInicio) fpInicio.destroy();
-            if (fpFim) fpFim.destroy();
-
-            // Vincula o Flatpickr aos inputs
-            fpInicio = flatpickr("#data_inicio", configFlatpickr);
-            fpFim = flatpickr("#data_fim", configFlatpickr);
-
-            // VINCULA O CLIQUE DOS ÍCONES (Isso estava faltando!)
-            const btnI = document.getElementById('btn_inicio');
-            const btnF = document.getElementById('btn_fim');
-            if (btnI) btnI.onclick = () => fpInicio.open();
-            if (btnF) btnF.onclick = () => fpFim.open();
-
-            document.querySelectorAll('.date-mask').forEach(input => {
-                input.addEventListener('input', (e) => {
-                    let v = e.target.value.replace(/\D/g, "");
-                    if (v.length >= 5) v = v.replace(/^(\d{2})(\d{2})(\d{0,4}).*/, "$1/$2/$3");
-                    else if (v.length >= 3) v = v.replace(/^(\d{2})(\d{0,2}).*/, "$1/$2");
-                    e.target.value = v;
-                });
-            });
+            limparUrlSucesso();
         }
 
-        function abrirModal() {
-            const modal = document.getElementById('modalProjeto');
+        // 3. GESTÃO DE PROJETOS (NOVO E EDITAR)
+
+        // Função que verifica se algo mudou na edição
+        function verificarAlteracoesEdicao() {
+            const form = document.querySelector('#modalEditarProjeto form');
+            const btn = document.getElementById('btnAplicarAlteracoes');
+            const formData = new FormData(form);
+
+            let dadosAtuais = "";
+            for (let value of formData.values()) {
+                dadosAtuais += value;
+            }
+
+            if (dadosAtuais !== dadosOriginaisEdicao) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            } else {
+                btn.disabled = true;
+                btn.style.opacity = "0.6";
+            }
+        }
+
+        function abrirModal() { // Novo Projeto
+            const modal = document.getElementById('modalNovoProjeto');
             const form = modal.querySelector('form');
             form.reset();
-            modal.querySelector('h4').innerText = "Novo Projeto";
-            form.action = "controllers/controller-professor/cadastrar-projeto.php";
-            if (document.getElementById('id_projeto_edit')) document.getElementById('id_projeto_edit').remove();
             modal.style.display = 'flex';
             inicializarComponentes();
         }
 
-        // --- FUNÇÃO QUE ESTAVA FALTANDO ---
         function abrirModalEditar(projeto) {
-            const modal = document.getElementById('modalProjeto');
+            const modal = document.getElementById('modalEditarProjeto');
             const form = modal.querySelector('form');
+            const btn = document.getElementById('btnAplicarAlteracoes');
+
             form.reset();
-            modal.querySelector('h4').innerText = "Editar Projeto";
-            form.querySelector('button[type="submit"]').innerText = "Salvar Alterações"
-            form.action = "controllers/controller-professor/editar-projeto.php";
 
-            // Preencher campos
-            form.querySelector('input[name="titulo"]').value = projeto.titulo;
-            form.querySelector('input[name="area"]').value = projeto.area;
-            form.querySelector('textarea[name="descricao"]').value = projeto.descricao;
-            form.querySelector('select[name="id_tipo"]').value = projeto.id_tipo;
-            form.querySelector('input[name="carga_horaria"]').value = projeto.carga_horaria;
+            // 1. Preenche os campos
+            document.getElementById('edit_id_projeto').value = projeto.id_projeto;
+            document.getElementById('edit_titulo').value = projeto.titulo;
+            document.getElementById('edit_area').value = projeto.area;
+            document.getElementById('edit_descricao').value = projeto.descricao;
+            document.getElementById('edit_id_tipo').value = projeto.id_tipo;
+            document.getElementById('edit_carga_horaria').value = projeto.carga_horaria;
 
-            // Datas (converte de AAAA-MM-DD para DD/MM/AAAA)
             if (projeto.data_inicio) {
                 const d = projeto.data_inicio.split('-');
-                document.getElementById('data_inicio').value = `${d[2]}/${d[1]}/${d[0]}`;
+                document.getElementById('edit_data_inicio').value = `${d[2]}/${d[1]}/${d[0]}`;
             }
             if (projeto.data_fim) {
                 const d = projeto.data_fim.split('-');
-                document.getElementById('data_fim').value = `${d[2]}/${d[1]}/${d[0]}`;
+                document.getElementById('edit_data_fim').value = `${d[2]}/${d[1]}/${d[0]}`;
             }
 
-            // Criar ou atualizar o campo oculto com o ID do projeto
-            let inputId = document.getElementById('id_projeto_edit') || document.createElement('input');
-            inputId.type = 'hidden';
-            inputId.name = 'id_projeto';
-            inputId.id = 'id_projeto_edit';
-            inputId.value = projeto.id_projeto;
-            form.appendChild(inputId);
+            // 2. Captura o estado original IMEDIATAMENTE após preencher
+            const data = new FormData(form);
+            dadosOriginaisEdicao = "";
+            for (let value of data.values()) {
+                dadosOriginaisEdicao += value;
+            }
 
+            // 3. Configura o botão e mostra o modal
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
             modal.style.display = 'flex';
+
             inicializarComponentes();
+
+            // 4. Ativa os ouvintes de mudança
+            form.oninput = verificarAlteracoesEdicao;
+            form.onchange = verificarAlteracoesEdicao;
         }
 
-        // 6. FUNÇÕES DE ALUNOS
+        // Spinners nos Submits de Projeto
+        document.querySelector('#modalNovoProjeto form').onsubmit = function() {
+            const btn = document.getElementById('btnSalvarProjeto');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Cadastrando...`;
+        };
+
+        document.querySelector('#modalEditarProjeto form').onsubmit = function() {
+            const btn = document.getElementById('btnAplicarAlteracoes');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Salvando...`;
+        };
+
+        // 4. GESTÃO DE DOCUMENTOS E ALUNOS (Mantido seu código original que funciona)
+        function abrirModalDocumentos(idProjeto) {
+            const modal = document.getElementById('modalDocumentos');
+            if (modal) {
+                modal.setAttribute('data-id-projeto', idProjeto);
+                modal.style.display = 'flex';
+                document.querySelector('#lista_documentos_projeto tbody').innerHTML = '<tr><td colspan="4" class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
+                listarDocumentos(idProjeto);
+            }
+        }
+
+        function realizarUpload() {
+            const btn = document.getElementById('btnEnviarDoc');
+            const idProjeto = document.getElementById('modalDocumentos').getAttribute('data-id-projeto');
+            const inputArquivo = document.querySelector('#formUploadDoc input[type="file"]');
+            const inputDesc = document.querySelector('#formUploadDoc input[name="descricao"]');
+
+            if (!inputArquivo.files[0]) {
+                alert("Por favor, selecione um arquivo.");
+                return;
+            }
+
+            const conteudoOriginal = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
+            const formData = new FormData();
+            formData.append('id_projeto', idProjeto);
+            formData.append('arquivo', inputArquivo.files[0]);
+            formData.append('descricao', inputDesc.value);
+
+            fetch('controllers/controller-professor/upload-documento.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        inputArquivo.value = '';
+                        inputDesc.value = '';
+                        document.getElementById('modalSucessoDoc').style.display = 'flex';
+                        listarDocumentos(idProjeto);
+                    } else alert("Erro: " + data.mensagem);
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = conteudoOriginal;
+                });
+        }
+
+        function listarDocumentos(idProjeto) {
+            fetch(`controllers/controller-professor/buscar-documentos.php?id_projeto=${idProjeto}`)
+                .then(res => res.text())
+                .then(html => {
+                    document.querySelector('#lista_documentos_projeto tbody').innerHTML = html;
+                })
+                .catch(() => {
+                    document.querySelector('#lista_documentos_projeto tbody').innerHTML = "<tr><td colspan='4' class='text-center text-danger'>Erro ao carregar lista.</td></tr>";
+                });
+        }
+
+        function removerDocumento(idDoc, idProj) {
+            itemParaRemover = idDoc;
+            projetoDeOrigem = idProj;
+            document.getElementById('modalConfirmarExclusaoDoc').style.display = 'flex';
+        }
+
+        function executarExclusaoReal() {
+            if (!itemParaRemover) return;
+            const btn = document.getElementById('btnConfirmarExclusaoReal');
+            const original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Excluindo...`;
+            const formData = new FormData();
+            formData.append('id_documento', itemParaRemover);
+            fetch('controllers/controller-professor/excluir-documento.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        document.getElementById('modalConfirmarExclusaoDoc').style.display = 'none';
+                        listarDocumentos(projetoDeOrigem);
+                    } else alert(data.mensagem);
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = original;
+                    itemParaRemover = null;
+                });
+        }
+
         function abrirModalAlunos(idProjeto) {
             const modal = document.getElementById('modalAlunos');
             const container = document.getElementById('lista_alunos_projeto');
@@ -624,7 +883,55 @@ if (!empty($_GET['ajax'])) {
                 });
         }
 
+        function removerAluno(idUsuario, idProjeto) {
+            itemParaRemover = idUsuario;
+            projetoDeOrigem = idProjeto || document.getElementById('modalAlunos').getAttribute('data-id-projeto');
+            document.getElementById('modalConfirmarExclusaoAluno').style.display = 'flex';
+        }
+
+        function executarExclusaoAlunoReal() {
+            if (!itemParaRemover || !projetoDeOrigem) return;
+            const btn = document.getElementById('btnConfirmarExclusaoAlunoReal');
+            const original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Removendo...`;
+
+            const formData = new FormData();
+            formData.append('acao', 'remover');
+            formData.append('id_usuario', itemParaRemover);
+            formData.append('id_projeto', projetoDeOrigem);
+
+            fetch('controllers/controller-professor/gerenciar-participacao.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        // Em vez de recarregar a página inteira, apenas fechamos o modal de confirmação
+                        // e atualizamos a lista de alunos dentro do modal principal.
+                        document.getElementById('modalConfirmarExclusaoAluno').style.display = 'none';
+
+                        // Atualiza a lista de alunos no modal (Isso é o que você queria!)
+                        abrirModalAlunos(projetoDeOrigem);
+
+                        // Avisa que houve alteração para quando fechar tudo, se quiser, atualizar a home
+                        houveAlteracaoNoBanco = true;
+                    } else alert(data.mensagem);
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = original;
+                    itemParaRemover = null;
+                });
+        }
+
         function vincularAluno(idUsuario, idProjeto, chAluno) {
+            const btn = document.getElementById('btnAdicionarAluno');
+            const conteudoOriginal = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+
             const formData = new FormData();
             formData.append('acao', 'vincular');
             formData.append('id_usuario', idUsuario);
@@ -639,76 +946,57 @@ if (!empty($_GET['ajax'])) {
                 .then(data => {
                     if (data.sucesso) {
                         houveAlteracaoNoBanco = true;
-                        // Reset de sucesso
                         resetarEstadoBusca();
+                        // Atualiza a lista de alunos imediatamente sem fechar o modal ou dar F5
                         abrirModalAlunos(idProjeto);
-                    } else {
-                        // Se houver erro, mostramos o modal e resetamos o estado inicial
-                        if (data.mensagem.includes("já está cadastrado")) {
-                            document.getElementById('modalAvisoDuplicado').style.display = 'flex';
-                        } else {
-                            alert(data.mensagem || "Erro ao vincular.");
-                        }
-
-                        // RESETAR PARA O ESTADO INICIAL MESMO EM CASO DE ERRO
-                        resetarEstadoBusca();
-                    }
-                });
-        }
-
-        function resetarEstadoBusca() {
-            const buscaInput = document.getElementById('busca_aluno');
-            const idInput = document.getElementById('id_aluno_selecionado');
-            const chInput = document.getElementById('ch_aluno');
-            const resultados = document.getElementById('resultados_busca');
-
-            if (buscaInput) buscaInput.value = '';
-            if (idInput) idInput.value = '';
-            if (chInput) chInput.value = '';
-            if (resultados) resultados.style.display = 'none';
-
-            // Devolve o foco para o campo de busca para facilitar a nova tentativa
-            if (buscaInput) buscaInput.focus();
-        }
-
-        function removerAluno(idUsuario, idProjeto) {
-            alunoParaRemover = idUsuario;
-            projetoParaRemover = idProjeto || document.getElementById('modalAlunos').getAttribute('data-id-projeto');
-            document.getElementById('modalConfirmacao').style.display = 'flex';
-            document.getElementById('btnConfirmarRemocao').onclick = executarExclusaoReal;
-        }
-
-        function fecharConfirmacao() {
-            document.getElementById('modalConfirmacao').style.display = 'none';
-        }
-
-        function executarExclusaoReal() {
-            const idProjetoAtual = document.getElementById('modalAlunos').getAttribute('data-id-projeto');
-            const formData = new FormData();
-            formData.append('acao', 'remover');
-            formData.append('id_usuario', alunoParaRemover);
-            formData.append('id_projeto', idProjetoAtual);
-            fetch('controllers/controller-professor/gerenciar-participacao.php', {
-                    method: 'POST',
-                    body: formData
+                    } else if (data.mensagem.includes("já está cadastrado")) {
+                        document.getElementById('modalAvisoDuplicado').style.display = 'flex';
+                    } else alert(data.mensagem);
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.sucesso) {
-                        houveAlteracaoNoBanco = true;
-                        fecharConfirmacao();
-                        abrirModalAlunos(idProjetoAtual);
-                    }
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = conteudoOriginal;
                 });
         }
 
-        // Compatibilidade de nomes de funções
-        function fecharModal() {
-            fecharQualquerModal();
-        }
+        // 5. AUXILIARES E EVENTOS
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputBusca = document.getElementById('busca_aluno');
+            const divResultados = document.getElementById('resultados_busca');
+            let debounceTimer;
 
-        function fecharModalAlunos() {
-            fecharQualquerModal();
+            if (inputBusca) {
+                inputBusca.addEventListener('input', function() {
+                    this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, "");
+                    let termo = this.value.trim().toLowerCase();
+                    if (termo.length < 1) {
+                        divResultados.style.display = 'none';
+                        return;
+                    }
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        fetch(`controllers/controller-professor/buscar-alunos.php?busca=${termo}`)
+                            .then(res => res.text())
+                            .then(html => {
+                                divResultados.innerHTML = html;
+                                divResultados.style.display = 'block';
+                            });
+                    }, 300);
+                });
+            }
+            document.addEventListener('click', (e) => {
+                if (divResultados && e.target !== inputBusca) divResultados.style.display = 'none';
+            });
+        });
+
+        function inicializarComponentes() {
+            if (fpInicio) fpInicio.destroy();
+            if (fpFim) fpFim.destroy();
+            // Inicializa para ambos os modais baseando-se no ID atual que estiver visível
+            if (document.getElementById('data_inicio')) fpInicio = flatpickr("#data_inicio", configFlatpickr);
+            if (document.getElementById('data_fim')) fpFim = flatpickr("#data_fim", configFlatpickr);
+            if (document.getElementById('edit_data_inicio')) fpInicio = flatpickr("#edit_data_inicio", configFlatpickr);
+            if (document.getElementById('edit_data_fim')) fpFim = flatpickr("#edit_data_fim", configFlatpickr);
         }
 
         function selecionarAluno(nome, id) {
@@ -721,30 +1009,18 @@ if (!empty($_GET['ajax'])) {
             const idUsuario = document.getElementById('id_aluno_selecionado').value;
             const chAluno = document.getElementById('ch_aluno').value;
             const idProjeto = document.getElementById('modalAlunos').getAttribute('data-id-projeto');
-            const textoBusca = document.getElementById('busca_aluno').value.trim();
-
-            // ERRO 1: Digitou mas não clicou na sugestão (ID vazio)
-            if (textoBusca !== "" && !idUsuario) {
-                document.getElementById('modalAvisoSelecao').style.display = 'flex';
-                return;
-            }
-
-            // ERRO 2: Não digitou nada
-            if (!idUsuario) {
-                document.getElementById('modalAvisoSelecao').style.display = 'flex';
-                return;
-            }
-
-            // ERRO 3: Carga Horária vazia (Usa o modal que criamos antes)
-            if (!chAluno || chAluno <= 0) {
-                document.getElementById('modalAvisoCH').style.display = 'flex';
-                return;
-            }
-
+            if (!idUsuario) return document.getElementById('modalAvisoSelecao').style.display = 'flex';
+            if (!chAluno || chAluno <= 0) return document.getElementById('modalAvisoCH').style.display = 'flex';
             vincularAluno(idUsuario, idProjeto, chAluno);
         }
 
-        // Sidebar
+        function resetarEstadoBusca() {
+            document.getElementById('busca_aluno').value = '';
+            document.getElementById('id_aluno_selecionado').value = '';
+            document.getElementById('ch_aluno').value = '';
+            document.getElementById('resultados_busca').style.display = 'none';
+        }
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -757,47 +1033,19 @@ if (!empty($_GET['ajax'])) {
             }
         }
 
-        function closeSidebar() {
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('active');
-        }
-
-        function fecharAvisoCH() {
-            document.getElementById('modalAvisoCH').style.display = 'none';
-            // Opcional: foca no campo de carga horária para facilitar a vida do professor
-            document.getElementById('ch_aluno').focus();
-        }
-
-        function fecharAvisoSelecao() {
-            document.getElementById('modalAvisoSelecao').style.display = 'none';
-            document.getElementById('busca_aluno').focus();
-        }
-
-        function fecharAvisoDuplicado() {
-            document.getElementById('modalAvisoDuplicado').style.display = 'none';
+        function limparUrlSucesso() {
+            if (window.location.search.includes('sucesso')) {
+                const params = new URLSearchParams(window.location.search);
+                const currentPage = params.get('page') || 'pagina-inicial';
+                const novaUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?page=" + currentPage;
+                window.history.replaceState({
+                    path: novaUrl
+                }, '', novaUrl);
+            }
         }
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === "Escape") {
-                const modalConfirm = document.getElementById('modalConfirmacao');
-                const modalAvisoCH = document.getElementById('modalAvisoCH');
-                const modalAvisoSel = document.getElementById('modalAvisoSelecao');
-                const modalDuplicado = document.getElementById('modalAvisoDuplicado'); // Adicionado
-
-                // Usamos uma estrutura única de if/else if
-                if (modalConfirm && modalConfirm.style.display === 'flex') {
-                    fecharConfirmacao();
-                } else if (modalAvisoCH && modalAvisoCH.style.display === 'flex') {
-                    fecharAvisoCH();
-                } else if (modalAvisoSel && modalAvisoSel.style.display === 'flex') {
-                    fecharAvisoSelecao();
-                } else if (modalDuplicado && modalDuplicado.style.display === 'flex') {
-                    fecharAvisoDuplicado(); // Adicionado na sequência correta
-                } else {
-                    // Se nenhum dos avisos estiver aberto, tenta fechar os modais principais (Projeto/Alunos)
-                    fecharQualquerModal();
-                }
-            }
+            if (e.key === "Escape") fecharQualquerModal();
         });
     </script>
 

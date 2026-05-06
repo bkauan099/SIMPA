@@ -13,11 +13,14 @@ if (isset($_GET['busca'])) {
         echo "<div class='list-group-item text-muted small'>Nenhum aluno encontrado</div>";
     } else {
         foreach ($sugestoes as $s) {
-            echo "<a href='javascript:void(0)' class='list-group-item list-group-item-action' 
-             onclick=\"selecionarAluno('" . htmlspecialchars($s['nome']) . "', {$s['id_usuario']})\">
-            <div class='fw-bold'>" . htmlspecialchars($s['nome']) . "</div>
-            <small class='text-muted'>Matrícula: " . htmlspecialchars($s['matricula']) . "</small>
-          </a>";
+            // Adicionamos a classe 'item-aluno-lista' e guardamos os dados em 'data-'
+            echo "<button type='button' class='list-group-item list-group-item-action border-0 py-3 item-aluno-lista' 
+          data-id='{$s['id_usuario']}' 
+          data-nome='" . htmlspecialchars($s['nome']) . "'
+          style='pointer-events: auto !important;'>
+            <div class='fw-bold text-dark' style='pointer-events: none;'>" . htmlspecialchars($s['nome']) . "</div>
+            <small class='text-muted' style='pointer-events: none;'>Matrícula: " . htmlspecialchars($s['matricula']) . "</small>
+          </button>";
         }
     }
     exit;
