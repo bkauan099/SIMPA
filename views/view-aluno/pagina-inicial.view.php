@@ -2,8 +2,8 @@
     <div class="row g-3" style="min-height:0;">
 
         <!-- ESQUERDA: Tarefas e Eventos -->
-        <div class="col-lg-8" style="display:flex;flex-direction:column;">
-            <div class="card card-custom p-4" style="flex:1;">
+        <div class="col-lg-8 d-flex flex-column">
+            <div class="card card-custom p-4 flex-fill">
                 <h4 class="mb-3">Tarefas e Eventos</h4>
 
                 <!-- Mostra o projeto ativo do aluno, ou uma mensagem padrão -->
@@ -72,7 +72,7 @@
         </div>
 
         <!-- DIREITA: Calendário + Carga Horária -->
-        <div class="col-lg-4" style="display:flex;flex-direction:column;gap:16px;">
+        <div class="col-lg-4 d-flex flex-column gap-3">
 
             <!-- CALENDÁRIO (gerado pelo JavaScript) -->
             <div class="card card-custom p-3">
@@ -86,7 +86,7 @@
             </div>
 
             <!-- CARGA HORÁRIA — dado real do banco -->
-            <div class="card card-custom p-3 text-center" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+            <div class="card card-custom p-3 text-center flex-fill d-flex flex-column justify-content-center">
                 <h6><i class="bi bi-clock"></i> Carga Horária</h6>
                 <h2 class="mb-0"><?= $cargaHoraria ?>h</h2>
                 <small class="text-muted">Acumuladas</small>
@@ -97,30 +97,32 @@
 </div>
 
 <script>
-// PHP monta um objeto onde a chave é o dia e o valor é a lista de itens daquele dia
-const compromissosPorDia = <?php
+window.compromissosPorDia = <?php
     $mapa = [];
     $mesAtual = date('Y-m');
     foreach ($tarefas as $item) {
         if (str_starts_with($item['data'], $mesAtual)) {
             $dia = (int) date('j', strtotime($item['data']));
             $hora = $item['hora'] ? substr($item['hora'], 0, 5) : '';
-            $mapa[$dia][] = '📌 ' . $item['titulo'] . ($hora ? ' — ' . $hora : '');
+            $icone = !empty($item['concluido']) ? '✅' : '📌';
+            $mapa[$dia][] = $icone . ' ' . $item['titulo'] . ($hora ? ' — ' . $hora : '');
         }
     }
     foreach ($eventos as $item) {
         if (str_starts_with($item['data'], $mesAtual)) {
             $dia = (int) date('j', strtotime($item['data']));
             $hora = $item['hora'] ? substr($item['hora'], 0, 5) : '';
-            $mapa[$dia][] = '🎤 ' . $item['titulo'] . ($hora ? ' — ' . $hora : '');
+            $icone = !empty($item['concluido']) ? '✅' : '📌';
+            $mapa[$dia][] = $icone . ' ' . $item['titulo'] . ($hora ? ' — ' . $hora : '');
         }
     }
     echo json_encode($mapa);
 ?>;
 
-function gerarCalendario() {
+window.gerarCalendario = function() {
     const calendar = document.getElementById('calendar');
     const mesAtualTexto = document.getElementById('mesAtual');
+    if (!calendar || !mesAtualTexto) return;
     const hoje = new Date();
     const ano = hoje.getFullYear();
     const mes = hoje.getMonth();
@@ -135,22 +137,22 @@ function gerarCalendario() {
     }
     for (let dia = 1; dia <= diasNoMes; dia++) {
         const isHoje = dia === hoje.getDate();
-        const temCompromisso = compromissosPorDia[dia] !== undefined;
+        const temCompromisso = window.compromissosPorDia[dia] !== undefined;
         const dot = temCompromisso ? '<span class="dot-compromisso"></span>' : '';
         calendar.innerHTML += `<div class="calendar-day${isHoje ? ' today' : ''}" onclick="showDay(${dia})"><span>${dia}</span>${dot}</div>`;
     }
-}
+};
 
-function showDay(dia) {
-    const itens = compromissosPorDia[dia];
+window.showDay = function(dia) {
+    const itens = window.compromissosPorDia[dia];
     const corpo = itens
         ? itens.map(i => `<div class="mb-1">${i}</div>`).join('')
         : 'Nenhuma atividade neste dia.';
     document.getElementById('modalContent').innerHTML = `<strong>Dia ${dia}</strong><br><br>${corpo}`;
     new bootstrap.Modal(document.getElementById('dayModal')).show();
-}
+};
 
-setTimeout(gerarCalendario, 100);
+setTimeout(window.gerarCalendario, 300);
 </script>
 
 <!-- MODAL -->

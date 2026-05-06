@@ -47,7 +47,7 @@
 <div class="content-card">
     <h5 class="fw-bold mb-3">Histórico de Participações</h5>
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+        <table class="table table-hover align-middle w-100">
             <thead class="table-light">
                 <tr class="text-muted small">
                     <th>PROJETO</th>

@@ -3,7 +3,7 @@
         <h3 class="fw-bold mb-1">Gerenciar Projetos</h3>
         <p class="text-muted mb-0">Projetos em que você participa</p>
     </div>
-    <button class="btn btn-primary"><i class="bi bi-folder-plus me-2"></i>Solicitar Novo Projeto</button>
+    <button class="btn btn-primary" onclick="carregarPagina('seletivos')"><i class="bi bi-megaphone me-2"></i>Solicitar Participação em Projeto</button>
 </div>
 
 <div class="row g-3 mb-4">
@@ -36,7 +36,7 @@
 <div class="content-card">
     <h5 class="fw-bold mb-3">Meus Projetos</h5>
     <div class="table-responsive">
-        <table class="table table-hover align-middle">
+        <table class="table table-hover align-middle w-100">
             <thead class="table-light">
                 <tr class="text-muted small">
                     <th>TÍTULO</th>

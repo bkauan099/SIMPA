@@ -82,7 +82,7 @@ class Aluno {
 
     public function obterAgenda($id_usuario) {
         $sql = "
-            SELECT titulo, data, hora, tipo
+            SELECT titulo, data, hora, tipo, concluido
             FROM agenda_items
             WHERE id_usuario = :id
             ORDER BY data ASC
@@ -118,6 +118,76 @@ class Aluno {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([':id'=>$id_usuario]);
             return $stmt->fetchALL(PDO::FETCH_ASSOC);
+    }
+
+    public function obterEstatisticasTarefas($id_usuario) {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND tipo = 'tarefa' AND (concluido = false OR concluido IS NULL) AND data >= CURRENT_DATE");
+        $stmt->execute([':id' => $id_usuario]);
+        $pendentes = $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND tipo = 'tarefa' AND (concluido = false OR concluido IS NULL) AND data < CURRENT_DATE AND data >= CURRENT_DATE - INTERVAL '7 days'");
+        $stmt->execute([':id' => $id_usuario]);
+        $naoConcluidos = $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND tipo = 'tarefa' AND concluido = true AND data >= CURRENT_DATE - INTERVAL '7 days'");
+        $stmt->execute([':id' => $id_usuario]);
+        $concluidos = $stmt->fetchColumn();
+
+        return [
+            'pendentes'      => $pendentes,
+            'nao_concluidos' => $naoConcluidos,
+            'concluidos'     => $concluidos,
+        ];
+    }
+
+    public function obterEstatisticasCronograma($id_usuario) {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND (concluido = false OR concluido IS NULL) AND data >= CURRENT_DATE");
+        $stmt->execute([':id' => $id_usuario]);
+        $proximos = $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND (concluido = false OR concluido IS NULL) AND data < CURRENT_DATE AND data >= CURRENT_DATE - INTERVAL '7 days'");
+        $stmt->execute([':id' => $id_usuario]);
+        $naoConcluidos = $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND concluido = true AND data >= CURRENT_DATE - INTERVAL '7 days'");
+        $stmt->execute([':id' => $id_usuario]);
+        $concluidos = $stmt->fetchColumn();
+
+        return ['proximos' => $proximos, 'nao_concluidos' => $naoConcluidos, 'concluidos' => $concluidos];
+    }
+
+    public function listarCronograma($id_usuario) {
+        $sql = "
+            SELECT id, titulo, descricao, tipo, data, hora, concluido
+            FROM agenda_items
+            WHERE id_usuario = :id
+              AND data >= CURRENT_DATE - INTERVAL '7 days'
+            ORDER BY data ASC
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id_usuario]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function toggleConcluido($id, $id_usuario) {
+        $sql = "UPDATE agenda_items SET concluido = NOT concluido WHERE id = :id AND id_usuario = :id_usuario RETURNING concluido";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id, ':id_usuario' => $id_usuario]);
+        return (bool) $stmt->fetchColumn();
+    }
+
+    public function listarAgendaAberta($id_usuario) {
+        $sql = "
+            SELECT id, titulo, descricao, tipo, data, hora, concluido
+            FROM agenda_items
+            WHERE id_usuario = :id
+              AND tipo = 'tarefa'
+              AND data >= CURRENT_DATE - INTERVAL '7 days'
+            ORDER BY data ASC
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id_usuario]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>
