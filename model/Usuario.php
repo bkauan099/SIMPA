@@ -11,18 +11,21 @@ class Usuario
     // Busca alunos para o dropdown de sugestões (Filtro por letras)
     public function buscarAlunosPorNome($termo)
     {
-        // Usamos "$termo%" para buscar quem começa com aquela(s) letra(s)
-        // Isso aproveita melhor os índices do PostgreSQL
+        // 1. Usamos unaccent no nome e no termo para ignorar acentos e cedilha
+        // 2. O ILIKE continua tratando o Case Insensitive (maiusc/minusc)
         $sql = "SELECT id_usuario, nome, matricula, curso 
             FROM usuarios 
-            WHERE nome ILIKE ? AND perfil = 'aluno' 
+            WHERE unaccent(nome) ILIKE unaccent(?) AND perfil = 'aluno' 
             ORDER BY nome ASC 
             LIMIT 6";
+
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(["$termo%"]); // O sinal de % apenas no final
+
+        // Mantemos o % no final para performance (busca por início do nome)
+        $stmt->execute(["$termo%"]);
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
     // Vincula um aluno ao projeto (Tabela participacao)
     public function vincularAoProjeto($id_usuario, $id_projeto, $carga_horaria)
     {

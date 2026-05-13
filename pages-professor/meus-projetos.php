@@ -150,7 +150,7 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
                                 </button>
                                 <button class="btn btn-sm btn-outline-info ms-1"
                                     title="Documentos"
-                                    onclick="abrirModalDocumentos(<?= $projeto['id_projeto'] ?>)">
+                                    onclick="abrirModalDocumentos(<?= $projeto['id_projeto'] ?>, '<?= addslashes($projeto['titulo']) ?>')">
                                     <i class="bi bi-file-earmark-text"></i>
                                 </button>
                         </tr>

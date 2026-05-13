@@ -3,38 +3,59 @@ session_start();
 require_once '../../conexao/conexao.php';
 require_once '../../model/Projeto.php';
 
-// 1. Definição da função de formatação (Pode ficar no topo do arquivo)
+/**
+ * Converte data de dd/mm/aaaa para aaaa-mm-dd (formato do banco)
+ */
 function formatarDataParaBanco($data)
 {
     if (empty($data)) return null;
     $partes = explode('/', $data);
     if (count($partes) == 3) {
-        return "{$partes[2]}-{$partes[1]}-{$partes[0]}"; // Transforma dd/mm/aaaa em aaaa-mm-dd
+        return "{$partes[2]}-{$partes[1]}-{$partes[0]}";
     }
     return null;
 }
 
+// Define que a resposta deste arquivo será sempre um JSON
+header('Content-Type: application/json; charset=utf-8');
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $projetoModel = new Projeto($pdo);
+    try {
+        $projetoModel = new Projeto($pdo);
 
-    // 2. Formatação das datas vindas do formulário
-    // Isso garante que o SQL não dê erro de tipo de dado
-    $_POST['data_inicio'] = formatarDataParaBanco($_POST['data_inicio']);
-    $_POST['data_fim'] = formatarDataParaBanco($_POST['data_fim']);
+        // Formatação das datas para evitar erro de tipo no SQL
+        $dados = $_POST;
+        $dados['data_inicio'] = formatarDataParaBanco($dados['data_inicio'] ?? '');
+        $dados['data_fim'] = formatarDataParaBanco($dados['data_fim'] ?? '');
 
-    // 3. Pegar o ID real do professor logado (ou manter o 5 para teste se preferir)
-    $id_usuario_logado = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : 5;
+        // Identifica o usuário (Professor)
+        $id_usuario_logado = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : 5;
 
-    // Chamamos o método cadastrar passando os dados formatados
-    if ($projetoModel->cadastrar($_POST, $id_usuario_logado)) {
-
-        $origem = isset($_POST['pagina_origem']) ? $_POST['pagina_origem'] : 'meus-projetos';
-
-        // Redireciona com a mensagem de sucesso
-        header("Location: ../../professor-page.php?page=" . $origem . "&sucesso=1");
-    } else {
-        $origem = isset($_POST['pagina_origem']) ? $_POST['pagina_origem'] : 'meus-projetos';
-        header("Location: ../../professor-page.php?page=" . $origem . "&erro=1");
+        // Executa o cadastro
+        if ($projetoModel->cadastrar($dados, $id_usuario_logado)) {
+            echo json_encode([
+                'sucesso' => true,
+                'mensagem' => 'Projeto cadastrado com sucesso!'
+            ]);
+        } else {
+            echo json_encode([
+                'sucesso' => false,
+                'mensagem' => 'Erro interno ao salvar no banco de dados.'
+            ]);
+        }
+    } catch (Exception $e) {
+        // Captura erros inesperados e envia como JSON
+        echo json_encode([
+            'sucesso' => false,
+            'mensagem' => 'Erro no servidor: ' . $e->getMessage()
+        ]);
     }
+    exit;
+} else {
+    // Caso tentem acessar o arquivo diretamente via URL
+    echo json_encode([
+        'sucesso' => false,
+        'mensagem' => 'Método de requisição inválido.'
+    ]);
     exit;
 }

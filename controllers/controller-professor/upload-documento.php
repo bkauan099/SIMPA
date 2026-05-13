@@ -35,23 +35,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nomeNoServidor = uniqid() . "." . $extensao;
     $caminhoFinal = $diretorioDestino . $nomeNoServidor;
 
+    // ... (seu código de upload anterior permanece igual)
+
+    // ... (parte inicial do upload igual)
+
     if (move_uploaded_file($arquivo['tmp_name'], $caminhoFinal)) {
         try {
-            $sql = "INSERT INTO documentos_projeto (id_projeto, nome_original, caminho_arquivo, descricao) 
-                    VALUES (:id_projeto, :nome, :caminho, :descricao)";
+            $titulo = !empty($_POST['titulo']) ? $_POST['titulo'] : null;
+            $nomeOriginal = $arquivo['name'];
+            $caminhoParaBanco = "uploads/documentos/" . $nomeNoServidor;
+
+            // Inserindo na coluna 'titulo' e ignorando 'descricao'
+            $sql = "INSERT INTO documentos_projeto (id_projeto, nome_original, caminho_arquivo, titulo, status, data_upload) 
+                VALUES (:id_projeto, :nome_orig, :caminho, :titulo, 'pendente', NOW())";
+
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':id_projeto' => $id_projeto,
-                ':nome' => $nomeOriginal,
-                ':caminho' => $nomeNoServidor,
-                ':descricao' => $descricao
+                ':nome_orig'  => $nomeOriginal,
+                ':caminho'    => $caminhoParaBanco,
+                ':titulo'     => $titulo
             ]);
 
             echo json_encode(['sucesso' => true]);
         } catch (PDOException $e) {
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Erro no banco: ' . $e->getMessage()]);
+            if (file_exists($caminhoFinal)) unlink($caminhoFinal);
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
         }
-    } else {
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao mover o arquivo para a pasta.']);
     }
 }

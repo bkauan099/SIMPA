@@ -196,6 +196,28 @@ if (!empty($_GET['ajax'])) {
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             border: none;
         }
+
+        #resultados_busca {
+            display: none;
+            position: absolute;
+            top: 100%;
+            /* Cola logo abaixo do input */
+            left: 0;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white !important;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            /* O SEGREDO ESTÁ AQUI: */
+            z-index: 11000 !important;
+            pointer-events: auto !important;
+        }
+
+        #resultados_busca .list-group-item {
+            cursor: pointer !important;
+            pointer-events: auto !important;
+        }
     </style>
 </head>
 
@@ -263,7 +285,8 @@ if (!empty($_GET['ajax'])) {
                             <i class="bi bi-check-circle-fill me-2 fs-5"></i>
                             <div><strong>Projeto cadastrado com sucesso!</strong></div>
                         </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="limparUrlSucesso()"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+                            onclick="limparUrlSucesso()"></button>
                     </div>
                 <?php endif; ?>
 
@@ -286,7 +309,7 @@ if (!empty($_GET['ajax'])) {
                 <button type="button" onclick="fecharQualquerModal()" class="btn-close"></button>
             </div>
 
-            <form action="controllers/controller-professor/cadastrar-projeto.php" method="POST">
+            <form id="formNovoProjeto" action="controllers/controller-professor/cadastrar-projeto.php" method="POST">
                 <input type="hidden" name="pagina_origem" id="input_pagina_origem" value="<?= $page ?>">
 
                 <div class="mb-3">
@@ -348,10 +371,32 @@ if (!empty($_GET['ajax'])) {
                 </div>
 
                 <div class="d-flex justify-content-end gap-2">
-                    <button type="button" onclick="fecharQualquerModal()" class="btn btn-light border">Cancelar</button>
-                    <button type="submit" id="btnSalvarProjeto" class="btn btn-primary">Cadastrar Projeto</button>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" onclick="fecharQualquerModal()"
+                            class="btn btn-light border">Cancelar</button>
+
+                        <!-- Mude de type="submit" para type="button" e adicione o onclick -->
+                        <button type="button" id="btnSalvarProjeto" onclick="cadastrarProjeto()"
+                            class="btn btn-primary">
+                            Cadastrar Projeto
+                        </button>
+                    </div>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal de Sucesso Global - Coloque no professor-page.php -->
+    <div id="modalSucessoCadastro" class="modal-simpa" style="display: none;">
+        <div class="modal-content-simpa" style="max-width: 400px; text-align: center;">
+            <div class="mb-4">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                <h4 class="fw-bold mt-3">Sucesso!</h4>
+                <p id="mensagemSucessoModal" class="text-muted">Projeto adicionado.</p>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-success px-5 fw-bold" onclick="finalizarProcessoSimpa()">OK</button>
+            </div>
         </div>
     </div>
 
@@ -359,7 +404,7 @@ if (!empty($_GET['ajax'])) {
     <div id="modalEditarProjeto" class="modal-container" style="display: none;">
         <div class="modal-content">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="m-0" style="color: var(--azul-uema); font-weight: 700;">Editar Projeto</h4>
+                <h4 class="m-0 text-primary fw-bold">Editar Projeto</h4>
                 <button type="button" onclick="fecharQualquerModal()" class="btn-close"></button>
             </div>
 
@@ -397,15 +442,19 @@ if (!empty($_GET['ajax'])) {
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Data de Início</label>
                         <div class="input-group">
-                            <input type="text" name="data_inicio" id="edit_data_inicio" class="form-control date-mask" placeholder="dd/mm/aaaa" maxlength="10">
-                            <span class="input-group-text btn-calendar" id="btn_edit_inicio" style="cursor: pointer;"><i class="bi bi-calendar3"></i></span>
+                            <input type="text" name="data_inicio" id="edit_data_inicio" class="form-control date-mask"
+                                placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-text btn-calendar" id="btn_edit_inicio" style="cursor: pointer;"><i
+                                    class="bi bi-calendar3"></i></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-semibold">Data de Término</label>
                         <div class="input-group">
-                            <input type="text" name="data_fim" id="edit_data_fim" class="form-control date-mask" placeholder="dd/mm/aaaa" maxlength="10">
-                            <span class="input-group-text btn-calendar" id="btn_edit_fim" style="cursor: pointer;"><i class="bi bi-calendar3"></i></span>
+                            <input type="text" name="data_fim" id="edit_data_fim" class="form-control date-mask"
+                                placeholder="dd/mm/aaaa" maxlength="10">
+                            <span class="input-group-text btn-calendar" id="btn_edit_fim" style="cursor: pointer;"><i
+                                    class="bi bi-calendar3"></i></span>
                         </div>
                     </div>
                 </div>
@@ -414,7 +463,8 @@ if (!empty($_GET['ajax'])) {
                     <label class="form-label fw-semibold">Carga Horária (Horas)</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                        <input type="number" name="carga_horaria" id="edit_carga_horaria" class="form-control" min="1" required>
+                        <input type="number" name="carga_horaria" id="edit_carga_horaria" class="form-control" min="1"
+                            required>
                     </div>
                 </div>
 
@@ -438,15 +488,18 @@ if (!empty($_GET['ajax'])) {
                     <h6 class="fw-bold mb-3">Adicionar Novo Aluno</h6>
                     <div class="row g-2">
                         <div class="col-md-7 position-relative">
-                            <input type="text" id="busca_aluno" class="form-control" placeholder="Nome ou matrícula..." autocomplete="off">
+                            <input type="text" id="busca_aluno" class="form-control" placeholder="Nome ou matrícula..."
+                                autocomplete="off">
                             <input type="hidden" id="id_aluno_selecionado">
-                            <div id="resultados_busca" class="list-group position-absolute w-100 shadow" style="z-index: 9999; display: none;"></div>
+                            <div id="resultados_busca" class="list-group position-absolute w-100 shadow"
+                                style="z-index: 9999; display: none;"></div>
                         </div>
                         <div class="col-md-3">
                             <input type="number" id="ch_aluno" class="form-control" placeholder="CH (Horas)" min="1">
                         </div>
                         <div class="col-md-2">
-                            <button type="button" id="btnAdicionarAluno" class="btn btn-primary w-100" onclick="dispararVinculo()">
+                            <button type="button" id="btnAdicionarAluno" class="btn btn-primary w-100"
+                                onclick="dispararVinculo()">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
                         </div>
@@ -468,8 +521,10 @@ if (!empty($_GET['ajax'])) {
                 <p class="text-muted">O aluno será desvinculado do projeto.</p>
             </div>
             <div class="d-flex justify-content-center gap-3">
-                <button type="button" class="btn btn-light border px-4" onclick="document.getElementById('modalConfirmarExclusaoAluno').style.display='none'">Cancelar</button>
-                <button type="button" id="btnConfirmarExclusaoAlunoReal" class="btn btn-danger px-4" onclick="executarExclusaoAlunoReal()">Remover Agora</button>
+                <button type="button" class="btn btn-light border px-4"
+                    onclick="document.getElementById('modalConfirmarExclusaoAluno').style.display='none'">Cancelar</button>
+                <button type="button" id="btnConfirmarExclusaoAlunoReal" class="btn btn-danger px-4"
+                    onclick="executarExclusaoAlunoReal()">Remover Agora</button>
             </div>
         </div>
     </div>
@@ -477,13 +532,13 @@ if (!empty($_GET['ajax'])) {
     <div id="modalAvisoCH" class="modal-simpa" style="display: none;">
         <div class="modal-content-simpa" style="max-width: 350px; text-align: center;">
             <div class="mb-4">
-                <i class="bi bi-exclamation-circle text-danger" style="font-size: 3rem;"></i>
+                <i class="bi bi-person-fill-exclamation text-warning" style="font-size: 3rem;"></i>
                 <h4 class="fw-bold mt-3">Atenção</h4>
                 <p class="text-muted">Por favor, informe a <strong>Carga Horária</strong> do aluno para continuar.</p>
             </div>
 
             <div class="d-flex justify-content-center">
-                <button type="button" class="btn btn-primary px-5 fw-bold" onclick="fecharAvisoCH()">OK</button>
+                <button type="button" class="btn btn-warning px-5 fw-bold text-white" onclick="fecharAvisoCH()">ENTENDI</button>
             </div>
         </div>
     </div>
@@ -491,13 +546,15 @@ if (!empty($_GET['ajax'])) {
     <div id="modalAvisoSelecao" class="modal-simpa" style="display: none;">
         <div class="modal-content-simpa" style="max-width: 380px; text-align: center;">
             <div class="mb-4">
-                <i class="bi bi-person-x text-danger" style="font-size: 3rem;"></i>
+                <i class="bi bi-person-fill-exclamation text-warning" style="font-size: 3rem;"></i>
                 <h4 class="fw-bold mt-3">Aluno não selecionado</h4>
-                <p class="text-muted">Você precisa <strong>clicar em um nome</strong> na lista de sugestões para poder adicionar.</p>
+                <p class="text-muted">Você precisa <strong>clicar em um nome</strong> na lista de sugestões para poder
+                    adicionar.</p>
             </div>
 
             <div class="d-flex justify-content-center">
-                <button type="button" class="btn btn-danger px-5 fw-bold" onclick="fecharAvisoSelecao()">ENTENDI</button>
+                <button type="button" class="btn btn-warning px-5 fw-bold text-white"
+                    onclick="fecharAvisoSelecao()">ENTENDI</button>
             </div>
         </div>
     </div>
@@ -507,11 +564,13 @@ if (!empty($_GET['ajax'])) {
             <div class="mb-4">
                 <i class="bi bi-person-fill-exclamation text-warning" style="font-size: 3rem;"></i>
                 <h4 class="fw-bold mt-3">Vínculo já existente</h4>
-                <p class="text-muted">Este aluno já está participando deste projeto. Não é possível adicioná-lo duas vezes.</p>
+                <p class="text-muted">Este aluno já está participando deste projeto. Não é possível adicioná-lo duas
+                    vezes.</p>
             </div>
 
             <div class="d-flex justify-content-center">
-                <button type="button" class="btn btn-warning px-5 fw-bold text-white" onclick="fecharAvisoDuplicado()">ENTENDI</button>
+                <button type="button" class="btn btn-warning px-5 fw-bold text-white"
+                    onclick="fecharAvisoDuplicado()">ENTENDI</button>
             </div>
         </div>
     </div>
@@ -521,50 +580,53 @@ if (!empty($_GET['ajax'])) {
     <div id="modalDocumentos" class="modal-container" style="display: none;">
         <div class="modal-content modal-lg" style="max-width: 700px;">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="m-0 text-primary fw-bold">Documentos do Projeto</h4>
+                <h4 class="m-0 text-primary fw-bold">
+                    Documentos do Projeto: <span id="nomeProjetoModal" class="text-dark"></span>
+                </h4>
                 <button type="button" onclick="fecharQualquerModal()" class="btn-close"></button>
             </div>
 
-            <!-- Seção 1: Formulário de Upload -->
             <div class="card bg-light border-0 mb-4">
                 <div class="card-body">
                     <h6 class="fw-bold mb-3">Anexar Novo Arquivo</h6>
                     <form id="formUploadDoc" enctype="multipart/form-data">
+                        <input type="hidden" name="id_projeto" id="id_projeto_doc">
+
                         <div class="row g-2">
-                            <div class="col-md-6">
+                            <div class="col-md-5">
+                                <input type="text" name="titulo" class="form-control"
+                                    placeholder="Título do Documento">
+                            </div>
+                            <div class="col-md-5">
                                 <input type="file" name="arquivo" class="form-control" required>
                             </div>
-                            <div class="col-md-4">
-                                <input type="text" name="descricao" class="form-control" placeholder="Descrição (ex: Relatório Mensal)">
-                            </div>
                             <div class="col-md-2">
-                                <button type="button" id="btnEnviarDoc" class="btn btn-primary w-100" onclick="realizarUpload()">
+                                <button type="button" id="btnEnviarDoc" class="btn btn-primary w-100"
+                                    onclick="realizarUpload()">
                                     <i class="bi bi-upload"></i>
                                 </button>
                             </div>
                         </div>
-                        <small class="text-muted mt-2 d-block">Formatos: PDF, DOCX, JPG, PNG (Máx. 5MB).</small>
+                        <small class="text-muted mt-2 d-block">Formatos: PDF, DOCX, JPG, PNG.</small>
                     </form>
                 </div>
             </div>
 
-            <!-- Seção 2: Listagem de Arquivos -->
             <div class="documentos-lista">
                 <h6 class="fw-bold mb-3">Arquivos Presentes</h6>
-                <div id="lista_documentos_projeto" class="table-responsive">
-                    <!-- Tabela visual de exemplo (Será preenchida via JS futuramente) -->
+                <div id="lista_documentos_projeto" class="table-responsive" style="max-height: 300px; overflow-y: auto;">
                     <table class="table table-sm table-hover align-middle">
                         <thead class="table-light">
                             <tr class="small text-muted">
-                                <th>NOME DO ARQUIVO</th>
-                                <th>DESCRIÇÃO</th>
+                                <th>DOCUMENTO</th>
                                 <th>DATA</th>
+                                <th>STATUS</th>
                                 <th class="text-center">AÇÕES</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="corpo_tabela_docs">
                             <tr>
-                                <td colspan="3" class="text-center py-3 text-muted">Nenhum documento anexado ainda.</td>
+                                <td colspan="4" class="text-center py-3 text-muted">Carregando documentos...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -599,8 +661,10 @@ if (!empty($_GET['ajax'])) {
                 <p class="fw-bold mt-3">Esta ação não pode ser desfeita. O arquivo será excluído permanentemente.</p>
             </div>
             <div class="d-flex justify-content-center gap-3">
-                <button type="button" class="btn btn-light border px-4" onclick="fecharModalConfirmacaoDoc()">Cancelar</button>
-                <button type="button" id="btnConfirmarExclusaoReal" class="btn btn-danger px-4" onclick="executarExclusaoReal()">Excluir Agora</button>
+                <button type="button" class="btn btn-light border px-4"
+                    onclick="fecharModalConfirmacaoDoc()">Cancelar</button>
+                <button type="button" id="btnConfirmarExclusaoReal" class="btn btn-danger px-4"
+                    onclick="executarExclusaoReal()">Excluir Agora</button>
             </div>
         </div>
     </div>
@@ -645,18 +709,26 @@ if (!empty($_GET['ajax'])) {
         };
 
         function fecharAvisoDuplicado() {
-            const modalAviso = document.getElementById('modalAvisoDuplicado');
-            if (modalAviso) {
-                modalAviso.style.display = 'none'; // Fecha apenas este modal
+            const modal = document.getElementById('modalAvisoDuplicado');
+            if (modal) {
+                modal.style.display = 'none';
             }
+        }
 
-            // Importante: Não limpamos o backdrop aqui, porque o modal de alunos 
-            // ainda está aberto atrás e precisa que o fundo continue bloqueado.
-
-            // Opcional: focar novamente no campo de busca para facilitar para o professor
-            if (document.getElementById('busca_aluno')) {
-                document.getElementById('busca_aluno').focus();
+        function fecharAvisoSelecao() {
+            const modal = document.getElementById('modalAvisoSelecao');
+            if (modal) {
+                modal.style.display = 'none';
             }
+        }
+
+        function fecharAvisoCH() {
+            const modal = document.getElementById('modalAvisoCH');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+            // Não usamos fecharQualquerModal aqui para não limpar o nome do aluno 
+            // que o professor já selecionou lá atrás.
         }
 
         // 2. FUNÇÃO UNIVERSAL DE FECHAMENTO
@@ -665,23 +737,34 @@ if (!empty($_GET['ajax'])) {
                 'modalEditarProjeto', 'modalNovoProjeto', 'modalAlunos', 'modalDocumentos',
                 'modalSucessoDoc', 'modalConfirmarExclusaoDoc',
                 'modalConfirmarExclusaoAluno', 'modalAvisoCH',
-                'modalAvisoSelecao', 'modalAvisoDuplicado'
+                'modalAvisoSelecao', 'modalAvisoDuplicado', 'modalSucessoCadastro'
             ];
 
             modais.forEach(id => {
                 const m = document.getElementById(id);
-                if (m) {
-                    // Se estiver usando Bootstrap 5, o ideal é usar a API dele para fechar
-                    m.style.display = 'none';
-                }
+                if (m) m.style.display = 'none';
             });
 
-            // LIMPEZA CRÍTICA DO BOOTSTRAP (Remove o fundo escuro que trava o clique)
+            // LIMPEZA DE FUNDO
             document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
             document.body.classList.remove('modal-open');
             document.body.style.overflow = '';
-            document.body.style.paddingRight = '';
 
+            // SE HOUVE ALTERAÇÃO (Vínculo ou Remoção de aluno), ATUALIZA O MEIO
+            if (houveAlteracaoNoBanco) {
+                houveAlteracaoNoBanco = false; // Reseta o rastreio
+
+                // Simula o clique no menu lateral para atualizar a lista sem dar F5
+                const linkProjetos = document.querySelector('a[href*="meus-projetos"]');
+                if (linkProjetos) {
+                    linkProjetos.click();
+                } else {
+                    // Se o link não for achado, recarrega a página do meio via URL
+                    window.location.href = "?page=meus-projetos";
+                }
+            }
+
+            // Limpa campos de busca
             if (document.getElementById('busca_aluno')) {
                 document.getElementById('busca_aluno').value = '';
                 document.getElementById('id_aluno_selecionado').value = '';
@@ -778,21 +861,36 @@ if (!empty($_GET['ajax'])) {
         };
 
         // 4. GESTÃO DE DOCUMENTOS E ALUNOS (Mantido seu código original que funciona)
-        function abrirModalDocumentos(idProjeto) {
+        function abrirModalDocumentos(idProjeto, nomeProjeto) {
             const modal = document.getElementById('modalDocumentos');
+            const spanNome = document.getElementById('nomeProjetoModal'); // Busca o span do título
+
             if (modal) {
                 modal.setAttribute('data-id-projeto', idProjeto);
+
+                // Só tenta escrever se o span existir e o nomeProjeto não for nulo
+                if (spanNome && nomeProjeto) {
+                    spanNome.innerText = nomeProjeto;
+                }
+
                 modal.style.display = 'flex';
-                document.querySelector('#lista_documentos_projeto tbody').innerHTML = '<tr><td colspan="4" class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
+
+                // Aqui você usa o ID correto da sua tabela do modal
+                document.querySelector('#lista_documentos_projeto tbody').innerHTML =
+                    '<tr><td colspan="4" class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary"></div></td></tr>';
+
                 listarDocumentos(idProjeto);
             }
         }
 
         function realizarUpload() {
             const btn = document.getElementById('btnEnviarDoc');
+            // Mantemos a captura do ID do projeto via atributo do modal
             const idProjeto = document.getElementById('modalDocumentos').getAttribute('data-id-projeto');
             const inputArquivo = document.querySelector('#formUploadDoc input[type="file"]');
-            const inputDesc = document.querySelector('#formUploadDoc input[name="descricao"]');
+
+            // 1. MUDANÇA: Agora buscamos o input pelo nome "titulo"
+            const inputTitulo = document.querySelector('#formUploadDoc input[name="titulo"]');
 
             if (!inputArquivo.files[0]) {
                 alert("Por favor, selecione um arquivo.");
@@ -806,7 +904,9 @@ if (!empty($_GET['ajax'])) {
             const formData = new FormData();
             formData.append('id_projeto', idProjeto);
             formData.append('arquivo', inputArquivo.files[0]);
-            formData.append('descricao', inputDesc.value);
+
+            // 2. MUDANÇA: Enviamos com a chave 'titulo' para o PHP reconhecer
+            formData.append('titulo', inputTitulo.value);
 
             fetch('controllers/controller-professor/upload-documento.php', {
                     method: 'POST',
@@ -815,11 +915,24 @@ if (!empty($_GET['ajax'])) {
                 .then(res => res.json())
                 .then(data => {
                     if (data.sucesso) {
+                        // Limpa os campos após o sucesso
                         inputArquivo.value = '';
-                        inputDesc.value = '';
+                        inputTitulo.value = '';
+
                         document.getElementById('modalSucessoDoc').style.display = 'flex';
+
+                        // Atualiza a listagem interna do modal
                         listarDocumentos(idProjeto);
-                    } else alert("Erro: " + data.mensagem);
+
+                        // 3. ADIÇÃO: Sinaliza que houve alteração para atualizar a aba "Documentos" geral se necessário
+                        houveAlteracaoNoBanco = true;
+                    } else {
+                        alert("Erro: " + data.mensagem);
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro no upload:", err);
+                    alert("Erro na comunicação com o servidor.");
                 })
                 .finally(() => {
                     btn.disabled = false;
@@ -834,7 +947,8 @@ if (!empty($_GET['ajax'])) {
                     document.querySelector('#lista_documentos_projeto tbody').innerHTML = html;
                 })
                 .catch(() => {
-                    document.querySelector('#lista_documentos_projeto tbody').innerHTML = "<tr><td colspan='4' class='text-center text-danger'>Erro ao carregar lista.</td></tr>";
+                    document.querySelector('#lista_documentos_projeto tbody').innerHTML =
+                        "<tr><td colspan='4' class='text-center text-danger'>Erro ao carregar lista.</td></tr>";
                 });
         }
 
@@ -984,8 +1098,21 @@ if (!empty($_GET['ajax'])) {
                     }, 300);
                 });
             }
-            document.addEventListener('click', (e) => {
-                if (divResultados && e.target !== inputBusca) divResultados.style.display = 'none';
+            document.addEventListener('mousedown', function(e) {
+                const divResultados = document.getElementById('resultados_busca');
+                const inputBusca = document.getElementById('busca_aluno');
+
+                if (divResultados && divResultados.style.display !== 'none') {
+                    // Se eu clicar na div de resultados ou em qualquer coisa dentro dela, NÃO feche ainda.
+                    if (divResultados.contains(e.target)) {
+                        return;
+                    }
+
+                    // Se eu clicar fora (e não for o próprio input), aí sim eu fecho.
+                    if (e.target !== inputBusca) {
+                        divResultados.style.display = 'none';
+                    }
+                }
             });
         });
 
@@ -1037,7 +1164,8 @@ if (!empty($_GET['ajax'])) {
             if (window.location.search.includes('sucesso')) {
                 const params = new URLSearchParams(window.location.search);
                 const currentPage = params.get('page') || 'pagina-inicial';
-                const novaUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "?page=" + currentPage;
+                const novaUrl = window.location.protocol + "//" + window.location.host + window.location.pathname +
+                    "?page=" + currentPage;
                 window.history.replaceState({
                     path: novaUrl
                 }, '', novaUrl);
@@ -1047,6 +1175,161 @@ if (!empty($_GET['ajax'])) {
         document.addEventListener('keydown', function(e) {
             if (e.key === "Escape") fecharQualquerModal();
         });
+
+        function fecharSucessoDoc() {
+            const modal = document.getElementById('modalSucessoDoc');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function cadastrarProjeto() {
+            const form = document.getElementById('formNovoProjeto');
+            const btn = document.getElementById('btnSalvarProjeto');
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const formData = new FormData(form);
+            const textoOriginal = btn.innerHTML;
+
+            // Feedback visual: Spinner
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Cadastrando...`;
+
+            fetch('controllers/controller-professor/cadastrar-projeto.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        // 1. Define a mensagem no modal de sucesso
+                        document.getElementById('mensagemSucessoModal').innerText = data.mensagem;
+
+                        // 2. EXIBE O MODAL DE SUCESSO (Como é modal-simpa, usamos display flex)
+                        const modalSucesso = document.getElementById('modalSucessoCadastro');
+                        modalSucesso.style.display = 'flex';
+
+                        // 3. Restaura o botão do formulário original
+                        btn.innerHTML = textoOriginal;
+                        btn.disabled = false;
+                    } else {
+                        alert("Erro: " + data.mensagem);
+                        btn.innerHTML = textoOriginal;
+                        btn.disabled = false;
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro no envio:", err);
+                    btn.innerHTML = textoOriginal;
+                    btn.disabled = false;
+                });
+        }
+
+        function finalizarProcessoSimpa() {
+            // 1. Esconde ambos os modais manualmente
+            document.getElementById('modalSucessoCadastro').style.display = 'none';
+            document.getElementById('modalNovoProjeto').style.display = 'none';
+
+            // 2. Limpeza de resquícios de classes do Bootstrap (por segurança)
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+
+            // 3. ATUALIZA APENAS O CONTEÚDO CENTRAL
+            // Simulamos o clique no link de Meus Projetos para disparar o seu ajax-nav.js
+            const linkProjetos = document.querySelector('a[href*="meus-projetos"]');
+            if (linkProjetos) {
+                linkProjetos.click();
+            } else {
+                // Fallback: se o link não for encontrado, força o carregamento da página de projetos
+                window.location.href = "?page=meus-projetos";
+            }
+        }
+
+        function alterarStatusDoc(idDoc, novoStatus) {
+            const formData = new FormData();
+            formData.append('id_documento', idDoc);
+            formData.append('status', novoStatus);
+
+            fetch('controllers/controller-professor/atualizar-status-doc.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        // Tenta encontrar o link da aba Documentos e clica nele para atualizar a tela
+                        const linkDocs = document.querySelector('a[onclick*="documentos"]');
+
+                        if (linkDocs) {
+                            linkDocs.click();
+                        } else {
+                            // Se não achar o link, recarrega a página inteira como plano B
+                            window.location.reload();
+                        }
+                    } else {
+                        alert('Erro: ' + data.mensagem);
+                    }
+                })
+                .catch(err => console.error('Erro na requisição:', err));
+        }
+
+        function filtrarDocumentosModal() {
+            const input = document.getElementById('buscaDocModal');
+            const selectStatus = document.getElementById('filtroStatusModal');
+            const tabelaCorpo = document.getElementById('corpo_tabela_docs');
+
+            if (!tabelaCorpo || !input) return;
+
+            const termo = input.value.toLowerCase().trim();
+            const statusSelecionado = selectStatus.value.toLowerCase().trim();
+
+            // Pega as linhas atuais da tabela
+            const linhas = tabelaCorpo.querySelectorAll('tr:not(#linha-nenhum-doc)');
+            let encontrouAlgum = false;
+
+            linhas.forEach(linha => {
+                // Busca o nome e o badge dentro da linha
+                const celulaNome = linha.querySelector('td:first-child span.fw-bold');
+                const badgeStatus = linha.querySelector('td span.badge:not(.bg-light)');
+
+                if (celulaNome && badgeStatus) {
+                    const txtTitulo = celulaNome.textContent.toLowerCase().trim();
+                    const txtStatus = badgeStatus.textContent.toLowerCase().trim();
+
+                    // Lógica de filtro (Nome contém termo E Status é igual ao selecionado)
+                    const bateBusca = termo === "" || txtTitulo.includes(termo);
+                    const bateStatus = statusSelecionado === "" || txtStatus === statusSelecionado;
+
+                    if (bateBusca && bateStatus) {
+                        linha.style.display = "";
+                        encontrouAlgum = true;
+                    } else {
+                        linha.style.display = "none";
+                    }
+                }
+            });
+
+            // Gerencia a mensagem de "Nenhum documento"
+            let linhaAviso = document.getElementById('linha-nenhum-doc');
+            if (!encontrouAlgum) {
+                if (!linhaAviso) {
+                    linhaAviso = document.createElement('tr');
+                    linhaAviso.id = 'linha-nenhum-doc';
+                    linhaAviso.innerHTML = `
+                <td colspan="5" class="text-center py-5 text-muted">
+                    <i class="bi bi-file-earmark-x mb-2" style="font-size: 2rem; display: block;"></i>
+                    <p class="fw-bold m-0">Nenhum documento encontrado</p>
+                </td>`;
+                    tabelaCorpo.appendChild(linhaAviso);
+                }
+            } else if (linhaAviso) {
+                linhaAviso.remove();
+            }
+        }
     </script>
 
 </body>

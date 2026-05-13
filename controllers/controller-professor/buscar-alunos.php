@@ -12,14 +12,18 @@ if (isset($_GET['busca'])) {
     if (empty($sugestoes)) {
         echo "<div class='list-group-item text-muted small'>Nenhum aluno encontrado</div>";
     } else {
+        // No seu buscar-alunos.php, substitua o foreach por este:
         foreach ($sugestoes as $s) {
-            // Adicionamos a classe 'item-aluno-lista' e guardamos os dados em 'data-'
-            echo "<button type='button' class='list-group-item list-group-item-action border-0 py-3 item-aluno-lista' 
-          data-id='{$s['id_usuario']}' 
-          data-nome='" . htmlspecialchars($s['nome']) . "'
-          style='pointer-events: auto !important;'>
-            <div class='fw-bold text-dark' style='pointer-events: none;'>" . htmlspecialchars($s['nome']) . "</div>
-            <small class='text-muted' style='pointer-events: none;'>Matrícula: " . htmlspecialchars($s['matricula']) . "</small>
+            $nomeEscapado = addslashes(htmlspecialchars($s['nome']));
+            $idUsuario = $s['id_usuario'];
+            $matricula = htmlspecialchars($s['matricula']);
+
+            echo "<button type='button' 
+            class='list-group-item list-group-item-action border-0 py-3' 
+            onclick=\"selecionarAluno('$nomeEscapado', $idUsuario)\"
+            style='pointer-events: auto !important; z-index: 11000 !important;'>
+            <div class='fw-bold text-dark' style='pointer-events: none;'>$nomeEscapado</div>
+            <small class='text-muted' style='pointer-events: none;'>Matrícula: $matricula</small>
           </button>";
         }
     }
