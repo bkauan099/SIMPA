@@ -37,6 +37,7 @@ try {
             $status_class = ['pendente' => 'bg-warning text-dark', 'aprovado' => 'bg-success', 'reprovado' => 'bg-danger'];
 
             // SE FOR MODAL (id_projeto > 0): Layout de 4 colunas
+            // SE FOR MODAL (id_projeto > 0): Layout de 4 colunas
             if ($id_projeto > 0) {
                 echo "<tr>
                     <td><span class='fw-bold text-dark'>" . htmlspecialchars($exibirNome) . "</span></td>
@@ -47,8 +48,9 @@ try {
                             <a href='{$doc['caminho_arquivo']}' target='_blank' class='btn btn-sm btn-outline-primary' title='Visualizar'>
                                 <i class='bi bi-eye'></i>
                             </a>
+                            
                             <button type='button' class='btn btn-sm btn-outline-danger ms-1' 
-                                    onclick='excluirDocumento({$doc['id_documento']})' title='Excluir'>
+                                    onclick='excluirDocumento({$doc['id_documento']}, {$id_projeto})' title='Excluir'>
                                 <i class='bi bi-trash'></i>
                             </button>
                         </div>

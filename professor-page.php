@@ -958,6 +958,25 @@ if (!empty($_GET['ajax'])) {
             document.getElementById('modalConfirmarExclusaoDoc').style.display = 'flex';
         }
 
+        window.excluirDocumento = function(idDocumento, idProjeto) {
+            // 1. Guarda os IDs que vieram do botão do PHP nas variáveis de controle
+            itemParaRemover = idDocumento;
+            projetoDeOrigem = idProjeto;
+
+            // 2. Tenta abrir o seu modal visual de confirmação
+            const modalConfirmar = document.getElementById('modalConfirmarExclusaoDoc');
+
+            if (modalConfirmar) {
+                modalConfirmar.style.display = 'flex'; // Abre o modal na tela
+            } else {
+                // Se o modal de confirmação não existir na página, 
+                // ele usa o "confirm" nativo do navegador para o sistema não travar
+                if (confirm('Tem certeza que deseja excluir este documento permanentemente?')) {
+                    executarExclusaoReal();
+                }
+            }
+        };
+
         function executarExclusaoReal() {
             if (!itemParaRemover) return;
             const btn = document.getElementById('btnConfirmarExclusaoReal');
