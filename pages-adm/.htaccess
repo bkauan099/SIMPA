@@ -1,0 +1,7 @@
+# Bloquear acesso direto via browser às páginas ADM
+# As páginas são carregadas via AJAX pelo adm-page.php
+# Acesso direto por URL retorna 403
+
+# Permitir apenas requisições vindas do próprio servidor
+# Comentar as linhas abaixo se o servidor não suportar mod_rewrite
+Options -Indexes
