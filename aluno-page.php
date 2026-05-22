@@ -44,8 +44,8 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
                 <i class="bi bi-house-door"></i><span class="nav-label">Página Inicial</span></a></li>
             <li><a href="#" id="menu-gerenciar-projetos" onclick="carregarPagina('gerenciar-projetos')" title="Gerenciar Projetos">
                 <i class="bi bi-folder"></i><span class="nav-label">Gerenciar Projetos</span></a></li>
-            <li><a href="#" id="menu-participacoes" onclick="carregarPagina('participacoes')" title="Minhas Participações">
-                <i class="bi bi-diagram-3"></i><span class="nav-label">Minhas Participações</span></a></li>
+            <li><a href="#" id="menu-participacoes" onclick="carregarPagina('participacoes')" title="Registros">
+                <i class="bi bi-clock-history"></i><span class="nav-label">Registros</span></a></li>
             <li><a href="#" id="menu-tarefas" onclick="carregarPagina('tarefas')" title="Minhas Tarefas">
                 <i class="bi bi-check2-square"></i><span class="nav-label">Minhas Tarefas</span></a></li>
             <li><a href="#" id="menu-cronograma" onclick="carregarPagina('cronograma')" title="Cronograma">
@@ -95,10 +95,28 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
     </div>
 </div>
 
+<!-- SLIDE-OVER PANEL GLOBAL -->
+<div id="slideOver" class="slide-over">
+    <div class="slide-over-backdrop" onclick="fecharSlideOver()"></div>
+    <div class="slide-over-panel">
+        <div class="slide-over-header">
+            <div class="flex-grow-1 min-width-0">
+                <div class="d-flex align-items-center gap-2 mb-1" id="slideOverBadge"></div>
+                <h5 id="slideOverTitulo"></h5>
+            </div>
+            <button class="slide-over-close" onclick="fecharSlideOver()" title="Fechar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="slide-over-body" id="slideOverBody"></div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebarOverlay');
+let _fetchAtivo = null;
 
 function isOverlayMode() {
     return window.innerWidth < 768 ||
@@ -133,6 +151,8 @@ window.addEventListener('orientationchange', () => {
 });
 
 function carregarPagina(abaSolicitada) {
+    if (_fetchAtivo) { _fetchAtivo.abort(); _fetchAtivo = null; }
+
     document.querySelectorAll('#sidebar ul li a').forEach(l => l.classList.remove('active'));
     const menuClicado = document.getElementById('menu-' + abaSolicitada);
     if (menuClicado) menuClicado.classList.add('active');
@@ -151,12 +171,18 @@ function carregarPagina(abaSolicitada) {
         default:                   arquivo = 'pages-aluno/pagina-inicial.php';      break;
     }
 
+    window.location.hash = abaSolicitada;
+
     const container = document.getElementById('conteudo-dinamico');
     container.innerHTML = '<div class="text-center mt-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
 
-    fetch(arquivo, { cache: 'no-store' })
+    const ctrl = new AbortController();
+    _fetchAtivo = ctrl;
+
+    fetch(arquivo, { cache: 'no-store', signal: ctrl.signal })
         .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
         .then(html => {
+            _fetchAtivo = null;
             document.querySelectorAll('script[data-dinamico]').forEach(s => s.remove());
             const temp = document.createElement('div');
             temp.innerHTML = html;
@@ -181,11 +207,42 @@ function carregarPagina(abaSolicitada) {
             runNext(0);
         })
         .catch(err => {
+            if (err.name === 'AbortError') return;
             container.innerHTML = `<div class="alert alert-danger m-3">Erro ao carregar a página.<br><small>${err.message}</small></div>`;
         });
 }
 
-document.addEventListener('DOMContentLoaded', () => carregarPagina('pagina-inicial'));
+document.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.replace('#', '');
+    carregarPagina(hash || 'pagina-inicial');
+});
+
+// ── Slide-over global ────────────────────────────────────────
+function abrirSlideOver(titulo, corpo, { badge = '', badgeCor = '#3b82f6' } = {}) {
+    const el = document.getElementById('slideOver');
+    document.getElementById('slideOverTitulo').textContent = titulo;
+    document.getElementById('slideOverBody').innerHTML    = corpo;
+
+    const badgeEl = document.getElementById('slideOverBadge');
+    if (badge) {
+        badgeEl.innerHTML = `<span class="badge rounded-pill px-2 py-1"
+            style="background:${badgeCor}18;color:${badgeCor};font-size:0.72rem;">${badge}</span>`;
+    } else {
+        badgeEl.innerHTML = '';
+    }
+
+    el.classList.add('aberto');
+    document.body.style.overflow = 'hidden';
+}
+
+function fecharSlideOver() {
+    document.getElementById('slideOver').classList.remove('aberto');
+    document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') fecharSlideOver();
+});
 </script>
 </body>
 </html>

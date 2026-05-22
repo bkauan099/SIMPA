@@ -100,18 +100,11 @@
                                         title="<?= $item['concluido'] ? 'Desfazer conclusão' : 'Marcar como concluído' ?>">
                                     <i class="bi <?= $item['concluido'] ? 'bi-arrow-counterclockwise' : 'bi-check-lg' ?>"></i>
                                 </button>
-                                <?php if ($descricao): ?>
-                                <button class="btn btn-sm btn-outline-secondary ms-1 btn-expandir"
-                                        onclick="toggleDescricao(this)"
-                                        title="Ver descrição">
-                                    <i class="bi bi-three-dots-vertical"></i>
+                                <button class="btn btn-sm btn-outline-secondary ms-1"
+                                        onclick="abrirDetalheTarefa(this.closest('tr'))"
+                                        title="Ver detalhes">
+                                    <i class="bi bi-arrow-right"></i>
                                 </button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr class="tr-descricao" style="display:none">
-                            <td colspan="5" class="px-3 py-2 bg-light">
-                                <span class="text-muted small"><i class="bi bi-card-text me-1"></i><?= $descricao ? htmlspecialchars($descricao) : 'Sem descrição.' ?></span>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -187,6 +180,67 @@ function toggleDescricao(btn) {
     const aberto = descRow.style.display !== 'none';
     descRow.style.display = aberto ? 'none' : '';
     icon.className = aberto ? 'bi bi-three-dots-vertical' : 'bi bi-x-lg';
+}
+
+function abrirDetalheTarefa(tr) {
+    const titulo      = tr.querySelector('td.fw-medium')?.textContent || '';
+    const data        = tr.querySelector('td:nth-child(2)')?.textContent || '';
+    const hora        = tr.querySelector('td:nth-child(3)')?.textContent || '—';
+    const badgeEl     = tr.querySelector('.badge-status');
+    const statusLabel = badgeEl?.textContent || '';
+    const statusClass = badgeEl?.className || '';
+    const desc        = tr.dataset.busca ? '' : '';
+    const descRaw     = tr.dataset.busca?.replace(titulo.toLowerCase(), '').trim() || '';
+
+    let statusStyle = '';
+    if (statusClass.includes('bg-success'))  statusStyle = 'background:#dcfce7;color:#16a34a;';
+    else if (statusClass.includes('bg-danger'))  statusStyle = 'background:#fee2e2;color:#dc2626;';
+    else statusStyle = 'background:#fef9c3;color:#a16207;';
+
+    let statusIco = '';
+    if (statusClass.includes('bg-success'))  statusIco = 'bi-check-circle';
+    else if (statusClass.includes('bg-danger'))  statusIco = 'bi-x-circle';
+    else statusIco = 'bi-hourglass-split';
+
+    const descFull = tr.dataset.busca
+        ? tr.dataset.busca.replace(titulo.toLowerCase() + ' ', '').trim()
+        : '';
+
+    const corpo = `
+        <div class="so-campo">
+            <div class="so-label">Status</div>
+            <div class="so-valor">
+                <span class="badge rounded-pill px-2 py-1" style="${statusStyle}font-size:0.8rem;">
+                    <i class="bi ${statusIco} me-1"></i>${statusLabel}
+                </span>
+            </div>
+        </div>
+        <hr class="so-divider">
+        <div class="row g-3">
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Data</div>
+                    <div class="so-valor"><i class="bi bi-calendar2 me-1 text-muted"></i>${data}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Hora</div>
+                    <div class="so-valor"><i class="bi bi-clock me-1 text-muted"></i>${hora !== '—' ? hora : 'Não definida'}</div>
+                </div>
+            </div>
+        </div>
+        <hr class="so-divider">
+        <div class="so-campo">
+            <div class="so-label">Descrição</div>
+            <div class="so-valor">${descFull ? descFull.replace(/\n/g, '<br>') : '<span class="text-muted">Sem descrição.</span>'}</div>
+        </div>
+    `;
+
+    abrirSlideOver(titulo, corpo, {
+        badge: '<i class="bi bi-check2-square me-1"></i>Tarefa',
+        badgeCor: '#3b82f6'
+    });
 }
 
 function filtrarItens() {

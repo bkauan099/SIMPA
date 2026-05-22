@@ -1,4 +1,8 @@
 <?php
+require_once '../lib/Guard.php';
+Guard::apenasAdmin();
+?>
+<?php
 // pages-adm/usuarios.php
 
 // Puxa a conexão direta da raiz

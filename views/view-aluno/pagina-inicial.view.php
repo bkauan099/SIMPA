@@ -83,6 +83,23 @@
                     <div class="w-100">Sáb</div>
                 </div>
                 <div id="calendar" class="d-flex flex-wrap"></div>
+                <div class="cal-legenda">
+                    <div class="cal-legenda-item"><span class="cal-legenda-dot" style="background:#22c55e"></span>Concluída</div>
+                    <div class="cal-legenda-item"><span class="cal-legenda-dot" style="background:#ef4444"></span>Não concluída</div>
+                    <div class="cal-legenda-item"><span class="cal-legenda-dot" style="background:#eab308"></span>Próxima (≤7d)</div>
+                    <div class="cal-legenda-item"><span class="cal-legenda-dot" style="background:#3b82f6"></span>Baixa prioridade</div>
+                </div>
+            </div>
+
+            <!-- PAINEL DO DIA SELECIONADO -->
+            <div class="card card-custom p-3 d-none" id="painelDia">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-semibold" style="font-size:0.9rem;" id="painelDiaTitulo"></span>
+                    <button class="btn btn-sm btn-link text-muted p-0 lh-1" onclick="fecharPainelDia()" title="Fechar">
+                        <i class="bi bi-x-lg" style="font-size:0.85rem;"></i>
+                    </button>
+                </div>
+                <div id="painelDiaLista"></div>
             </div>
 
             <!-- CARGA HORÁRIA — dado real do banco -->
@@ -98,23 +115,38 @@
 
 <script>
 window.compromissosPorDia = <?php
-    $mapa = [];
+    $mapa    = [];
     $mesAtual = date('Y-m');
-    foreach ($tarefas as $item) {
-        if (str_starts_with($item['data'], $mesAtual)) {
-            $dia = (int) date('j', strtotime($item['data']));
-            $hora = $item['hora'] ? substr($item['hora'], 0, 5) : '';
-            $icone = !empty($item['concluido']) ? '✅' : '📌';
-            $mapa[$dia][] = $icone . ' ' . $item['titulo'] . ($hora ? ' — ' . $hora : '');
+    $hoje     = date('Y-m-d');
+    $sete     = date('Y-m-d', strtotime('+7 days'));
+
+    foreach (array_merge($tarefas, $eventos) as $item) {
+        if (!str_starts_with($item['data'], $mesAtual)) continue;
+
+        $dia       = (int) date('j', strtotime($item['data']));
+        $hora      = $item['hora'] ? substr($item['hora'], 0, 5) : '';
+        $concluido = !empty($item['concluido']);
+        $data      = $item['data'];
+
+        if (!isset($mapa[$dia])) {
+            $mapa[$dia] = ['verde'=>false,'vermelho'=>false,'amarelo'=>false,'azul'=>false,'itens'=>[]];
         }
-    }
-    foreach ($eventos as $item) {
-        if (str_starts_with($item['data'], $mesAtual)) {
-            $dia = (int) date('j', strtotime($item['data']));
-            $hora = $item['hora'] ? substr($item['hora'], 0, 5) : '';
-            $icone = !empty($item['concluido']) ? '✅' : '📌';
-            $mapa[$dia][] = $icone . ' ' . $item['titulo'] . ($hora ? ' — ' . $hora : '');
+
+        if ($concluido) {
+            $mapa[$dia]['verde']   = true;
+            $icone = '✅';
+        } elseif ($data < $hoje) {
+            $mapa[$dia]['vermelho'] = true;
+            $icone = '❌';
+        } elseif ($data <= $sete) {
+            $mapa[$dia]['amarelo'] = true;
+            $icone = '⚠️';
+        } else {
+            $mapa[$dia]['azul']    = true;
+            $icone = '📌';
         }
+
+        $mapa[$dia]['itens'][] = $icone . ' ' . $item['titulo'] . ($hora ? ' — ' . $hora : '');
     }
     echo json_encode($mapa);
 ?>;
@@ -137,33 +169,50 @@ window.gerarCalendario = function() {
     }
     for (let dia = 1; dia <= diasNoMes; dia++) {
         const isHoje = dia === hoje.getDate();
-        const temCompromisso = window.compromissosPorDia[dia] !== undefined;
-        const dot = temCompromisso ? '<span class="dot-compromisso"></span>' : '';
-        calendar.innerHTML += `<div class="calendar-day${isHoje ? ' today' : ''}" onclick="showDay(${dia})"><span>${dia}</span>${dot}</div>`;
+        const cats = window.compromissosPorDia[dia] || null;
+        let dotsHtml = '';
+        if (cats) {
+            if (cats.verde)    dotsHtml += '<span class="dot dot-verde"></span>';
+            if (cats.vermelho) dotsHtml += '<span class="dot dot-vermelho"></span>';
+            if (cats.amarelo)  dotsHtml += '<span class="dot dot-amarelo"></span>';
+            if (cats.azul)     dotsHtml += '<span class="dot dot-azul"></span>';
+        }
+        const dots = dotsHtml ? `<div class="dots-row">${dotsHtml}</div>` : '';
+        calendar.innerHTML += `<div class="calendar-day${isHoje ? ' today' : ''}" onclick="showDay(${dia}, this)"><span>${dia}</span>${dots}</div>`;
     }
 };
 
-window.showDay = function(dia) {
-    const itens = window.compromissosPorDia[dia];
-    const corpo = itens
-        ? itens.map(i => `<div class="mb-1">${i}</div>`).join('')
-        : 'Nenhuma atividade neste dia.';
-    document.getElementById('modalContent').innerHTML = `<strong>Dia ${dia}</strong><br><br>${corpo}`;
-    new bootstrap.Modal(document.getElementById('dayModal')).show();
+const _nomesMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                     'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+window.showDay = function(dia, el) {
+    const cats   = window.compromissosPorDia[dia];
+    const painel = document.getElementById('painelDia');
+    const titulo = document.getElementById('painelDiaTitulo');
+    const lista  = document.getElementById('painelDiaLista');
+    const hoje   = new Date();
+
+    titulo.textContent = `${dia} de ${_nomesMeses[hoje.getMonth()]}`;
+
+    document.querySelectorAll('.calendar-day.selected').forEach(d => d.classList.remove('selected'));
+    if (el && !el.classList.contains('today')) el.classList.add('selected');
+
+    if (!cats || !cats.itens.length) {
+        lista.innerHTML = '<p class="text-muted small mb-0 text-center py-2">Nenhuma atividade neste dia.</p>';
+    } else {
+        lista.innerHTML = cats.itens.map(item => `
+            <div class="d-flex align-items-start gap-2 py-2" style="border-bottom:1px solid #f1f5f9;font-size:0.82rem;">
+                <span class="flex-grow-1">${item}</span>
+            </div>`).join('').replace(/<div[^>]*style="[^"]*border-bottom[^"]*"(?=[^<]*<\/div>\s*$)/, s => s.replace('border-bottom:1px solid #f1f5f9;', ''));
+    }
+
+    painel.classList.remove('d-none');
 };
 
-setTimeout(window.gerarCalendario, 300);
-</script>
+window.fecharPainelDia = function() {
+    document.getElementById('painelDia').classList.add('d-none');
+    document.querySelectorAll('.calendar-day.selected').forEach(d => d.classList.remove('selected'));
+};
 
-<!-- MODAL -->
-<div class="modal fade" id="dayModal" tabindex="-1">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Atividades do Dia</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="modalContent"></div>
-        </div>
-    </div>
-</div>
+window.gerarCalendario();
+</script>

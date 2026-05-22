@@ -221,13 +221,81 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     min-height: 36px;
 }
 .calendar-day:hover { background-color:#0d6efd; color:white; }
-.calendar-day:hover .dot-compromisso { background:white; }
+.calendar-day:hover .dot { background:white !important; }
 .today { background-color:#0d6efd; color:white; font-weight:bold; }
-.today .dot-compromisso { background:white; }
-.dot-compromisso {
-    width:5px; height:5px; border-radius:50%;
-    background:#3b82f6; display:block; flex-shrink:0;
+.today .dot { background:white !important; }
+
+.dots-row { display:flex; gap:2px; justify-content:center; flex-wrap:wrap; }
+.dot { width:5px; height:5px; border-radius:50%; display:block; flex-shrink:0; }
+.dot-verde    { background:#22c55e; }
+.dot-vermelho { background:#ef4444; }
+.dot-amarelo  { background:#eab308; }
+.dot-azul     { background:#3b82f6; }
+
+.calendar-day.selected { background:#e0e7ff; color:#3730a3; font-weight:600; }
+.calendar-day.selected .dot { background:#3730a3 !important; }
+
+.cal-legenda {
+    display:flex; gap:10px; flex-wrap:wrap;
+    justify-content:center; margin-top:8px; font-size:0.68rem; color:#64748b;
 }
+.cal-legenda-item { display:flex; align-items:center; gap:3px; }
+.cal-legenda-dot  { width:7px; height:7px; border-radius:50%; display:inline-block; flex-shrink:0; }
+
+/* ══ SLIDE-OVER PANEL (global aluno) ══ */
+.slide-over {
+    position: fixed; inset: 0; z-index: 1055;
+    pointer-events: none;
+}
+.slide-over.aberto { pointer-events: all; }
+
+.slide-over-backdrop {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0);
+    transition: background 0.3s ease;
+}
+.slide-over.aberto .slide-over-backdrop { background: rgba(15,37,87,0.35); }
+
+.slide-over-panel {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    width: min(460px, 95vw);
+    background: #fff;
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column;
+    box-shadow: -12px 0 48px rgba(0,0,0,0.14);
+}
+.slide-over.aberto .slide-over-panel { transform: translateX(0); }
+
+.slide-over-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    padding: 22px 24px 18px;
+    border-bottom: 1px solid #f1f5f9;
+    flex-shrink: 0;
+}
+.slide-over-header h5 { font-weight: 700; margin: 0; font-size: 1rem; color: #1e293b; }
+.slide-over-header small { color: #94a3b8; font-size: 0.78rem; }
+.slide-over-close {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: none; background: #f1f5f9; color: #64748b;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; flex-shrink: 0; font-size: 0.9rem;
+    transition: background .15s, color .15s;
+}
+.slide-over-close:hover { background: #e2e8f0; color: #1e293b; }
+
+.slide-over-body {
+    flex: 1; overflow-y: auto; padding: 20px 24px;
+    scrollbar-width: thin; scrollbar-color: #e2e8f0 transparent;
+}
+
+.so-campo { margin-bottom: 18px; }
+.so-label {
+    font-size: 0.72rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: #94a3b8; margin-bottom: 4px;
+}
+.so-valor { font-size: 0.88rem; color: #1e293b; line-height: 1.5; }
+.so-divider { border: none; border-top: 1px solid #f1f5f9; margin: 16px 0; }
 
 /* ══ SELETIVOS (exclusivo aluno) ══ */
 .seletivo-card {

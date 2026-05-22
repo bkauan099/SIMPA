@@ -40,16 +40,33 @@ body::before {
 
 .uema {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    gap: 16px;
+    gap: 30px; /* Um espaçamento elegante entre elas */
     margin-bottom: 28px;
 }
 
-.logo {
-    max-height: 60px;
+/* Alvo cirúrgico na logo da UEMA (a 1ª imagem) */
+.uema img:first-child {
+    height:110px; /* Forçamos o brasão a ficar grande e imponente */
     width: auto;
-    flex: 1;
+    object-fit: contain;
+}
+
+/* Brasão da UEMA */
+.uema .logo:first-child {
+    height: 110px !important;
+    width: auto !important;
+    flex: none !important;
+    object-fit: contain;
+    /* Puxa a próxima imagem (Proexae) para a ESQUERDA, invadindo o espaço transparente */
+    margin-right: -60px !important; 
+}
+
+/* Alvo cirúrgico na logo da Proexae (a 2ª imagem) */
+.uema img:last-child {
+    height: 65px; /* Como ela é muito comprida, uma altura menor deixa ela proporcional ao brasão */
+    width: auto;
     object-fit: contain;
 }
 
@@ -112,15 +129,15 @@ body::before {
     text-decoration: underline;
 }
 
-/* Responsivo */
+/* Responsivo para manter a elegância na tela do celular */
 @media (max-width: 480px) {
-    .container {
-        padding: 28px 22px;
-    }
     .uema {
-        gap: 10px;
+        gap: 20px;
     }
-    .logo {
-        max-height: 48px;
+    .uema img:first-child {
+        height: 80px;
+    }
+    .uema img:last-child {
+        height: 45px;
     }
 }

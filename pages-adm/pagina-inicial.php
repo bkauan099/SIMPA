@@ -1,4 +1,8 @@
 <?php
+require_once '../lib/Guard.php';
+Guard::apenasAdmin();
+?>
+<?php
 // pages-adm/pagina-inicial.php
 
 require_once '../conexao/conexao.php';

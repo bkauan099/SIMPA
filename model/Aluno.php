@@ -189,5 +189,57 @@ class Aluno {
         $stmt->execute([':id' => $id_usuario]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function listarTodosRegistros($id_usuario) {
+        $sql = "
+            SELECT id, titulo, descricao, tipo, data, hora, concluido, created_at
+            FROM agenda_items
+            WHERE id_usuario = :id
+            ORDER BY data DESC, created_at DESC
+        ";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id' => $id_usuario]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obterEstatisticasRegistros($id_usuario) {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id");
+        $stmt->execute([':id' => $id_usuario]);
+        $total = (int) $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND concluido = true");
+        $stmt->execute([':id' => $id_usuario]);
+        $concluidos = (int) $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND (concluido = false OR concluido IS NULL)");
+        $stmt->execute([':id' => $id_usuario]);
+        $pendentes = (int) $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) FROM agenda_items
+            WHERE id_usuario = :id
+              AND date_trunc('month', data) = date_trunc('month', CURRENT_DATE)
+        ");
+        $stmt->execute([':id' => $id_usuario]);
+        $este_mes = (int) $stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("
+            SELECT tipo, COUNT(*) AS qtd
+            FROM agenda_items
+            WHERE id_usuario = :id
+            GROUP BY tipo
+            ORDER BY qtd DESC
+        ");
+        $stmt->execute([':id' => $id_usuario]);
+        $por_tipo = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+        return [
+            'total'      => $total,
+            'concluidos' => $concluidos,
+            'pendentes'  => $pendentes,
+            'este_mes'   => $este_mes,
+            'por_tipo'   => $por_tipo,
+        ];
+    }
 }
 ?>

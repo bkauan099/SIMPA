@@ -5,7 +5,27 @@
       "Bash(nslookup db.mjudzspubsmoeedejrlw.supabase.co)",
       "Bash(php -v)",
       "Bash(psql --version)",
-      "Bash(/c/xampp/php/php.exe -r ' *)"
+      "Bash(/c/xampp/php/php.exe -r ' *)",
+      "Bash(psql \"postgresql://postgres:Simpas@2026@db.mjudzspubsmoeedejrlw.supabase.co:5432/postgres?sslmode=require\" -c \"\\\\dt\")",
+      "Bash(php -r ' *)",
+      "PowerShell(port=`$port)",
+      "PowerShell(dbname=`$dbname)",
+      "PowerShell(& \"C:\\\\xampp\\\\php\\\\php.exe\" \"c:\\\\xampp\\\\htdocs\\\\SIMPA\\\\_temp_db_check.php\" 2>&1)",
+      "Bash(del \"c:\\\\xampp\\\\htdocs\\\\SIMPA\\\\_temp_db_check.php\")",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\" -Force | Select-Object Name, @{Name=\"Type\"; Expression={if \\($_.PSIsContainer\\) {\"DIR\"} else {\"FILE\"}}} | Format-Table -AutoSize)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\controllers\" -Recurse -Force | Select-Object Name | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\model\" -Recurse -Force | Select-Object Name | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\views\" -Recurse -Force | Select-Object Name | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\assets\" -Recurse -Force | Select-Object Name | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\lib\" -Recurse -Force | Select-Object Name | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\pages-adm\" -Recurse -Force | Select-Object Name | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\pages-aluno\" -Recurse -Force | Select-Object Name | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\pages-professor\" -Recurse -Force | Select-Object Name | ForEach-Object { $_.Name })",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\xampp\\\\htdocs\\\\SIMPA\\\\views\\\\\" -Recurse -Force | Select-Object Name | ForEach-Object { $_.Name })",
+      "Bash(dir \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\controllers\\\\\" 2>&1)",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\xampp\\\\htdocs\\\\SIMPA\\\\lib\")",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\xampp\\\\htdocs\\\\SIMPA\\\\logs\")",
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\xampp\\\\htdocs\\\\SIMPA\\\\uploads\\\\documentos\")"
     ]
   }
 }

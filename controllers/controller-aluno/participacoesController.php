@@ -14,9 +14,9 @@ class ParticipacaoAlunoController {
 
     public function index() {
         try {
-            $alunoModel    = new Aluno($this->pdo);
-            $estatisticas  = $alunoModel->obterEstatisticasProjetos($this->id_usuario);
-            $participacoes = $alunoModel->obterParticipacoes($this->id_usuario);
+            $alunoModel  = new Aluno($this->pdo);
+            $estatisticas = $alunoModel->obterEstatisticasRegistros($this->id_usuario);
+            $registros    = $alunoModel->listarTodosRegistros($this->id_usuario);
 
             require __DIR__ . '/../../views/view-aluno/participacoes.view.php';
         } catch (Exception $e) {
