@@ -25,7 +25,13 @@
       "Bash(dir \"C:\\\\Users\\\\zepra\\\\Downloads\\\\SIMPA-main\\\\controllers\\\\\" 2>&1)",
       "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\xampp\\\\htdocs\\\\SIMPA\\\\lib\")",
       "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\xampp\\\\htdocs\\\\SIMPA\\\\logs\")",
-      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\xampp\\\\htdocs\\\\SIMPA\\\\uploads\\\\documentos\")"
+      "PowerShell(New-Item -ItemType Directory -Force -Path \"C:\\\\xampp\\\\htdocs\\\\SIMPA\\\\uploads\\\\documentos\")",
+      "Bash(Remove-Item \"c:\\\\xampp\\\\htdocs\\\\SIMPA\\\\assets\\\\js\\\\aluno.js\" -Force)",
+      "PowerShell(code --install-extension Catppuccin.catppuccin-vsc)",
+      "PowerShell(code --install-extension PKief.material-icon-theme)",
+      "PowerShell(code --install-extension oderwat.indent-rainbow)",
+      "PowerShell(code --install-extension usernamehw.errorlens)",
+      "PowerShell(code --install-extension enkia.tokyo-night)"
     ]
   }
 }

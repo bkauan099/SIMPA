@@ -24,7 +24,7 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
     </div>
     <div class="input-group shadow-sm" style="max-width:280px;">
         <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
-        <input type="text" id="buscaRegistro" class="form-control border-start-0 ps-0" placeholder="Buscar registro...">
+        <input type="text" id="buscaRegistro" class="form-control border-start-0 ps-0" placeholder="Buscar registro..." oninput="aplicarFiltroRegistros()">
     </div>
 </div>
 
@@ -94,14 +94,14 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
 <!-- FILTROS DINÂMICOS -->
 <div class="d-flex gap-2 flex-wrap mb-3 align-items-center">
     <span class="text-muted me-1" style="font-size:0.8rem;">Filtrar:</span>
-    <button class="btn btn-sm btn-outline-secondary filtro-btn active" data-tipo="todos">
+    <button class="btn btn-sm btn-outline-secondary filtro-btn active" data-tipo="todos" onclick="selecionarFiltroRegistro(this)">
         <i class="bi bi-collection me-1"></i>Todos <span class="badge bg-secondary ms-1"><?= $estatisticas['total'] ?></span>
     </button>
     <?php foreach ($estatisticas['por_tipo'] as $tipo => $qtd):
         $cfg   = $corPorTipo[strtolower($tipo)] ?? $fallback;
         $label = $cfg['label'] ?? ucfirst($tipo);
     ?>
-    <button class="btn btn-sm btn-outline-secondary filtro-btn" data-tipo="<?= htmlspecialchars($tipo) ?>">
+    <button class="btn btn-sm btn-outline-secondary filtro-btn" data-tipo="<?= htmlspecialchars($tipo) ?>" onclick="selecionarFiltroRegistro(this)">
         <i class="bi <?= $cfg['icone'] ?> me-1"></i><?= htmlspecialchars($label) ?>
         <span class="badge bg-secondary ms-1"><?= $qtd ?></span>
     </button>
@@ -216,83 +216,3 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
 .registro-card { transition: background .12s; }
 .registro-card:hover { background:#f8fafc !important; }
 </style>
-
-<script>
-function abrirDetalheRegistro(el) {
-    const titulo      = el.dataset.titulo;
-    const desc        = el.dataset.desc;
-    const data        = el.dataset.data;
-    const hora        = el.dataset.hora;
-    const label       = el.dataset.label;
-    const icone       = el.dataset.icone;
-    const cor         = el.dataset.cor;
-    const statusLabel = el.dataset.statusLabel;
-    const statusStyle = el.dataset.statusStyle;
-    const statusIco   = el.dataset.statusIco;
-
-    const corpo = `
-        <div class="so-campo">
-            <div class="so-label">Status</div>
-            <div class="so-valor">
-                <span class="badge rounded-pill px-2 py-1" style="${statusStyle}font-size:0.8rem;">
-                    <i class="bi ${statusIco} me-1"></i>${statusLabel}
-                </span>
-            </div>
-        </div>
-        <hr class="so-divider">
-        <div class="row g-3">
-            <div class="col-6">
-                <div class="so-campo mb-0">
-                    <div class="so-label">Data</div>
-                    <div class="so-valor"><i class="bi bi-calendar2 me-1 text-muted"></i>${data}</div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="so-campo mb-0">
-                    <div class="so-label">Hora</div>
-                    <div class="so-valor"><i class="bi bi-clock me-1 text-muted"></i>${hora !== '—' ? hora : 'Não definida'}</div>
-                </div>
-            </div>
-        </div>
-        <hr class="so-divider">
-        <div class="so-campo">
-            <div class="so-label">Descrição</div>
-            <div class="so-valor">${desc ? desc.replace(/\n/g, '<br>') : '<span class="text-muted">Sem descrição.</span>'}</div>
-        </div>
-    `;
-
-    abrirSlideOver(titulo, corpo, {
-        badge: `<i class="bi ${icone} me-1"></i>${label}`,
-        badgeCor: cor
-    });
-}
-
-(function () {
-    const cards = document.querySelectorAll('.registro-card');
-    const semRes = document.getElementById('semResultados');
-    const busca  = document.getElementById('buscaRegistro');
-
-    function aplicar() {
-        const tipoAtivo = document.querySelector('.filtro-btn.active')?.dataset.tipo || 'todos';
-        const txt = busca ? busca.value.toLowerCase() : '';
-        let n = 0;
-        cards.forEach(c => {
-            const ok = (tipoAtivo === 'todos' || c.dataset.tipo === tipoAtivo)
-                    && (!txt || c.dataset.busca.includes(txt));
-            c.style.display = ok ? '' : 'none';
-            if (ok) n++;
-        });
-        if (semRes) semRes.classList.toggle('d-none', n > 0);
-    }
-
-    document.querySelectorAll('.filtro-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            aplicar();
-        });
-    });
-
-    if (busca) busca.addEventListener('input', aplicar);
-})();
-</script>

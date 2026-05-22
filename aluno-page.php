@@ -136,17 +136,11 @@ function closeSidebar() {
     overlay.classList.remove('active');
 }
 window.addEventListener('resize', () => {
-    if (!isOverlayMode()) {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('active');
-    }
+    if (!isOverlayMode()) { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
 });
 window.addEventListener('orientationchange', () => {
     setTimeout(() => {
-        if (!isOverlayMode()) {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        }
+        if (!isOverlayMode()) { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
     }, 150);
 });
 
@@ -182,29 +176,9 @@ function carregarPagina(abaSolicitada) {
     fetch(arquivo, { cache: 'no-store', signal: ctrl.signal })
         .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
         .then(html => {
+            if (ctrl.signal.aborted) return;
             _fetchAtivo = null;
-            document.querySelectorAll('script[data-dinamico]').forEach(s => s.remove());
-            const temp = document.createElement('div');
-            temp.innerHTML = html;
-            const scripts = [];
-            temp.querySelectorAll('script').forEach(s => { scripts.push({ src: s.src, text: s.textContent }); s.remove(); });
-            container.innerHTML = temp.innerHTML;
-            function runNext(i) {
-                if (i >= scripts.length) return;
-                const ns = document.createElement('script');
-                ns.setAttribute('data-dinamico', '1');
-                if (scripts[i].src) {
-                    ns.src = scripts[i].src;
-                    ns.onload = () => runNext(i + 1);
-                    ns.onerror = () => runNext(i + 1);
-                    document.body.appendChild(ns);
-                } else {
-                    ns.textContent = scripts[i].text;
-                    document.body.appendChild(ns);
-                    runNext(i + 1);
-                }
-            }
-            runNext(0);
+            container.innerHTML = html;
         })
         .catch(err => {
             if (err.name === 'AbortError') return;
@@ -217,12 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarPagina(hash || 'pagina-inicial');
 });
 
-// ── Slide-over global ────────────────────────────────────────
+// ── Slide-over global ─────────────────────────────────────────
 function abrirSlideOver(titulo, corpo, { badge = '', badgeCor = '#3b82f6' } = {}) {
     const el = document.getElementById('slideOver');
     document.getElementById('slideOverTitulo').textContent = titulo;
-    document.getElementById('slideOverBody').innerHTML    = corpo;
-
+    document.getElementById('slideOverBody').innerHTML = corpo;
     const badgeEl = document.getElementById('slideOverBadge');
     if (badge) {
         badgeEl.innerHTML = `<span class="badge rounded-pill px-2 py-1"
@@ -230,7 +203,6 @@ function abrirSlideOver(titulo, corpo, { badge = '', badgeCor = '#3b82f6' } = {}
     } else {
         badgeEl.innerHTML = '';
     }
-
     el.classList.add('aberto');
     document.body.style.overflow = 'hidden';
 }
@@ -240,9 +212,311 @@ function fecharSlideOver() {
     document.body.style.overflow = '';
 }
 
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') fecharSlideOver();
-});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharSlideOver(); });
+
+// ── Tarefas ───────────────────────────────────────────────────
+function toggleConcluido(btn) {
+    const tr = btn.closest('tr');
+    const id = tr.dataset.id;
+    btn.disabled = true;
+
+    fetch('pages-aluno/toggle-concluido.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id=' + encodeURIComponent(id)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.ok) { btn.disabled = false; return; }
+        const concluido = data.concluido;
+        const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+        const p = tr.dataset.data.split('-');
+        const prazo = new Date(p[0], p[1] - 1, p[2]);
+
+        let statusKey, statusLabel, statusClass;
+        if (concluido) {
+            statusKey = 'concluido'; statusLabel = 'Concluído'; statusClass = 'bg-success text-white';
+        } else if (prazo < hoje) {
+            statusKey = 'nao_concluido'; statusLabel = 'Não Concluído'; statusClass = 'bg-danger text-white';
+        } else {
+            statusKey = 'pendente'; statusLabel = 'Pendente'; statusClass = 'bg-warning text-dark';
+        }
+
+        const ant = tr.dataset.status;
+        tr.dataset.status = statusKey;
+
+        const badge = tr.querySelector('.badge-status');
+        badge.className = 'badge badge-status ' + statusClass;
+        badge.textContent = statusLabel;
+
+        const statIds = { pendente: 'statPendentes', nao_concluido: 'statNaoConcluidos', concluido: 'statConcluidos' };
+        const elAnt = document.getElementById(statIds[ant]);
+        const elNov = document.getElementById(statIds[statusKey]);
+        if (elAnt) elAnt.textContent = Math.max(0, parseInt(elAnt.textContent) - 1);
+        if (elNov) elNov.textContent = parseInt(elNov.textContent) + 1;
+
+        const icon = btn.querySelector('i');
+        if (concluido) {
+            btn.className = 'btn btn-sm btn-outline-warning';
+            btn.title = 'Desfazer conclusão';
+            icon.className = 'bi bi-arrow-counterclockwise';
+        } else {
+            btn.className = 'btn btn-sm btn-outline-success';
+            btn.title = 'Marcar como concluído';
+            icon.className = 'bi bi-check-lg';
+        }
+        btn.disabled = false;
+    })
+    .catch(() => { btn.disabled = false; });
+}
+
+function toggleDescricao(btn) {
+    const tr = btn.closest('tr');
+    const descRow = tr.nextElementSibling;
+    const icon = btn.querySelector('i');
+    const aberto = descRow.style.display !== 'none';
+    descRow.style.display = aberto ? 'none' : '';
+    icon.className = aberto ? 'bi bi-three-dots-vertical' : 'bi bi-x-lg';
+}
+
+function abrirDetalheTarefa(tr) {
+    const titulo      = tr.querySelector('td.fw-medium')?.textContent || '';
+    const data        = tr.querySelector('td:nth-child(2)')?.textContent || '';
+    const hora        = tr.querySelector('td:nth-child(3)')?.textContent || '—';
+    const badgeEl     = tr.querySelector('.badge-status');
+    const statusLabel = badgeEl?.textContent || '';
+    const cls         = badgeEl?.className || '';
+
+    let statusStyle, statusIco;
+    if (cls.includes('bg-success'))     { statusStyle = 'background:#dcfce7;color:#16a34a;'; statusIco = 'bi-check-circle'; }
+    else if (cls.includes('bg-danger')) { statusStyle = 'background:#fee2e2;color:#dc2626;'; statusIco = 'bi-x-circle'; }
+    else                                { statusStyle = 'background:#fef9c3;color:#a16207;'; statusIco = 'bi-hourglass-split'; }
+
+    const descFull = tr.dataset.busca
+        ? tr.dataset.busca.replace(titulo.toLowerCase() + ' ', '').trim()
+        : '';
+
+    abrirSlideOver(titulo, `
+        <div class="so-campo">
+            <div class="so-label">Status</div>
+            <div class="so-valor">
+                <span class="badge rounded-pill px-2 py-1" style="${statusStyle}font-size:0.8rem;">
+                    <i class="bi ${statusIco} me-1"></i>${statusLabel}
+                </span>
+            </div>
+        </div>
+        <hr class="so-divider">
+        <div class="row g-3">
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Data</div>
+                    <div class="so-valor"><i class="bi bi-calendar2 me-1 text-muted"></i>${data}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Hora</div>
+                    <div class="so-valor"><i class="bi bi-clock me-1 text-muted"></i>${hora !== '—' ? hora : 'Não definida'}</div>
+                </div>
+            </div>
+        </div>
+        <hr class="so-divider">
+        <div class="so-campo">
+            <div class="so-label">Descrição</div>
+            <div class="so-valor">${descFull ? descFull.replace(/\n/g, '<br>') : '<span class="text-muted">Sem descrição.</span>'}</div>
+        </div>`, {
+        badge: '<i class="bi bi-check2-square me-1"></i>Tarefa',
+        badgeCor: '#3b82f6'
+    });
+}
+
+function filtrarItens() {
+    const busca  = (document.getElementById('filtroBusca')?.value || '').toLowerCase();
+    const status = document.getElementById('filtroStatus')?.value || '';
+    const linhas = document.querySelectorAll('#tabelaTarefas tbody tr[data-tipo]');
+    let n = 0;
+    linhas.forEach(tr => {
+        const ok = (!busca  || tr.dataset.busca.includes(busca))
+                && (!status || tr.dataset.status === status);
+        tr.style.display = ok ? '' : 'none';
+        const descRow = tr.nextElementSibling;
+        if (descRow && descRow.classList.contains('tr-descricao') && !ok) {
+            descRow.style.display = 'none';
+            const ic = tr.querySelector('.btn-expandir i');
+            if (ic) ic.className = 'bi bi-three-dots-vertical';
+        }
+        if (ok) n++;
+    });
+    const c = document.getElementById('contadorItens');
+    if (c) c.textContent = n + ' resultado(s)';
+}
+
+// ── Cronograma ────────────────────────────────────────────────
+function toggleDescCron(btn) {
+    const tr = btn.closest('tr');
+    const descRow = tr.nextElementSibling;
+    const icon = btn.querySelector('i');
+    const aberto = descRow.style.display !== 'none';
+    descRow.style.display = aberto ? 'none' : '';
+    icon.className = aberto ? 'bi bi-three-dots-vertical' : 'bi bi-x-lg';
+}
+
+function toggleCronograma(btn) {
+    const tr = btn.closest('tr');
+    const id = tr.dataset.id;
+    btn.disabled = true;
+
+    fetch('pages-aluno/toggle-concluido.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id=' + encodeURIComponent(id)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.ok) { btn.disabled = false; return; }
+        const concluido = data.concluido;
+        const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+        const p = tr.dataset.data.split('-');
+        const prazo = new Date(p[0], p[1] - 1, p[2]);
+
+        let statusKey, statusLabel, statusClass;
+        if (concluido) {
+            statusKey = 'concluido'; statusLabel = 'Concluído'; statusClass = 'bg-success text-white';
+        } else if (prazo < hoje) {
+            statusKey = 'nao_concluido'; statusLabel = 'Não Concluído'; statusClass = 'bg-danger text-white';
+        } else {
+            statusKey = 'proximo'; statusLabel = 'Pendente'; statusClass = 'bg-warning text-dark';
+        }
+
+        const ant = tr.dataset.status;
+        tr.dataset.status = statusKey;
+
+        const badge = tr.querySelector('.badge-status');
+        badge.className = 'badge badge-status ' + statusClass;
+        badge.textContent = statusLabel;
+
+        const icon = btn.querySelector('i');
+        if (concluido) {
+            btn.className = 'btn btn-sm btn-outline-warning';
+            btn.title = 'Desfazer';
+            icon.className = 'bi bi-arrow-counterclockwise';
+        } else {
+            btn.className = 'btn btn-sm btn-outline-success';
+            btn.title = 'Marcar como concluído';
+            icon.className = 'bi bi-check-lg';
+        }
+
+        const statIds = { proximo: 'statProximos', nao_concluido: 'statNaoConcluidos', concluido: 'statConcluidos' };
+        const elAnt = document.getElementById(statIds[ant]);
+        const elNov = document.getElementById(statIds[statusKey]);
+        if (elAnt) elAnt.textContent = Math.max(0, parseInt(elAnt.textContent) - 1);
+        if (elNov) elNov.textContent = parseInt(elNov.textContent) + 1;
+
+        btn.disabled = false;
+    })
+    .catch(() => { btn.disabled = false; });
+}
+
+function filtrarCronograma() {
+    const busca  = (document.getElementById('filtroBusca')?.value || '').toLowerCase();
+    const tipo   = document.getElementById('filtroTipo')?.value || '';
+    const status = document.getElementById('filtroStatus')?.value || '';
+    const linhas = document.querySelectorAll('#tabelaCronograma tbody tr[data-tipo]');
+    let n = 0;
+    linhas.forEach(tr => {
+        const ok = (!busca  || tr.dataset.busca.includes(busca))
+                && (!tipo   || tr.dataset.tipo   === tipo)
+                && (!status || tr.dataset.status === status);
+        tr.style.display = ok ? '' : 'none';
+        const desc = tr.nextElementSibling;
+        if (desc && desc.classList.contains('tr-descricao') && !ok) {
+            desc.style.display = 'none';
+            const ic = tr.querySelector('.btn-expandir i');
+            if (ic) ic.className = 'bi bi-three-dots-vertical';
+        }
+        if (ok) n++;
+    });
+    const c = document.getElementById('contadorItens');
+    if (c) c.textContent = n + ' resultado(s)';
+}
+
+// ── Registros ─────────────────────────────────────────────────
+function abrirDetalheRegistro(el) {
+    const statusStyle = el.dataset.statusStyle;
+    const statusIco   = el.dataset.statusIco;
+    const statusLabel = el.dataset.statusLabel;
+    const desc        = el.dataset.desc;
+    const hora        = el.dataset.hora;
+
+    abrirSlideOver(el.dataset.titulo, `
+        <div class="so-campo">
+            <div class="so-label">Status</div>
+            <div class="so-valor">
+                <span class="badge rounded-pill px-2 py-1" style="${statusStyle}font-size:0.8rem;">
+                    <i class="bi ${statusIco} me-1"></i>${statusLabel}
+                </span>
+            </div>
+        </div>
+        <hr class="so-divider">
+        <div class="row g-3">
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Data</div>
+                    <div class="so-valor"><i class="bi bi-calendar2 me-1 text-muted"></i>${el.dataset.data}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Hora</div>
+                    <div class="so-valor"><i class="bi bi-clock me-1 text-muted"></i>${hora !== '—' ? hora : 'Não definida'}</div>
+                </div>
+            </div>
+        </div>
+        <hr class="so-divider">
+        <div class="so-campo">
+            <div class="so-label">Descrição</div>
+            <div class="so-valor">${desc ? desc.replace(/\n/g, '<br>') : '<span class="text-muted">Sem descrição.</span>'}</div>
+        </div>`, {
+        badge: `<i class="bi ${el.dataset.icone} me-1"></i>${el.dataset.label}`,
+        badgeCor: el.dataset.cor
+    });
+}
+
+function selecionarFiltroRegistro(btn) {
+    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    aplicarFiltroRegistros();
+}
+
+function aplicarFiltroRegistros() {
+    const tipo = document.querySelector('.filtro-btn.active')?.dataset.tipo || 'todos';
+    const txt  = (document.getElementById('buscaRegistro')?.value || '').toLowerCase();
+    let n = 0;
+    document.querySelectorAll('.registro-card').forEach(c => {
+        const ok = (tipo === 'todos' || c.dataset.tipo === tipo)
+                && (!txt || c.dataset.busca.includes(txt));
+        c.style.display = ok ? '' : 'none';
+        if (ok) n++;
+    });
+    const sem = document.getElementById('semResultados');
+    if (sem) sem.classList.toggle('d-none', n > 0);
+}
+
+// ── Calendário / Página Inicial ───────────────────────────────
+function showDay(el) {
+    document.querySelectorAll('.calendar-day.selected').forEach(d => d.classList.remove('selected'));
+    if (!el.classList.contains('today')) el.classList.add('selected');
+
+    const itens = JSON.parse(el.dataset.itens || '[]');
+    document.getElementById('modalDiaTitulo').textContent = el.dataset.titulo;
+    document.getElementById('modalDiaLista').innerHTML = itens.length
+        ? itens.map((item, i, a) =>
+            `<div class="py-2${i < a.length - 1 ? ' border-bottom' : ''}" style="font-size:0.88rem;">${item}</div>`
+          ).join('')
+        : '<p class="text-muted text-center py-2 mb-0">Nenhuma atividade neste dia.</p>';
+
+    new bootstrap.Modal(document.getElementById('modalDia')).show();
+}
 </script>
 </body>
 </html>
