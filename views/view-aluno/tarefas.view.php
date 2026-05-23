@@ -104,8 +104,10 @@
                     ?>
                         <?php
                             $descricao   = $item['descricao'] ?? '';
-                            $temArquivo  = !empty($item['arquivo_caminho']);
-                            $prazoPassou = $prazo < $hoje;
+                            $arquivosJson = $item['arquivos'] ?? '[]';
+                            $arquivosArr  = json_decode($arquivosJson, true) ?: [];
+                            $temArquivo   = !empty($arquivosArr);
+                            $prazoPassou  = $prazo < $hoje;
                         ?>
                         <tr style="cursor:pointer;"
                             onclick="abrirDetalheTarefa(this)"
@@ -116,18 +118,31 @@
                             data-data="<?= htmlspecialchars($item['data']) ?>"
                             data-titulo="<?= htmlspecialchars($item['titulo'], ENT_QUOTES) ?>"
                             data-concluido="<?= $item['concluido'] ? '1' : '0' ?>"
-                            data-arquivo-caminho="<?= htmlspecialchars($item['arquivo_caminho'] ?? '') ?>"
-                            data-arquivo-nome="<?= htmlspecialchars($item['arquivo_nome'] ?? '') ?>"
-                            data-id-producao="<?= $item['id_producao'] ?? '' ?>">
+                            data-arquivos="<?= htmlspecialchars($arquivosJson, ENT_QUOTES) ?>">
                             <td class="fw-medium"><?= htmlspecialchars($item['titulo']) ?></td>
                             <td><?= date('d/m/Y', strtotime($item['data'])) ?></td>
                             <td><?= $item['hora'] ? substr($item['hora'], 0, 5) : '—' ?></td>
                             <td><span class="badge badge-status <?= $statusClass ?>"><?= $statusLabel ?></span></td>
                             <td class="text-center">
                                 <?php if ($item['concluido'] && $prazoPassou): ?>
-                                    <button class="btn btn-sm btn-outline-success opacity-50" disabled title="Concluído">
+                                    <button class="btn btn-sm btn-outline-success opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            style="cursor:default;" title="Concluído">
                                         <i class="bi bi-check-lg"></i>
                                     </button>
+                                    <?php if ($temArquivo): ?>
+                                    <button class="btn btn-sm btn-outline-primary ms-1"
+                                            onclick="event.stopPropagation(); abrirModalEdicao(this.closest('tr'))"
+                                            title="Ver arquivo">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <?php else: ?>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1 opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            style="cursor:default;" title="Nenhum arquivo anexado">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <?php endif; ?>
                                 <?php elseif ($item['concluido']): ?>
                                     <button class="btn btn-sm btn-outline-warning"
                                             onclick="event.stopPropagation(); toggleConcluido(this)"
@@ -135,35 +150,37 @@
                                         <i class="bi bi-arrow-counterclockwise"></i>
                                     </button>
                                     <?php if ($temArquivo): ?>
-                                    <button class="btn btn-sm btn-outline-secondary ms-1"
+                                    <button class="btn btn-sm btn-outline-primary ms-1"
                                             onclick="event.stopPropagation(); abrirModalEdicao(this.closest('tr'))"
-                                            title="Ver envio">
-                                        <i class="bi bi-pencil"></i>
+                                            title="Ver arquivo">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <?php else: ?>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1 opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            style="cursor:default;" title="Nenhum arquivo anexado">
+                                        <i class="bi bi-eye"></i>
                                     </button>
                                     <?php endif; ?>
-                                <?php elseif ($temArquivo): ?>
-                                    <button class="btn btn-sm btn-outline-success"
-                                            onclick="event.stopPropagation(); toggleConcluido(this)"
-                                            title="Marcar como concluído">
-                                        <i class="bi bi-check-lg"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-secondary ms-1"
-                                            onclick="event.stopPropagation(); abrirModalEdicao(this.closest('tr'))"
-                                            title="Editar envio">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
                                 <?php else: ?>
                                     <button class="btn btn-sm btn-outline-success"
                                             onclick="event.stopPropagation(); toggleConcluido(this)"
                                             title="Marcar como concluído">
                                         <i class="bi bi-check-lg"></i>
                                     </button>
-                                    <button class="btn btn-sm ms-1"
-                                            style="border:1.5px solid #93c5fd;color:#3b82f6;background:transparent;"
+                                    <?php if ($temArquivo): ?>
+                                    <button class="btn btn-sm btn-outline-warning ms-1"
                                             onclick="event.stopPropagation(); abrirModalEnvio(this.closest('tr'))"
-                                            title="Anexar arquivo">
+                                            title="Editar arquivo">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <?php else: ?>
+                                    <button class="btn btn-sm btn-outline-primary ms-1"
+                                            onclick="event.stopPropagation(); abrirModalEnvio(this.closest('tr'))"
+                                            title="Enviar arquivo">
                                         <i class="bi bi-paperclip"></i>
                                     </button>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </td>
                         </tr>

@@ -5,30 +5,60 @@
     </div>
 </div>
 
-<div class="row g-3 mb-4">
-    <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-calendar-event"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statProximos"><?= $estatisticas['proximos'] ?></h4><small class="text-muted">Próximos</small></div>
-        </div>
+
+<?php
+    $hojeRef = new DateTime(); $hojeRef->setTime(0,0,0);
+    $diaSem  = (int)$hojeRef->format('w'); // 0=Dom … 6=Sáb
+    $domingo = (clone $hojeRef)->modify('-' . $diaSem . ' days');
+    $sabado  = (clone $domingo)->modify('+6 days');
+    $nomesDias = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+
+    // Agrupa itens por data
+    $itensPorDia = [];
+    foreach ($itens as $it) { $itensPorDia[$it['data']][] = $it; }
+?>
+<div class="content-card mb-4 p-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold mb-0"><i class="bi bi-calendar-week me-2 text-primary"></i>Semana Atual</h6>
+        <span class="text-muted small"><?= $domingo->format('d/m') ?> – <?= $sabado->format('d/m/Y') ?></span>
     </div>
-    <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-alarm"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statNaoConcluidos"><?= $estatisticas['nao_concluidos'] ?></h4><small class="text-muted">Não Concluídos</small></div>
+    <div class="row g-2">
+        <?php for ($i = 0; $i < 7; $i++):
+            $dia     = (clone $domingo)->modify('+' . $i . ' days');
+            $dataKey = $dia->format('Y-m-d');
+            $isHoje  = ($dia == $hojeRef);
+            $itensNoDia = $itensPorDia[$dataKey] ?? [];
+        ?>
+        <div class="col">
+            <div style="border-radius:10px;padding:8px 6px;min-height:80px;
+                        background:<?= $isHoje ? '#eff6ff' : '#f8fafc' ?>;
+                        border:1.5px solid <?= $isHoje ? '#3b82f6' : '#e2e8f0' ?>;">
+                <div class="text-center mb-2">
+                    <div style="font-size:0.68rem;color:#94a3b8;font-weight:700;text-transform:uppercase;">
+                        <?= $nomesDias[$i] ?>
+                    </div>
+                    <div style="font-size:1.05rem;font-weight:800;line-height:1;
+                                color:<?= $isHoje ? '#3b82f6' : '#1e293b' ?>;">
+                        <?= $dia->format('d') ?>
+                    </div>
+                </div>
+                <?php foreach ($itensNoDia as $it):
+                    if ($it['concluido']) { $cor = '#16a34a'; }
+                    elseif ($dia < $hojeRef) { $cor = '#ef4444'; }
+                    else { $cor = '#f59e0b'; }
+                    $icon = $it['tipo'] === 'tarefa' ? 'bi-check2-square' : 'bi-calendar-event';
+                ?>
+                <div title="<?= htmlspecialchars($it['titulo']) ?>"
+                     style="font-size:0.63rem;background:<?= $cor ?>18;border-left:2px solid <?= $cor ?>;
+                            padding:2px 4px;border-radius:3px;margin-bottom:2px;
+                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:default;">
+                    <i class="bi <?= $icon ?>" style="color:<?= $cor ?>;"></i>
+                    <?= htmlspecialchars(mb_strimwidth($it['titulo'], 0, 14, '…')) ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
-    <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-check2-square"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statConcluidos"><?= $estatisticas['concluidos'] ?></h4><small class="text-muted">Concluídos</small></div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-list-check"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= count($itens) ?></h4><small class="text-muted">Total no Período</small></div>
-        </div>
+        <?php endfor; ?>
     </div>
 </div>
 
@@ -89,15 +119,25 @@
                         } else {
                             $statusKey = 'proximo'; $statusLabel = 'Pendente'; $statusClass = 'bg-warning text-dark';
                         }
-                        $descricao = $item['descricao'] ?? '';
+                        $descricao  = $item['descricao'] ?? '';
                         $mesDaLinha = date('Y-m', strtotime($item['data']));
+                        $arquivosJson = $item['arquivos'] ?? '[]';
+                        $arquivosArr  = json_decode($arquivosJson, true) ?: [];
+                        $temArquivo   = !empty($arquivosArr);
+                        $prazoPassou  = $prazo < $hoje;
                     ?>
-                        <tr data-tipo="<?= htmlspecialchars($item['tipo']) ?>"
+                        <tr style="cursor:pointer;"
+                            onclick="abrirDetalheCronograma(this)"
+                            data-tipo="<?= htmlspecialchars($item['tipo']) ?>"
                             data-status="<?= $statusKey ?>"
                             data-mes="<?= $mesDaLinha ?>"
                             data-busca="<?= htmlspecialchars(strtolower($item['titulo'] . ' ' . $descricao)) ?>"
                             data-id="<?= htmlspecialchars($item['id']) ?>"
-                            data-data="<?= htmlspecialchars($item['data']) ?>">
+                            data-data="<?= htmlspecialchars($item['data']) ?>"
+                            data-titulo="<?= htmlspecialchars($item['titulo'], ENT_QUOTES) ?>"
+                            data-concluido="<?= $item['concluido'] ? '1' : '0' ?>"
+                            data-arquivos="<?= htmlspecialchars($arquivosJson, ENT_QUOTES) ?>"
+                            data-descricao="<?= htmlspecialchars($descricao, ENT_QUOTES) ?>">
                             <td class="fw-bold"><?= date('d/m/Y', strtotime($item['data'])) ?></td>
                             <td><?= $item['hora'] ? substr($item['hora'], 0, 5) : '—' ?></td>
                             <td class="fw-medium"><?= htmlspecialchars($item['titulo']) ?></td>
@@ -110,26 +150,62 @@
                             </td>
                             <td><span class="badge badge-status <?= $statusClass ?>"><?= $statusLabel ?></span></td>
                             <td class="text-center">
-                                <button class="btn btn-sm <?= $item['concluido'] ? 'btn-outline-warning' : 'btn-outline-success' ?>"
-                                        onclick="toggleCronograma(this)"
-                                        title="<?= $item['concluido'] ? 'Desfazer' : 'Marcar como concluído' ?>">
-                                    <i class="bi <?= $item['concluido'] ? 'bi-arrow-counterclockwise' : 'bi-check-lg' ?>"></i>
-                                </button>
-                                <?php if ($descricao): ?>
-                                <button class="btn btn-sm btn-outline-secondary ms-1 btn-expandir"
-                                        onclick="toggleDescCron(this)" title="Ver descrição">
-                                    <i class="bi bi-three-dots-vertical"></i>
-                                </button>
+                                <?php if ($item['concluido'] && $prazoPassou): ?>
+                                    <button class="btn btn-sm btn-outline-success opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            style="cursor:default;" title="Concluído">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <?php if ($temArquivo): ?>
+                                    <button class="btn btn-sm btn-outline-primary ms-1"
+                                            onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Ver arquivo">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <?php else: ?>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1 opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            style="cursor:default;" title="Nenhum arquivo anexado">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <?php endif; ?>
+                                <?php elseif ($item['concluido']): ?>
+                                    <button class="btn btn-sm btn-outline-warning"
+                                            onclick="event.stopPropagation();toggleCronograma(this)" title="Desfazer conclusão">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </button>
+                                    <?php if ($temArquivo): ?>
+                                    <button class="btn btn-sm btn-outline-primary ms-1"
+                                            onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Ver arquivo">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <?php else: ?>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1 opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            style="cursor:default;" title="Nenhum arquivo anexado">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <?php endif; ?>
+                                <?php elseif ($temArquivo): ?>
+                                    <button class="btn btn-sm btn-outline-success"
+                                            onclick="event.stopPropagation();toggleCronograma(this)" title="Marcar como concluído">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning ms-1"
+                                            onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Editar arquivo">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                <?php else: ?>
+                                    <button class="btn btn-sm btn-outline-success"
+                                            onclick="event.stopPropagation();toggleCronograma(this)" title="Marcar como concluído">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary ms-1"
+                                            onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Enviar arquivo">
+                                        <i class="bi bi-paperclip"></i>
+                                    </button>
                                 <?php endif; ?>
                             </td>
                         </tr>
-                        <?php if ($descricao): ?>
-                        <tr class="tr-descricao" style="display:none">
-                            <td colspan="6" class="px-3 py-2 bg-light">
-                                <span class="text-muted small"><i class="bi bi-card-text me-1"></i><?= htmlspecialchars($descricao) ?></span>
-                            </td>
-                        </tr>
-                        <?php endif; ?>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </tbody>

@@ -1,9 +1,14 @@
 <?php
 session_start();
-$id_usuario = $_SESSION['id_usuario'] ?? 3;
+$id_usuario = $_SESSION['id_usuario'] ?? null;
 require_once __DIR__ . '/../conexao/conexao.php';
 
 header('Content-Type: application/json');
+
+if (!$id_usuario) {
+    echo json_encode(['ok' => false, 'erro' => 'Sessão expirada.']);
+    exit;
+}
 
 $id_producao = (int)($_POST['id_producao'] ?? 0);
 if (!$id_producao) { echo json_encode(['ok' => false, 'erro' => 'ID inválido.']); exit; }

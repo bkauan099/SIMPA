@@ -1,14 +1,19 @@
 <?php
 session_start();
-$id_usuario = $_SESSION['id_usuario'] ?? 3;
+$id_usuario = $_SESSION['id_usuario'] ?? null;
 require_once __DIR__ . '/../conexao/conexao.php';
 
 header('Content-Type: application/json');
 
-$id_tarefa = (int)($_POST['id']     ?? 0);
-$titulo    = trim($_POST['titulo']  ?? '');
+if (!$id_usuario) {
+    echo json_encode(['ok' => false, 'erro' => 'Sessão expirada. Recarregue a página.']);
+    exit;
+}
 
-if (!$id_tarefa || empty($titulo)) {
+$id_tarefa = $_POST['id']    ?? '';
+$titulo    = trim($_POST['titulo'] ?? '');
+
+if (empty($id_tarefa) || empty($titulo)) {
     echo json_encode(['ok' => false, 'erro' => 'Dados insuficientes.']); exit;
 }
 
@@ -46,21 +51,6 @@ if (!move_uploaded_file($_FILES['arquivo']['tmp_name'], $pasta . $nomeArquivo)) 
     echo json_encode(['ok' => false, 'erro' => 'Falha ao salvar o arquivo.']); exit;
 }
 
-// Remover envio anterior desta tarefa se existir
-$stmt = $pdo->prepare(
-    "SELECT id_producao, caminho FROM producoes
-     WHERE titulo = :titulo AND id_projeto = :id_projeto AND status = 'pendente'
-     ORDER BY id_producao DESC LIMIT 1"
-);
-$stmt->execute([':titulo' => $titulo, ':id_projeto' => $id_projeto]);
-$anterior = $stmt->fetch(PDO::FETCH_ASSOC);
-if ($anterior) {
-    $arquivoAntigo = __DIR__ . '/../' . $anterior['caminho'];
-    if (file_exists($arquivoAntigo)) unlink($arquivoAntigo);
-    $pdo->prepare("DELETE FROM producoes WHERE id_producao = :id")
-        ->execute([':id' => $anterior['id_producao']]);
-}
-
 // Salvar em producoes — titulo = nome da tarefa, tipo = nome original do arquivo
 $stmt = $pdo->prepare(
     "INSERT INTO producoes (id_projeto, titulo, tipo, caminho, status)
@@ -78,6 +68,6 @@ $id_producao = $stmt->fetchColumn();
 echo json_encode([
     'ok'          => (bool)$id_producao,
     'id_producao' => $id_producao,
-    'caminho'     => $caminhoRel,
+    'caminho'     => 'pages-aluno/servir-arquivo.php?id=' . $id_producao,
     'nome'        => $nomeOriginal,
 ]);

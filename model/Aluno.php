@@ -174,14 +174,30 @@ class Aluno {
 
     public function listarCronograma($id_usuario) {
         $sql = "
-            SELECT id, titulo, descricao, tipo, data, hora, concluido
-            FROM agenda_items
-            WHERE id_usuario = :id
-              AND data >= CURRENT_DATE - INTERVAL '7 days'
-            ORDER BY data ASC
+            SELECT
+                ai.id, ai.titulo, ai.descricao, ai.tipo, ai.data, ai.hora, ai.concluido,
+                lp.arquivos
+            FROM agenda_items ai
+            LEFT JOIN LATERAL (
+                SELECT COALESCE(
+                    json_agg(json_build_object('id', p.id_producao, 'caminho', 'pages-aluno/servir-arquivo.php?id=' || p.id_producao::text, 'nome', p.tipo)
+                             ORDER BY p.id_producao ASC)
+                    FILTER (WHERE p.id_producao IS NOT NULL),
+                    '[]'::json
+                ) AS arquivos
+                FROM producoes p
+                JOIN participacao pa ON pa.id_projeto = p.id_projeto
+                WHERE pa.id_usuario = :uid
+                  AND pa.status = 'ativo'
+                  AND p.titulo = ai.titulo
+                  AND p.status != 'inativo'
+            ) lp ON true
+            WHERE ai.id_usuario = :id
+              AND ai.data >= CURRENT_DATE - INTERVAL '7 days'
+            ORDER BY ai.data ASC
         ";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':id' => $id_usuario]);
+        $stmt->execute([':id' => $id_usuario, ':uid' => $id_usuario]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -196,20 +212,21 @@ class Aluno {
         $sql = "
             SELECT
                 ai.id, ai.titulo, ai.descricao, ai.tipo, ai.data, ai.hora, ai.concluido,
-                lp.caminho     AS arquivo_caminho,
-                lp.tipo        AS arquivo_nome,
-                lp.id_producao
+                lp.arquivos
             FROM agenda_items ai
             LEFT JOIN LATERAL (
-                SELECT p.caminho, p.tipo, p.id_producao
+                SELECT COALESCE(
+                    json_agg(json_build_object('id', p.id_producao, 'caminho', 'pages-aluno/servir-arquivo.php?id=' || p.id_producao::text, 'nome', p.tipo)
+                             ORDER BY p.id_producao ASC)
+                    FILTER (WHERE p.id_producao IS NOT NULL),
+                    '[]'::json
+                ) AS arquivos
                 FROM producoes p
                 JOIN participacao pa ON pa.id_projeto = p.id_projeto
                 WHERE pa.id_usuario = :uid
                   AND pa.status = 'ativo'
                   AND p.titulo = ai.titulo
                   AND p.status != 'inativo'
-                ORDER BY p.id_producao DESC
-                LIMIT 1
             ) lp ON true
             WHERE ai.id_usuario = :id
               AND ai.tipo = 'tarefa'

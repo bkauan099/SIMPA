@@ -119,18 +119,23 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
             <h6 class="fw-bold mb-0"><i class="bi bi-paperclip me-2" style="color:#3b82f6;"></i>Enviar Atividade</h6>
             <button class="btn-close" onclick="fecharModalEnvio()"></button>
         </div>
+        <div id="listaArquivosExistentes" style="display:none;" class="mb-3">
+            <div style="font-size:0.78rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Arquivos Enviados</div>
+            <div id="itensArquivosExistentes"></div>
+        </div>
         <div id="dropZone" onclick="document.getElementById('inputArquivo').click()"
-             style="border:2px dashed #cbd5e1;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s;"
-             onmouseenter="this.style.borderColor='#3b82f6'" onmouseleave="this.style.borderColor='#cbd5e1'">
+             ondragover="event.preventDefault(); this.style.borderColor='#3b82f6'; this.style.background='#f0f7ff';"
+             ondragleave="this.style.borderColor='#cbd5e1'; this.style.background='';"
+             ondrop="event.preventDefault(); this.style.borderColor='#cbd5e1'; this.style.background=''; handleFileDrop(event);"
+             onmouseenter="this.style.borderColor='#3b82f6'" onmouseleave="this.style.borderColor='#cbd5e1'"
+             style="border:2px dashed #cbd5e1;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;">
             <i class="bi bi-cloud-arrow-up d-block mb-2" style="font-size:2rem;color:#94a3b8;"></i>
-            <div style="font-size:0.85rem;color:#64748b;">Clique para selecionar o arquivo</div>
+            <div style="font-size:0.85rem;color:#64748b;">Clique ou arraste arquivo(s) aqui</div>
             <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">Qualquer formato · Máx. 15 MB</div>
         </div>
-        <input type="file" id="inputArquivo" style="display:none;" onchange="selecionarArquivo(this)">
-        <div id="arquivoSelecionado" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;" class="d-flex align-items-center gap-2 p-2 mt-2 rounded">
-            <i class="bi bi-file-earmark text-primary"></i>
-            <span id="nomeArquivoSel" class="flex-grow-1 text-truncate" style="font-size:0.85rem;"></span>
-            <button class="btn btn-sm btn-link text-danger p-0" onclick="limparArquivoSelecionado()"><i class="bi bi-x-lg"></i></button>
+        <input type="file" id="inputArquivo" style="display:none;" multiple onchange="selecionarArquivo(this)">
+        <div id="listaArquivosNovos" style="display:none;" class="mt-2">
+            <div id="itensArquivosNovos"></div>
         </div>
         <div class="mt-3">
             <label class="form-label" style="font-size:0.8rem;color:#64748b;">Observação <span style="color:#94a3b8;">(opcional)</span></label>
@@ -138,7 +143,7 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
         </div>
         <div class="mt-3 d-flex justify-content-end">
             <button class="btn btn-primary" id="btnEnviarArquivo" onclick="enviarArquivoTarefa()">
-                <i class="bi bi-cloud-arrow-up me-1"></i>Enviar
+                <i class="bi bi-floppy me-1"></i>Salvar Rascunho
             </button>
         </div>
     </div>
@@ -148,54 +153,31 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
 <div id="modalEdicaoTarefa" style="display:none;position:fixed;inset:0;z-index:1070;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;">
     <div style="background:#fff;border-radius:16px;padding:24px;width:90%;max-width:460px;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold mb-0"><i class="bi bi-pencil me-2 text-secondary"></i>Editar Envio</h6>
+            <h6 class="fw-bold mb-0" id="tituloModalEdicao"><i class="bi bi-pencil me-2 text-secondary"></i>Editar Envio</h6>
             <button class="btn-close" onclick="fecharModalEdicao()"></button>
         </div>
-        <div style="font-size:0.78rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Arquivo atual (rascunho)</div>
-        <div class="d-flex align-items-center gap-2 p-3 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
-            <i class="bi bi-file-earmark text-primary fs-5"></i>
-            <span id="nomeArquivoEdit" class="flex-grow-1 text-truncate" style="font-size:0.85rem;font-weight:500;"></span>
-            <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
-                    style="width:28px;height:28px;" title="Visualizar" onclick="visualizarArquivoTarefa()">
-                <i class="bi bi-eye" style="font-size:0.75rem;"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-danger rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
-                    style="width:28px;height:28px;" title="Remover" onclick="confirmarRemoverArquivo()">
-                <i class="bi bi-x-lg" style="font-size:0.75rem;"></i>
-            </button>
-        </div>
-        <div id="dropZoneEdit" onclick="document.getElementById('inputArquivoEdit').click()" class="mt-3"
-             style="border:2px dashed #cbd5e1;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;"
-             onmouseenter="this.style.borderColor='#3b82f6'" onmouseleave="this.style.borderColor='#cbd5e1'">
-            <i class="bi bi-arrow-repeat me-2 text-muted"></i>
-            <span style="font-size:0.82rem;color:#64748b;">Substituir por outro arquivo</span>
-        </div>
-        <input type="file" id="inputArquivoEdit" style="display:none;" onchange="substituirArquivo(this)">
-        <div id="arquivoSubstituto" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;" class="d-flex align-items-center gap-2 p-2 mt-2 rounded">
-            <i class="bi bi-file-earmark text-primary"></i>
-            <span id="nomeArquivoSub" class="flex-grow-1 text-truncate" style="font-size:0.85rem;"></span>
-            <button class="btn btn-sm btn-link text-danger p-0" onclick="limparSubstituto()"><i class="bi bi-x-lg"></i></button>
-        </div>
-        <div id="obsEdicaoWrap" style="display:none;" class="mt-3">
-            <label class="form-label" style="font-size:0.8rem;color:#64748b;">Observação <span style="color:#94a3b8;">(opcional)</span></label>
-            <textarea id="obsEdicao" class="form-control form-control-sm" rows="2"></textarea>
-            <div class="mt-2 d-flex justify-content-end">
-                <button class="btn btn-primary btn-sm" onclick="enviarSubstituto()">
-                    <i class="bi bi-cloud-arrow-up me-1"></i>Enviar novo
-                </button>
-            </div>
-        </div>
+        <div id="labelArquivoEdit" style="font-size:0.78rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Arquivos Enviados</div>
+        <div id="itensArquivosEdit"></div>
+        <div id="dropZoneEdit" style="display:none;"></div>
+        <div id="arquivoSubstituto" style="display:none;"></div>
+        <div id="obsEdicaoWrap" style="display:none;"></div>
     </div>
 </div>
 
 <!-- MODAL: Visualizar arquivo -->
 <div id="modalVisualizarArquivo" style="display:none;position:fixed;inset:0;z-index:1080;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:16px;width:95%;max-width:820px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.25);">
-        <div class="d-flex justify-content-between align-items-center p-3" style="border-bottom:1px solid #e2e8f0;">
-            <span class="fw-semibold" style="font-size:0.88rem;" id="tituloArquivoVis"></span>
-            <button class="btn-close" onclick="fecharModalVisualizar()"></button>
+    <div style="background:#fff;border-radius:16px;width:96%;max-width:1140px;max-height:90vh;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.25);display:flex;flex-direction:column;">
+        <div class="d-flex justify-content-between align-items-center p-3" style="border-bottom:1px solid #e2e8f0;gap:8px;flex-shrink:0;">
+            <span class="fw-semibold text-truncate" style="font-size:0.88rem;flex:1;min-width:0;" id="tituloArquivoVis"></span>
+            <div id="controlesZoom" style="display:none;align-items:center;gap:4px;flex-shrink:0;">
+                <button class="btn btn-sm btn-outline-secondary" onclick="zoomVisualizar(-1)" title="Diminuir zoom" style="padding:2px 8px;line-height:1;"><i class="bi bi-dash-lg"></i></button>
+                <span id="zoomLevelLabel" style="font-size:0.78rem;color:#64748b;min-width:42px;text-align:center;font-weight:600;">100%</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="zoomVisualizar(+1)" title="Aumentar zoom" style="padding:2px 8px;line-height:1;"><i class="bi bi-plus-lg"></i></button>
+                <button class="btn btn-sm btn-outline-secondary ms-1" onclick="resetZoomVisualizar()" title="Zoom original" style="padding:2px 7px;font-size:0.7rem;font-weight:700;">1:1</button>
+            </div>
+            <button class="btn-close flex-shrink-0" onclick="fecharModalVisualizar()"></button>
         </div>
-        <div id="corpoArquivoVis" style="min-height:300px;max-height:72vh;overflow:auto;"></div>
+        <div id="corpoArquivoVis" style="flex:1;overflow:hidden;min-height:0;position:relative;"></div>
     </div>
 </div>
 
@@ -252,7 +234,7 @@ function carregarPagina(abaSolicitada) {
         default:                   arquivo = 'pages-aluno/pagina-inicial.php'; abaSolicitada = 'pagina-inicial'; break;
     }
 
-    location.hash = abaSolicitada;
+    history.replaceState({ page: abaSolicitada }, '', location.pathname);
 
     const container = document.getElementById('conteudo-dinamico');
     container.innerHTML = '<div class="text-center mt-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
@@ -266,6 +248,13 @@ function carregarPagina(abaSolicitada) {
             if (ctrl.signal.aborted) return;
             _fetchAtivo = null;
             container.innerHTML = html;
+            // innerHTML não executa <script> — reexecutar manualmente
+            container.querySelectorAll('script').forEach(orig => {
+                const s = document.createElement('script');
+                s.textContent = orig.textContent;
+                document.head.appendChild(s);
+                document.head.removeChild(s);
+            });
         })
         .catch(err => {
             _fetchAtivo = null;
@@ -275,8 +264,10 @@ function carregarPagina(abaSolicitada) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const hash = location.hash.replace('#', '') || 'pagina-inicial';
-    carregarPagina(hash);
+    const pagina = history.state?.page
+        || location.hash.replace('#', '')
+        || 'pagina-inicial';
+    carregarPagina(pagina);
 });
 
 // ── Slide-over global ─────────────────────────────────────────
@@ -460,7 +451,7 @@ function toggleConcluido(btn) {
 }
 
 function atualizarBotoesTarefa(tr) {
-    const temArquivo  = !!tr.dataset.arquivoCaminho;
+    const temArquivo  = getArquivos(tr).length > 0;
     const concluido   = tr.dataset.concluido === '1';
     const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
     const p = tr.dataset.data.split('-');
@@ -468,17 +459,20 @@ function atualizarBotoesTarefa(tr) {
     const prazoPastou = prazo < hoje;
     const td = tr.querySelector('td:last-child');
 
+    const eyeBtn = temArquivo
+        ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Ver arquivo"><i class="bi bi-eye"></i></button>`
+        : `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Nenhum arquivo anexado"><i class="bi bi-eye"></i></button>`;
+
     if (concluido && prazoPastou) {
-        td.innerHTML = `<button class="btn btn-sm btn-outline-success opacity-50" disabled title="Concluído"><i class="bi bi-check-lg"></i></button>`;
+        td.innerHTML = `<button class="btn btn-sm btn-outline-success opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Concluído"><i class="bi bi-check-lg"></i></button>` + eyeBtn;
     } else if (concluido) {
-        td.innerHTML = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleConcluido(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>`
-            + (temArquivo ? `<button class="btn btn-sm btn-outline-secondary ms-1" onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Ver envio"><i class="bi bi-pencil"></i></button>` : '');
+        td.innerHTML = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleConcluido(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (temArquivo) {
         td.innerHTML = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();toggleConcluido(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
-            + `<button class="btn btn-sm btn-outline-secondary ms-1" onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Editar envio"><i class="bi bi-pencil"></i></button>`;
+            + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Editar arquivo"><i class="bi bi-pencil"></i></button>`;
     } else {
         td.innerHTML = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();toggleConcluido(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
-            + `<button class="btn btn-sm ms-1" style="border:1.5px solid #93c5fd;color:#3b82f6;background:transparent;" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Anexar arquivo"><i class="bi bi-paperclip"></i></button>`;
+            + `<button class="btn btn-sm btn-outline-primary ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Enviar arquivo"><i class="bi bi-paperclip"></i></button>`;
     }
 }
 
@@ -489,8 +483,7 @@ function abrirDetalheTarefa(tr) {
     const badgeEl      = tr.querySelector('.badge-status');
     const statusLabel  = badgeEl?.textContent || '';
     const cls          = badgeEl?.className || '';
-    const arquivoNome  = tr.dataset.arquivoNome || '';
-    const arquivoCam   = tr.dataset.arquivoCaminho || '';
+    const arquivos     = getArquivos(tr);
 
     let statusStyle, statusIco;
     if (cls.includes('bg-success'))     { statusStyle = 'background:#dcfce7;color:#16a34a;'; statusIco = 'bi-check-circle'; }
@@ -501,19 +494,22 @@ function abrirDetalheTarefa(tr) {
         ? tr.dataset.busca.replace(titulo.toLowerCase() + ' ', '').trim()
         : '';
 
-    const arquivoHtml = arquivoNome
+    const arquivoHtml = arquivos.length
         ? `<hr class="so-divider">
            <div class="so-campo">
-               <div class="so-label">Arquivo enviado</div>
+               <div class="so-label">Arquivos enviados</div>
                <div class="so-valor mt-1">
-                   <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
-                       <i class="bi bi-file-earmark text-primary"></i>
-                       <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${arquivoNome}</span>
-                       <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
-                               style="width:28px;height:28px;" onclick="abrirModalVisualizar('${arquivoCam}','${arquivoNome.replace(/'/g,'\\\'')}')" title="Visualizar">
-                           <i class="bi bi-eye" style="font-size:0.75rem;"></i>
-                       </button>
-                   </div>
+                   ${arquivos.map(a => {
+                       const cEsc = JSON.stringify(a.caminho), nEsc = JSON.stringify(a.nome);
+                       return `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f8fafc;border:1px solid #e2e8f0;">
+                           <i class="bi bi-file-earmark text-primary"></i>
+                           <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${a.nome}</span>
+                           <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
+                                   style="width:28px;height:28px;" onclick="abrirModalVisualizar(${cEsc},${nEsc})" title="Visualizar">
+                               <i class="bi bi-eye" style="font-size:0.75rem;"></i>
+                           </button>
+                       </div>`;
+                   }).join('')}
                </div>
            </div>`
         : '';
@@ -553,14 +549,22 @@ function abrirDetalheTarefa(tr) {
     });
 }
 
+// ── Helpers multi-arquivo ─────────────────────────────────────
+function getArquivos(tr) {
+    try { return JSON.parse(tr.dataset.arquivos || '[]'); } catch(e) { return []; }
+}
+function setArquivos(tr, arr) { tr.dataset.arquivos = JSON.stringify(arr); }
+
 // ── Modais de upload ──────────────────────────────────────────
 function abrirModalEnvio(tr) {
     _tarefaAtual = tr;
     document.getElementById('inputArquivo').value = '';
-    document.getElementById('arquivoSelecionado').style.display = 'none';
+    document.getElementById('listaArquivosNovos').style.display = 'none';
+    document.getElementById('itensArquivosNovos').innerHTML = '';
     document.getElementById('obsEnvio').value = '';
     document.getElementById('btnEnviarArquivo').disabled = false;
-    document.getElementById('btnEnviarArquivo').innerHTML = '<i class="bi bi-cloud-arrow-up me-1"></i>Enviar';
+    document.getElementById('btnEnviarArquivo').innerHTML = '<i class="bi bi-floppy me-1"></i>Salvar Rascunho';
+    _renderizarArquivosExistentes(getArquivos(tr), false);
     document.getElementById('modalEnvioTarefa').style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
@@ -568,49 +572,111 @@ function fecharModalEnvio() {
     document.getElementById('modalEnvioTarefa').style.display = 'none';
     document.body.style.overflow = '';
 }
+function _renderizarArquivosExistentes(arquivos, somenteLeitura) {
+    const container = document.getElementById('listaArquivosExistentes');
+    const lista = document.getElementById('itensArquivosExistentes');
+    if (!arquivos || arquivos.length === 0) { container.style.display = 'none'; lista.innerHTML = ''; return; }
+    container.style.display = '';
+    lista.innerHTML = arquivos.map(a => {
+        const cEsc = JSON.stringify(a.caminho), nEsc = JSON.stringify(a.nome);
+        const btnRemove = somenteLeitura ? '' :
+            `<button class="btn btn-sm btn-link text-danger p-0" onclick="_removerArquivoExistente(${a.id})" title="Remover"><i class="bi bi-x-lg"></i></button>`;
+        return `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f8fafc;border:1px solid #e2e8f0;">
+            <i class="bi bi-file-earmark text-primary"></i>
+            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${a.nome}</span>
+            <button class="btn btn-sm btn-link text-primary p-0" onclick="abrirModalVisualizar(${cEsc},${nEsc})" title="Visualizar"><i class="bi bi-eye"></i></button>
+            ${btnRemove}
+        </div>`;
+    }).join('');
+}
+function _removerArquivoExistente(idProducao) {
+    fetch('pages-aluno/remover-arquivo-tarefa.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id_producao=' + encodeURIComponent(idProducao)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            const arr = getArquivos(_tarefaAtual).filter(a => a.id !== idProducao);
+            setArquivos(_tarefaAtual, arr);
+            _renderizarArquivosExistentes(arr, false);
+            if (_tarefaAtual.closest('#tabelaTarefas')) atualizarBotoesTarefa(_tarefaAtual);
+            else atualizarBotoesCronograma(_tarefaAtual);
+            if (arr.length === 0) fecharModalEnvio();
+        } else { alert('Erro ao remover arquivo.'); }
+    })
+    .catch(() => alert('Erro ao remover arquivo.'));
+}
 function selecionarArquivo(input) {
-    if (!input.files[0]) return;
-    document.getElementById('nomeArquivoSel').textContent = input.files[0].name;
-    document.getElementById('arquivoSelecionado').style.display = 'flex';
+    const files = Array.from(input.files);
+    if (!files.length) return;
+    const container = document.getElementById('listaArquivosNovos');
+    document.getElementById('itensArquivosNovos').innerHTML = files.map(f =>
+        `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f0f9ff;border:1px solid #bae6fd;">
+            <i class="bi bi-file-earmark text-info"></i>
+            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${f.name}</span>
+        </div>`
+    ).join('');
+    container.style.display = '';
 }
-function limparArquivoSelecionado() {
-    document.getElementById('inputArquivo').value = '';
-    document.getElementById('arquivoSelecionado').style.display = 'none';
+function handleFileDrop(e) {
+    const input = document.getElementById('inputArquivo');
+    const dt = new DataTransfer();
+    Array.from(e.dataTransfer.files).forEach(f => dt.items.add(f));
+    input.files = dt.files;
+    selecionarArquivo(input);
 }
-function enviarArquivoTarefa() {
-    const file = document.getElementById('inputArquivo').files[0];
-    if (!file) { alert('Selecione um arquivo antes de enviar.'); return; }
-    if (file.size > 15 * 1024 * 1024) { alert('O arquivo deve ter no máximo 15 MB.'); return; }
+async function enviarArquivoTarefa() {
+    const files = Array.from(document.getElementById('inputArquivo').files);
+    if (!files.length) { alert('Selecione ao menos um arquivo.'); return; }
     const btn = document.getElementById('btnEnviarArquivo');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Enviando...';
-    const fd = new FormData();
-    fd.append('id',     _tarefaAtual.dataset.id);
-    fd.append('titulo', _tarefaAtual.dataset.titulo);
-    fd.append('arquivo', file);
-    fd.append('obs', document.getElementById('obsEnvio').value);
-    fetch('pages-aluno/upload-tarefa.php', { method: 'POST', body: fd })
-        .then(r => r.json())
-        .then(data => {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-cloud-arrow-up me-1"></i>Enviar';
-            if (data.ok) {
-                _tarefaAtual.dataset.arquivoCaminho = data.caminho;
-                _tarefaAtual.dataset.arquivoNome    = data.nome;
-                _tarefaAtual.dataset.idProducao     = data.id_producao;
-                atualizarBotoesTarefa(_tarefaAtual);
-                fecharModalEnvio();
-            } else { alert('Erro: ' + (data.erro || 'Erro desconhecido')); }
-        })
-        .catch(() => { btn.disabled = false; btn.innerHTML = '<i class="bi bi-cloud-arrow-up me-1"></i>Enviar'; alert('Erro ao enviar.'); });
+    let arquivos = getArquivos(_tarefaAtual);
+    const erros = [];
+    for (const file of files) {
+        if (file.size > 15 * 1024 * 1024) { erros.push(file.name + ': muito grande (máx. 15 MB)'); continue; }
+        const fd = new FormData();
+        fd.append('id', _tarefaAtual.dataset.id);
+        fd.append('titulo', _tarefaAtual.dataset.titulo);
+        fd.append('arquivo', file);
+        fd.append('obs', document.getElementById('obsEnvio').value);
+        try {
+            const res = await fetch('pages-aluno/upload-tarefa.php', { method: 'POST', body: fd });
+            const data = await res.json();
+            if (data.ok) arquivos.push({ id: data.id_producao, caminho: data.caminho, nome: data.nome });
+            else erros.push(file.name + ': ' + (data.erro || 'Erro'));
+        } catch(e) { erros.push(file.name + ': erro de rede'); }
+    }
+    setArquivos(_tarefaAtual, arquivos);
+    if (_tarefaAtual.closest('#tabelaTarefas')) atualizarBotoesTarefa(_tarefaAtual);
+    else atualizarBotoesCronograma(_tarefaAtual);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="bi bi-floppy me-1"></i>Salvar Rascunho';
+    if (erros.length) alert('Alguns arquivos não foram enviados:\n' + erros.join('\n'));
+    else fecharModalEnvio();
 }
 
 function abrirModalEdicao(tr) {
     _tarefaAtual = tr;
-    document.getElementById('nomeArquivoEdit').textContent = tr.dataset.arquivoNome || 'arquivo';
-    document.getElementById('inputArquivoEdit').value = '';
+    const arquivos = getArquivos(tr);
+    document.getElementById('tituloModalEdicao').innerHTML = '<i class="bi bi-eye me-2 text-primary"></i>Ver Arquivos';
+    document.getElementById('labelArquivoEdit').textContent = 'ARQUIVOS ENVIADOS';
+    document.getElementById('dropZoneEdit').style.display = 'none';
     document.getElementById('arquivoSubstituto').style.display = 'none';
     document.getElementById('obsEdicaoWrap').style.display = 'none';
+    document.getElementById('itensArquivosEdit').innerHTML = arquivos.map(a => {
+        const cEsc = JSON.stringify(a.caminho), nEsc = JSON.stringify(a.nome);
+        return `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f8fafc;border:1px solid #e2e8f0;">
+            <i class="bi bi-file-earmark text-primary fs-5"></i>
+            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;font-weight:500;">${a.nome}</span>
+            <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
+                    style="width:28px;height:28px;" onclick="abrirModalVisualizar(${cEsc},${nEsc})" title="Visualizar">
+                <i class="bi bi-eye" style="font-size:0.75rem;"></i>
+            </button>
+        </div>`;
+    }).join('') || '<p class="text-muted small mb-0">Nenhum arquivo enviado.</p>';
     document.getElementById('modalEdicaoTarefa').style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
@@ -618,20 +684,79 @@ function fecharModalEdicao() {
     document.getElementById('modalEdicaoTarefa').style.display = 'none';
     document.body.style.overflow = '';
 }
-function visualizarArquivoTarefa() {
-    abrirModalVisualizar(_tarefaAtual.dataset.arquivoCaminho, _tarefaAtual.dataset.arquivoNome);
+const _EXTS_CODIGO = ['txt','js','ts','jsx','tsx','mjs','cjs',
+    'py','php','rb','java','c','cpp','cc','h','hpp','cs','go','rs','swift','kt',
+    'html','htm','css','scss','sass','less','xml','svg',
+    'json','yaml','yml','toml','ini','conf','env',
+    'sh','bash','zsh','bat','cmd','ps1',
+    'sql','md','markdown','csv','log'];
+
+function _escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+
 function abrirModalVisualizar(caminho, nome) {
     document.getElementById('tituloArquivoVis').textContent = nome;
-    const ext = (nome.split('.').pop() || '').toLowerCase();
+    const ext  = (nome.split('.').pop() || '').toLowerCase();
     const corpo = document.getElementById('corpoArquivoVis');
-    if (['jpg','jpeg','png','gif','webp','svg'].includes(ext)) {
-        corpo.innerHTML = `<img src="${caminho}" style="max-width:100%;display:block;margin:auto;padding:16px;">`;
+    const ctrlZoom = document.getElementById('controlesZoom');
+
+    if (['jpg','jpeg','png','gif','webp'].includes(ext)) {
+        _tipoVisualizador = 'imagem';
+        _panX = 0; _panY = 0;
+        ctrlZoom.style.display = 'flex';
+        corpo.innerHTML = `<div id="_imgScroller" style="width:100%;height:100%;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:default;"><img id="_imgVis" src="${caminho}" style="max-width:100%;max-height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none;"></div>`;
+        _setZoom(100);
+        _initImgPan();
+
     } else if (ext === 'pdf') {
-        corpo.innerHTML = `<iframe src="${caminho}" style="width:100%;height:65vh;border:0;"></iframe>`;
+        _tipoVisualizador = 'pdf';
+        ctrlZoom.style.display = 'none';
+        corpo.innerHTML = `<iframe src="${caminho}" style="width:100%;height:100%;border:0;display:block;"></iframe>`;
+
+    } else if (_EXTS_CODIGO.includes(ext)) {
+        _tipoVisualizador = 'codigo';
+        ctrlZoom.style.display = 'flex';
+        _setZoom(100);
+        corpo.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><p class="text-muted mt-2 small">Carregando...</p></div>`;
+        fetch(caminho)
+            .then(r => { if (!r.ok) throw new Error(); return r.text(); })
+            .then(texto => {
+                let conteudo = texto;
+                if (ext === 'json') {
+                    try { conteudo = JSON.stringify(JSON.parse(texto), null, 2); } catch(e) {}
+                }
+                const linhas = conteudo.split('\n');
+                const nDigitos = String(linhas.length).length;
+                const rows = linhas.map((linha, i) =>
+                    `<tr>
+                        <td style="user-select:none;padding:1px 12px 1px 8px;min-width:${nDigitos + 2}ch;
+                                   text-align:right;color:#94a3b8;font-size:0.75rem;
+                                   border-right:1px solid #e2e8f0;white-space:pre;">${i + 1}</td>
+                        <td style="padding:1px 16px;white-space:pre;font-size:0.82rem;">${_escHtml(linha)}</td>
+                    </tr>`
+                ).join('');
+                corpo.innerHTML = `
+                    <div style="overflow:auto;height:100%;width:100%;">
+                        <table style="font-family:'Courier New',Courier,monospace;border-collapse:collapse;width:100%;background:#fdfdfd;">
+                            <tbody>${rows}</tbody>
+                        </table>
+                    </div>`;
+            })
+            .catch(() => {
+                corpo.innerHTML = `<div class="text-center py-5 text-danger"><i class="bi bi-exclamation-circle fs-1 d-block mb-2"></i>Não foi possível carregar o arquivo.</div>`;
+            });
+
     } else {
-        corpo.innerHTML = `<div class="text-center py-5"><i class="bi bi-file-earmark fs-1 text-muted mb-3 d-block"></i><p class="text-muted mb-3">${nome}</p><a href="${caminho}" download class="btn btn-primary btn-sm"><i class="bi bi-download me-1"></i>Baixar arquivo</a></div>`;
+        _tipoVisualizador = 'outro';
+        ctrlZoom.style.display = 'none';
+        corpo.innerHTML = `<div class="text-center py-5">
+            <i class="bi bi-file-earmark fs-1 text-muted mb-3 d-block"></i>
+            <p class="text-muted mb-3">${_escHtml(nome)}</p>
+            <a href="${caminho}" download class="btn btn-primary btn-sm"><i class="bi bi-download me-1"></i>Baixar arquivo</a>
+        </div>`;
     }
+
     document.getElementById('modalVisualizarArquivo').style.display = 'flex';
     document.body.style.overflow = 'hidden';
 }
@@ -639,58 +764,82 @@ function fecharModalVisualizar() {
     document.getElementById('modalVisualizarArquivo').style.display = 'none';
     document.body.style.overflow = '';
 }
-function confirmarRemoverArquivo() {
-    if (!confirm('Remover o arquivo enviado?')) return;
-    fetch('pages-aluno/remover-arquivo-tarefa.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'id_producao=' + encodeURIComponent(_tarefaAtual.dataset.idProducao)
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.ok) {
-            _tarefaAtual.dataset.arquivoCaminho = '';
-            _tarefaAtual.dataset.arquivoNome    = '';
-            _tarefaAtual.dataset.idProducao     = '';
-            atualizarBotoesTarefa(_tarefaAtual);
-            fecharModalEdicao();
-        } else { alert('Erro ao remover.'); }
-    })
-    .catch(() => alert('Erro ao remover.'));
-}
-function substituirArquivo(input) {
-    if (!input.files[0]) return;
-    document.getElementById('nomeArquivoSub').textContent = input.files[0].name;
-    document.getElementById('arquivoSubstituto').style.display = 'flex';
-    document.getElementById('obsEdicaoWrap').style.display = 'block';
-}
-function limparSubstituto() {
-    document.getElementById('inputArquivoEdit').value = '';
-    document.getElementById('arquivoSubstituto').style.display = 'none';
-    document.getElementById('obsEdicaoWrap').style.display = 'none';
-}
-function enviarSubstituto() {
-    const file = document.getElementById('inputArquivoEdit').files[0];
-    if (!file) return;
-    if (file.size > 15 * 1024 * 1024) { alert('O arquivo deve ter no máximo 15 MB.'); return; }
-    const fd = new FormData();
-    fd.append('id',     _tarefaAtual.dataset.id);
-    fd.append('titulo', _tarefaAtual.dataset.titulo);
-    fd.append('arquivo', file);
-    fd.append('obs', document.getElementById('obsEdicao').value);
-    fetch('pages-aluno/upload-tarefa.php', { method: 'POST', body: fd })
-        .then(r => r.json())
-        .then(data => {
-            if (data.ok) {
-                _tarefaAtual.dataset.arquivoCaminho = data.caminho;
-                _tarefaAtual.dataset.arquivoNome    = data.nome;
-                _tarefaAtual.dataset.idProducao     = data.id_producao;
-                fecharModalEdicao();
-            } else { alert('Erro: ' + (data.erro || 'Erro desconhecido')); }
-        })
-        .catch(() => alert('Erro ao enviar.'));
+
+let _zoomAtual = 100;
+let _tipoVisualizador = '';
+let _panX = 0, _panY = 0;
+let _imgDrag = { active: false, sx: 0, sy: 0, spx: 0, spy: 0 };
+const _PASSOS_ZOOM = [100, 110, 125, 150, 175, 200, 250, 300, 400];
+
+function _applyImgTransform() {
+    const img = document.getElementById('_imgVis');
+    const scroller = document.getElementById('_imgScroller');
+    if (!img) return;
+    if (_zoomAtual === 100) {
+        _panX = 0; _panY = 0;
+        img.style.transform = '';
+    } else {
+        if (scroller) {
+            const scale = _zoomAtual / 100;
+            const maxX = Math.max(0, (img.clientWidth  * scale - scroller.clientWidth)  / 2);
+            const maxY = Math.max(0, (img.clientHeight * scale - scroller.clientHeight) / 2);
+            _panX = Math.max(-maxX, Math.min(maxX, _panX));
+            _panY = Math.max(-maxY, Math.min(maxY, _panY));
+        }
+        img.style.transform = `translate(${_panX}px,${_panY}px) scale(${_zoomAtual / 100})`;
+    }
 }
 
+function _initImgPan() {
+    const scroller = document.getElementById('_imgScroller');
+    if (!scroller) return;
+    scroller.addEventListener('mousedown', function(e) {
+        if (_zoomAtual <= 100) return;
+        _imgDrag.active = true;
+        _imgDrag.sx = e.clientX; _imgDrag.sy = e.clientY;
+        _imgDrag.spx = _panX;   _imgDrag.spy = _panY;
+        scroller.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+}
+
+document.addEventListener('mousemove', function(e) {
+    if (!_imgDrag.active) return;
+    _panX = _imgDrag.spx + (e.clientX - _imgDrag.sx);
+    _panY = _imgDrag.spy + (e.clientY - _imgDrag.sy);
+    _applyImgTransform();
+});
+document.addEventListener('mouseup', function() {
+    if (!_imgDrag.active) return;
+    _imgDrag.active = false;
+    const s = document.getElementById('_imgScroller');
+    if (s) s.style.cursor = _zoomAtual > 100 ? 'grab' : 'default';
+});
+
+function _setZoom(nivel) {
+    _zoomAtual = Math.min(400, Math.max(100, nivel));
+    const lbl = document.getElementById('zoomLevelLabel');
+    if (lbl) lbl.textContent = _zoomAtual + '%';
+    if (_tipoVisualizador === 'imagem') {
+        _applyImgTransform();
+        const scroller = document.getElementById('_imgScroller');
+        if (scroller) scroller.style.cursor = _zoomAtual > 100 ? 'grab' : 'default';
+    } else if (_tipoVisualizador === 'codigo') {
+        document.querySelectorAll('#corpoArquivoVis td:last-child').forEach(td => td.style.fontSize = (0.82 * _zoomAtual / 100) + 'rem');
+        document.querySelectorAll('#corpoArquivoVis td:first-child').forEach(td => td.style.fontSize = (0.75 * _zoomAtual / 100) + 'rem');
+    }
+}
+function zoomVisualizar(delta) {
+    if (delta > 0) { const p = _PASSOS_ZOOM.find(x => x > _zoomAtual); _setZoom(p || 400); }
+    else           { const p = [..._PASSOS_ZOOM].reverse().find(x => x < _zoomAtual); _setZoom(p || 25); }
+}
+function resetZoomVisualizar() { _panX = 0; _panY = 0; _setZoom(100); }
+
+document.getElementById('corpoArquivoVis').addEventListener('wheel', function(e) {
+    if (_tipoVisualizador !== 'imagem' && _tipoVisualizador !== 'codigo') return;
+    e.preventDefault();
+    zoomVisualizar(e.deltaY < 0 ? 1 : -1);
+}, { passive: false });
 function toggleDescricao(btn) {
     const tr = btn.closest('tr');
     const descRow = tr.nextElementSibling;
@@ -759,22 +908,12 @@ function toggleCronograma(btn) {
         }
 
         const ant = tr.dataset.status;
-        tr.dataset.status = statusKey;
+        tr.dataset.status   = statusKey;
+        tr.dataset.concluido = concluido ? '1' : '0';
 
         const badge = tr.querySelector('.badge-status');
         badge.className = 'badge badge-status ' + statusClass;
         badge.textContent = statusLabel;
-
-        const icon = btn.querySelector('i');
-        if (concluido) {
-            btn.className = 'btn btn-sm btn-outline-warning';
-            btn.title = 'Desfazer';
-            icon.className = 'bi bi-arrow-counterclockwise';
-        } else {
-            btn.className = 'btn btn-sm btn-outline-success';
-            btn.title = 'Marcar como concluído';
-            icon.className = 'bi bi-check-lg';
-        }
 
         const statIds = { proximo: 'statProximos', nao_concluido: 'statNaoConcluidos', concluido: 'statConcluidos' };
         const elAnt = document.getElementById(statIds[ant]);
@@ -782,9 +921,45 @@ function toggleCronograma(btn) {
         if (elAnt) elAnt.textContent = Math.max(0, parseInt(elAnt.textContent) - 1);
         if (elNov) elNov.textContent = parseInt(elNov.textContent) + 1;
 
-        btn.disabled = false;
+        atualizarBotoesCronograma(tr);
     })
     .catch(() => { btn.disabled = false; });
+}
+
+function atualizarBotoesCronograma(tr) {
+    const temArquivo   = getArquivos(tr).length > 0;
+    const concluido    = tr.dataset.concluido === '1';
+    const temDescricao = tr.dataset.temDescricao === '1';
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    const p = tr.dataset.data.split('-');
+    const prazo = new Date(p[0], p[1] - 1, p[2]);
+    const prazoPastou = prazo < hoje;
+    const td = tr.querySelector('td:last-child');
+
+    const eyeBtn = temArquivo
+        ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="abrirModalEdicao(this.closest('tr'))" title="Ver arquivo"><i class="bi bi-eye"></i></button>`
+        : `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Nenhum arquivo anexado"><i class="bi bi-eye"></i></button>`;
+
+    let acoes = '';
+    if (concluido && prazoPastou) {
+        acoes = `<button class="btn btn-sm btn-outline-success opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Concluído"><i class="bi bi-check-lg"></i></button>` + eyeBtn;
+    } else if (concluido) {
+        acoes = `<button class="btn btn-sm btn-outline-warning" onclick="toggleCronograma(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
+    } else if (temArquivo) {
+        acoes = `<button class="btn btn-sm btn-outline-success" onclick="toggleCronograma(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
+              + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="abrirModalEnvio(this.closest('tr'))" title="Editar arquivo"><i class="bi bi-pencil"></i></button>`;
+    } else {
+        acoes = `<button class="btn btn-sm btn-outline-success" onclick="toggleCronograma(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
+              + `<button class="btn btn-sm btn-outline-primary ms-1" onclick="abrirModalEnvio(this.closest('tr'))" title="Enviar arquivo"><i class="bi bi-paperclip"></i></button>`;
+    }
+
+    if (temDescricao) {
+        const descRow = tr.nextElementSibling;
+        const descAberta = descRow && descRow.classList.contains('tr-descricao') && descRow.style.display !== 'none';
+        acoes += `<button class="btn btn-sm btn-outline-secondary ms-1 btn-expandir" onclick="toggleDescCron(this)" title="Ver descrição"><i class="bi bi-${descAberta ? 'x-lg' : 'three-dots-vertical'}"></i></button>`;
+    }
+
+    td.innerHTML = acoes;
 }
 
 function filtrarCronograma() {
