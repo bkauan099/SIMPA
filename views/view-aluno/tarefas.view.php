@@ -6,22 +6,40 @@
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-sm-6 col-lg-4">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-hourglass"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statPendentes"><?= $estatisticas['pendentes'] ?></h4><small class="text-muted">Pendentes</small></div>
+    <div class="col-sm-4">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #16a34a;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#16a34a;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#16a34a;opacity:0.1;line-height:1;pointer-events:none;">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#16a34a;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-check-circle-fill"></i> Concluídas
+            </div>
+            <div class="fw-bold lh-1" id="statConcluidos" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['concluidos'] ?></div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-4">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-x-circle"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statNaoConcluidos"><?= $estatisticas['nao_concluidos'] ?></h4><small class="text-muted">Não Concluídos</small></div>
+    <div class="col-sm-4">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #f59e0b;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#f59e0b;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#f59e0b;opacity:0.1;line-height:1;pointer-events:none;">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#f59e0b;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-hourglass-split"></i> Pendentes
+            </div>
+            <div class="fw-bold lh-1" id="statPendentes" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['pendentes'] ?></div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-4">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-check2-circle"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statConcluidos"><?= $estatisticas['concluidos'] ?></h4><small class="text-muted">Concluídos</small></div>
+    <div class="col-sm-4">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ef4444;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#ef4444;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ef4444;opacity:0.1;line-height:1;pointer-events:none;">
+                <i class="bi bi-x-circle-fill"></i>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#ef4444;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-x-circle-fill"></i> Não Concluídas
+            </div>
+            <div class="fw-bold lh-1" id="statNaoConcluidos" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['nao_concluidos'] ?></div>
         </div>
     </div>
 </div>
@@ -84,27 +102,69 @@
                             $statusClass = 'bg-warning text-dark';
                         }
                     ?>
-                        <?php $descricao = $item['descricao'] ?? ''; ?>
-                        <tr data-tipo="<?= htmlspecialchars($item['tipo']) ?>"
+                        <?php
+                            $descricao   = $item['descricao'] ?? '';
+                            $temArquivo  = !empty($item['arquivo_caminho']);
+                            $prazoPassou = $prazo < $hoje;
+                        ?>
+                        <tr style="cursor:pointer;"
+                            onclick="abrirDetalheTarefa(this)"
+                            data-tipo="<?= htmlspecialchars($item['tipo']) ?>"
                             data-status="<?= $statusKey ?>"
                             data-busca="<?= htmlspecialchars(strtolower($item['titulo'] . ' ' . $descricao)) ?>"
                             data-id="<?= htmlspecialchars($item['id']) ?>"
-                            data-data="<?= htmlspecialchars($item['data']) ?>">
+                            data-data="<?= htmlspecialchars($item['data']) ?>"
+                            data-titulo="<?= htmlspecialchars($item['titulo'], ENT_QUOTES) ?>"
+                            data-concluido="<?= $item['concluido'] ? '1' : '0' ?>"
+                            data-arquivo-caminho="<?= htmlspecialchars($item['arquivo_caminho'] ?? '') ?>"
+                            data-arquivo-nome="<?= htmlspecialchars($item['arquivo_nome'] ?? '') ?>"
+                            data-id-producao="<?= $item['id_producao'] ?? '' ?>">
                             <td class="fw-medium"><?= htmlspecialchars($item['titulo']) ?></td>
                             <td><?= date('d/m/Y', strtotime($item['data'])) ?></td>
                             <td><?= $item['hora'] ? substr($item['hora'], 0, 5) : '—' ?></td>
                             <td><span class="badge badge-status <?= $statusClass ?>"><?= $statusLabel ?></span></td>
                             <td class="text-center">
-                                <button class="btn btn-sm <?= $item['concluido'] ? 'btn-outline-warning' : 'btn-outline-success' ?>"
-                                        onclick="toggleConcluido(this)"
-                                        title="<?= $item['concluido'] ? 'Desfazer conclusão' : 'Marcar como concluído' ?>">
-                                    <i class="bi <?= $item['concluido'] ? 'bi-arrow-counterclockwise' : 'bi-check-lg' ?>"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-secondary ms-1"
-                                        onclick="abrirDetalheTarefa(this.closest('tr'))"
-                                        title="Ver detalhes">
-                                    <i class="bi bi-arrow-right"></i>
-                                </button>
+                                <?php if ($item['concluido'] && $prazoPassou): ?>
+                                    <button class="btn btn-sm btn-outline-success opacity-50" disabled title="Concluído">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                <?php elseif ($item['concluido']): ?>
+                                    <button class="btn btn-sm btn-outline-warning"
+                                            onclick="event.stopPropagation(); toggleConcluido(this)"
+                                            title="Desfazer conclusão">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </button>
+                                    <?php if ($temArquivo): ?>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1"
+                                            onclick="event.stopPropagation(); abrirModalEdicao(this.closest('tr'))"
+                                            title="Ver envio">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <?php endif; ?>
+                                <?php elseif ($temArquivo): ?>
+                                    <button class="btn btn-sm btn-outline-success"
+                                            onclick="event.stopPropagation(); toggleConcluido(this)"
+                                            title="Marcar como concluído">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1"
+                                            onclick="event.stopPropagation(); abrirModalEdicao(this.closest('tr'))"
+                                            title="Editar envio">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                <?php else: ?>
+                                    <button class="btn btn-sm btn-outline-success"
+                                            onclick="event.stopPropagation(); toggleConcluido(this)"
+                                            title="Marcar como concluído">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <button class="btn btn-sm ms-1"
+                                            style="border:1.5px solid #93c5fd;color:#3b82f6;background:transparent;"
+                                            onclick="event.stopPropagation(); abrirModalEnvio(this.closest('tr'))"
+                                            title="Anexar arquivo">
+                                        <i class="bi bi-paperclip"></i>
+                                    </button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -113,4 +173,3 @@
         </table>
     </div>
 </div>
-

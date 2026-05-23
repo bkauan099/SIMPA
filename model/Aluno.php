@@ -57,7 +57,12 @@ class Aluno {
     public function listarProjetosAluno($id_usuario) {
         $sql = "
             SELECT
+                p.id_projeto,
                 p.titulo,
+                p.descricao,
+                p.area,
+                p.data_inicio,
+                p.data_fim,
                 tp.nome      AS tipo,
                 pa.funcao,
                 pa.carga_horaria,
@@ -68,7 +73,18 @@ class Aluno {
                     WHERE po.id_projeto = p.id_projeto
                       AND po.funcao ILIKE '%orientador%'
                     LIMIT 1
-                ) AS orientador
+                ) AS orientador,
+                (
+                    SELECT json_agg(
+                        json_build_object('nome', u.nome, 'funcao', po.funcao)
+                        ORDER BY
+                            CASE WHEN LOWER(CAST(po.funcao AS TEXT)) LIKE '%orientador%' THEN 0 ELSE 1 END,
+                            u.nome ASC
+                    )
+                    FROM participacao po
+                    JOIN usuarios u ON po.id_usuario = u.id_usuario
+                    WHERE po.id_projeto = p.id_projeto
+                ) AS participantes
             FROM participacao pa
             JOIN projetos p     ON pa.id_projeto = p.id_projeto
             LEFT JOIN tipo_projetos tp ON p.id_tipo = tp.id_tipo
@@ -178,12 +194,27 @@ class Aluno {
 
     public function listarAgendaAberta($id_usuario) {
         $sql = "
-            SELECT id, titulo, descricao, tipo, data, hora, concluido
-            FROM agenda_items
-            WHERE id_usuario = :id
-              AND tipo = 'tarefa'
-              AND data >= CURRENT_DATE - INTERVAL '7 days'
-            ORDER BY data ASC
+            SELECT
+                ai.id, ai.titulo, ai.descricao, ai.tipo, ai.data, ai.hora, ai.concluido,
+                lp.caminho     AS arquivo_caminho,
+                lp.tipo        AS arquivo_nome,
+                lp.id_producao
+            FROM agenda_items ai
+            LEFT JOIN LATERAL (
+                SELECT p.caminho, p.tipo, p.id_producao
+                FROM producoes p
+                JOIN participacao pa ON pa.id_projeto = p.id_projeto
+                WHERE pa.id_usuario = :id
+                  AND pa.status = 'ativo'
+                  AND p.titulo = ai.titulo
+                  AND p.status != 'inativo'
+                ORDER BY p.id_producao DESC
+                LIMIT 1
+            ) lp ON true
+            WHERE ai.id_usuario = :id
+              AND ai.tipo = 'tarefa'
+              AND ai.data >= CURRENT_DATE - INTERVAL '7 days'
+            ORDER BY ai.data ASC
         ";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id_usuario]);

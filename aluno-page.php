@@ -40,25 +40,25 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
         </div>
 
         <ul class="list-unstyled components">
-            <li><a href="#" id="menu-pagina-inicial" onclick="carregarPagina('pagina-inicial')" title="Página Inicial">
+            <li><a href="javascript:void(0)" id="menu-pagina-inicial" onclick="carregarPagina('pagina-inicial')" title="Página Inicial">
                 <i class="bi bi-house-door"></i><span class="nav-label">Página Inicial</span></a></li>
-            <li><a href="#" id="menu-gerenciar-projetos" onclick="carregarPagina('gerenciar-projetos')" title="Gerenciar Projetos">
+            <li><a href="javascript:void(0)" id="menu-gerenciar-projetos" onclick="carregarPagina('gerenciar-projetos')" title="Gerenciar Projetos">
                 <i class="bi bi-folder"></i><span class="nav-label">Gerenciar Projetos</span></a></li>
-            <li><a href="#" id="menu-participacoes" onclick="carregarPagina('participacoes')" title="Registros">
+            <li><a href="javascript:void(0)" id="menu-participacoes" onclick="carregarPagina('participacoes')" title="Registros">
                 <i class="bi bi-clock-history"></i><span class="nav-label">Registros</span></a></li>
-            <li><a href="#" id="menu-tarefas" onclick="carregarPagina('tarefas')" title="Minhas Tarefas">
-                <i class="bi bi-check2-square"></i><span class="nav-label">Minhas Tarefas</span></a></li>
-            <li><a href="#" id="menu-cronograma" onclick="carregarPagina('cronograma')" title="Cronograma">
+            <li><a href="javascript:void(0)" id="menu-tarefas" onclick="carregarPagina('tarefas')" title="Minhas Tarefas">
+                <i class="bi bi-clipboard-check"></i><span class="nav-label">Minhas Tarefas</span></a></li>
+            <li><a href="javascript:void(0)" id="menu-cronograma" onclick="carregarPagina('cronograma')" title="Cronograma">
                 <i class="bi bi-calendar-event"></i><span class="nav-label">Cronograma</span></a></li>
-            <li><a href="#" id="menu-seletivos" onclick="carregarPagina('seletivos')" title="Seletivos">
+            <li><a href="javascript:void(0)" id="menu-seletivos" onclick="carregarPagina('seletivos')" title="Seletivos">
                 <i class="bi bi-megaphone"></i>
                 <span class="badge-icon">3</span>
                 <span class="nav-label">Seletivos</span>
                 <span class="badge bg-danger ms-auto badge-text" style="font-size:0.65rem;">3</span>
             </a></li>
-            <li><a href="#" id="menu-documentos" onclick="carregarPagina('documentos')" title="Documentos">
+            <li><a href="javascript:void(0)" id="menu-documentos" onclick="carregarPagina('documentos')" title="Documentos">
                 <i class="bi bi-file-earmark-text"></i><span class="nav-label">Documentos</span></a></li>
-            <li><a href="#" id="menu-certificados" onclick="carregarPagina('certificados')" title="Certificados">
+            <li><a href="javascript:void(0)" id="menu-certificados" onclick="carregarPagina('certificados')" title="Certificados">
                 <i class="bi bi-award"></i><span class="nav-label">Certificados</span></a></li>
             <li class="sidebar-sair"><a href="#" title="Sair">
                 <i class="bi bi-box-arrow-left"></i><span class="nav-label">Sair</span></a></li>
@@ -112,6 +112,93 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
     </div>
 </div>
 
+<!-- MODAL: Enviar arquivo de tarefa -->
+<div id="modalEnvioTarefa" style="display:none;position:fixed;inset:0;z-index:1070;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:24px;width:90%;max-width:460px;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0"><i class="bi bi-paperclip me-2" style="color:#3b82f6;"></i>Enviar Atividade</h6>
+            <button class="btn-close" onclick="fecharModalEnvio()"></button>
+        </div>
+        <div id="dropZone" onclick="document.getElementById('inputArquivo').click()"
+             style="border:2px dashed #cbd5e1;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s;"
+             onmouseenter="this.style.borderColor='#3b82f6'" onmouseleave="this.style.borderColor='#cbd5e1'">
+            <i class="bi bi-cloud-arrow-up d-block mb-2" style="font-size:2rem;color:#94a3b8;"></i>
+            <div style="font-size:0.85rem;color:#64748b;">Clique para selecionar o arquivo</div>
+            <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">Qualquer formato · Máx. 15 MB</div>
+        </div>
+        <input type="file" id="inputArquivo" style="display:none;" onchange="selecionarArquivo(this)">
+        <div id="arquivoSelecionado" style="display:none;" class="d-flex align-items-center gap-2 p-2 mt-2 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
+            <i class="bi bi-file-earmark text-primary"></i>
+            <span id="nomeArquivoSel" class="flex-grow-1 text-truncate" style="font-size:0.85rem;"></span>
+            <button class="btn btn-sm btn-link text-danger p-0" onclick="limparArquivoSelecionado()"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="mt-3">
+            <label class="form-label" style="font-size:0.8rem;color:#64748b;">Observação <span style="color:#94a3b8;">(opcional)</span></label>
+            <textarea id="obsEnvio" class="form-control form-control-sm" rows="2" placeholder="Descreva algo sobre o envio..."></textarea>
+        </div>
+        <div class="mt-3 d-flex justify-content-end">
+            <button class="btn btn-primary" id="btnEnviarArquivo" onclick="enviarArquivoTarefa()">
+                <i class="bi bi-cloud-arrow-up me-1"></i>Enviar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Editar envio (rascunho) -->
+<div id="modalEdicaoTarefa" style="display:none;position:fixed;inset:0;z-index:1070;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;padding:24px;width:90%;max-width:460px;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0"><i class="bi bi-pencil me-2 text-secondary"></i>Editar Envio</h6>
+            <button class="btn-close" onclick="fecharModalEdicao()"></button>
+        </div>
+        <div style="font-size:0.78rem;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px;">Arquivo atual (rascunho)</div>
+        <div class="d-flex align-items-center gap-2 p-3 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
+            <i class="bi bi-file-earmark text-primary fs-5"></i>
+            <span id="nomeArquivoEdit" class="flex-grow-1 text-truncate" style="font-size:0.85rem;font-weight:500;"></span>
+            <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
+                    style="width:28px;height:28px;" title="Visualizar" onclick="visualizarArquivoTarefa()">
+                <i class="bi bi-eye" style="font-size:0.75rem;"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
+                    style="width:28px;height:28px;" title="Remover" onclick="confirmarRemoverArquivo()">
+                <i class="bi bi-x-lg" style="font-size:0.75rem;"></i>
+            </button>
+        </div>
+        <div id="dropZoneEdit" onclick="document.getElementById('inputArquivoEdit').click()" class="mt-3"
+             style="border:2px dashed #cbd5e1;border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;"
+             onmouseenter="this.style.borderColor='#3b82f6'" onmouseleave="this.style.borderColor='#cbd5e1'">
+            <i class="bi bi-arrow-repeat me-2 text-muted"></i>
+            <span style="font-size:0.82rem;color:#64748b;">Substituir por outro arquivo</span>
+        </div>
+        <input type="file" id="inputArquivoEdit" style="display:none;" onchange="substituirArquivo(this)">
+        <div id="arquivoSubstituto" style="display:none;" class="d-flex align-items-center gap-2 p-2 mt-2 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
+            <i class="bi bi-file-earmark text-primary"></i>
+            <span id="nomeArquivoSub" class="flex-grow-1 text-truncate" style="font-size:0.85rem;"></span>
+            <button class="btn btn-sm btn-link text-danger p-0" onclick="limparSubstituto()"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div id="obsEdicaoWrap" style="display:none;" class="mt-3">
+            <label class="form-label" style="font-size:0.8rem;color:#64748b;">Observação <span style="color:#94a3b8;">(opcional)</span></label>
+            <textarea id="obsEdicao" class="form-control form-control-sm" rows="2"></textarea>
+            <div class="mt-2 d-flex justify-content-end">
+                <button class="btn btn-primary btn-sm" onclick="enviarSubstituto()">
+                    <i class="bi bi-cloud-arrow-up me-1"></i>Enviar novo
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Visualizar arquivo -->
+<div id="modalVisualizarArquivo" style="display:none;position:fixed;inset:0;z-index:1080;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:16px;width:95%;max-width:820px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.25);">
+        <div class="d-flex justify-content-between align-items-center p-3" style="border-bottom:1px solid #e2e8f0;">
+            <span class="fw-semibold" style="font-size:0.88rem;" id="tituloArquivoVis"></span>
+            <button class="btn-close" onclick="fecharModalVisualizar()"></button>
+        </div>
+        <div id="corpoArquivoVis" style="min-height:300px;max-height:72vh;overflow:auto;"></div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 const sidebar = document.getElementById('sidebar');
@@ -162,10 +249,10 @@ function carregarPagina(abaSolicitada) {
         case 'seletivos':          arquivo = 'pages-aluno/seletivos.php';           break;
         case 'documentos':         arquivo = 'pages-aluno/documentos.php';          break;
         case 'certificados':       arquivo = 'pages-aluno/certificados.php';        break;
-        default:                   arquivo = 'pages-aluno/pagina-inicial.php';      break;
+        default:                   arquivo = 'pages-aluno/pagina-inicial.php'; abaSolicitada = 'pagina-inicial'; break;
     }
 
-    window.location.hash = abaSolicitada;
+    location.hash = abaSolicitada;
 
     const container = document.getElementById('conteudo-dinamico');
     container.innerHTML = '<div class="text-center mt-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
@@ -181,14 +268,15 @@ function carregarPagina(abaSolicitada) {
             container.innerHTML = html;
         })
         .catch(err => {
+            _fetchAtivo = null;
             if (err.name === 'AbortError') return;
             container.innerHTML = `<div class="alert alert-danger m-3">Erro ao carregar a página.<br><small>${err.message}</small></div>`;
         });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const hash = window.location.hash.replace('#', '');
-    carregarPagina(hash || 'pagina-inicial');
+    const hash = location.hash.replace('#', '') || 'pagina-inicial';
+    carregarPagina(hash);
 });
 
 // ── Slide-over global ─────────────────────────────────────────
@@ -214,7 +302,114 @@ function fecharSlideOver() {
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharSlideOver(); });
 
+// ── Projetos ──────────────────────────────────────────────────
+function abrirDetalhesProjeto(tr) {
+    const titulo      = tr.dataset.titulo;
+    const tipo        = tr.dataset.tipo || '—';
+    const funcao      = tr.dataset.funcao;
+    const carga       = tr.dataset.carga;
+    const status      = tr.dataset.status;
+    const orientador  = tr.dataset.orientador || '—';
+    const area        = tr.dataset.area || '';
+    const descricao   = tr.dataset.descricao || '';
+    const dataInicio  = tr.dataset.dataInicio || '';
+    const dataFim     = tr.dataset.dataFim || '';
+    const participantes = JSON.parse(tr.dataset.participantes || '[]');
+
+    const ativo = status === 'ativo';
+    const statusStyle = ativo ? 'background:#dcfce7;color:#16a34a;' : 'background:#f1f5f9;color:#64748b;';
+    const statusIco   = ativo ? 'bi-check-circle' : 'bi-check2-all';
+    const statusLabel = ativo ? 'Ativo' : 'Concluído';
+
+    const orientadores = participantes.filter(p => p.funcao.toLowerCase().includes('orientador'));
+    const alunos       = participantes.filter(p => !p.funcao.toLowerCase().includes('orientador'));
+
+    const renderMembro = (p, cor) => `
+        <div class="d-flex align-items-center gap-2 py-2 border-bottom">
+            <div class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 fw-semibold"
+                 style="width:30px;height:30px;background:${cor}18;color:${cor};font-size:0.75rem;">
+                ${p.nome.charAt(0).toUpperCase()}
+            </div>
+            <div>
+                <div style="font-size:0.85rem;font-weight:500;">${p.nome}</div>
+                <div style="font-size:0.75rem;color:#94a3b8;">${p.funcao}</div>
+            </div>
+        </div>`;
+
+    const secao = (label, lista, cor) => lista.length ? `
+        <div class="so-label mb-1 mt-2">${label}</div>
+        ${lista.map(p => renderMembro(p, cor)).join('')}` : '';
+
+    const partHtml = participantes.length
+        ? secao('Orientação', orientadores, '#f59e0b') + secao('Membros', alunos, '#3b82f6')
+        : '<span class="text-muted small">Sem participantes cadastrados.</span>';
+
+    const periodoHtml = (dataInicio || dataFim) ? `
+        <div class="col-6">
+            <div class="so-campo mb-0">
+                <div class="so-label">Início</div>
+                <div class="so-valor"><i class="bi bi-calendar2 me-1 text-muted"></i>${dataInicio || '—'}</div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="so-campo mb-0">
+                <div class="so-label">Término</div>
+                <div class="so-valor"><i class="bi bi-calendar2-check me-1 text-muted"></i>${dataFim || '—'}</div>
+            </div>
+        </div>` : '';
+
+    abrirSlideOver(titulo, `
+        <div class="so-campo">
+            <div class="so-label">Status</div>
+            <div class="so-valor">
+                <span class="badge rounded-pill px-2 py-1" style="${statusStyle}font-size:0.8rem;">
+                    <i class="bi ${statusIco} me-1"></i>${statusLabel}
+                </span>
+            </div>
+        </div>
+        <hr class="so-divider">
+        <div class="row g-3">
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Tipo</div>
+                    <div class="so-valor">${tipo}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Sua Função</div>
+                    <div class="so-valor">${funcao}</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Carga Horária</div>
+                    <div class="so-valor"><i class="bi bi-clock me-1 text-muted"></i>${carga}h</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Orientador</div>
+                    <div class="so-valor">${orientador}</div>
+                </div>
+            </div>
+            ${periodoHtml}
+        </div>
+        ${area ? `<hr class="so-divider"><div class="so-campo"><div class="so-label">Área</div><div class="so-valor">${area}</div></div>` : ''}
+        ${descricao ? `<hr class="so-divider"><div class="so-campo"><div class="so-label">Descrição</div><div class="so-valor">${descricao.replace(/\n/g, '<br>')}</div></div>` : ''}
+        <hr class="so-divider">
+        <div class="so-campo">
+            <div class="so-label">Participantes</div>
+            <div class="so-valor mt-1">${partHtml}</div>
+        </div>`, {
+        badge: `<i class="bi bi-folder me-1"></i>${tipo}`,
+        badgeCor: ativo ? '#22c55e' : '#94a3b8'
+    });
+}
+
 // ── Tarefas ───────────────────────────────────────────────────
+let _tarefaAtual = null;
+
 function toggleConcluido(btn) {
     const tr = btn.closest('tr');
     const id = tr.dataset.id;
@@ -244,10 +439,10 @@ function toggleConcluido(btn) {
 
         const ant = tr.dataset.status;
         tr.dataset.status = statusKey;
+        tr.dataset.concluido = concluido ? '1' : '0';
 
-        const badge = tr.querySelector('.badge-status');
-        badge.className = 'badge badge-status ' + statusClass;
-        badge.textContent = statusLabel;
+        tr.querySelector('.badge-status').className = 'badge badge-status ' + statusClass;
+        tr.querySelector('.badge-status').textContent = statusLabel;
 
         const statIds = { pendente: 'statPendentes', nao_concluido: 'statNaoConcluidos', concluido: 'statConcluidos' };
         const elAnt = document.getElementById(statIds[ant]);
@@ -255,37 +450,44 @@ function toggleConcluido(btn) {
         if (elAnt) elAnt.textContent = Math.max(0, parseInt(elAnt.textContent) - 1);
         if (elNov) elNov.textContent = parseInt(elNov.textContent) + 1;
 
-        const icon = btn.querySelector('i');
-        if (concluido) {
-            btn.className = 'btn btn-sm btn-outline-warning';
-            btn.title = 'Desfazer conclusão';
-            icon.className = 'bi bi-arrow-counterclockwise';
-        } else {
-            btn.className = 'btn btn-sm btn-outline-success';
-            btn.title = 'Marcar como concluído';
-            icon.className = 'bi bi-check-lg';
-        }
         btn.disabled = false;
+        atualizarBotoesTarefa(tr);
     })
     .catch(() => { btn.disabled = false; });
 }
 
-function toggleDescricao(btn) {
-    const tr = btn.closest('tr');
-    const descRow = tr.nextElementSibling;
-    const icon = btn.querySelector('i');
-    const aberto = descRow.style.display !== 'none';
-    descRow.style.display = aberto ? 'none' : '';
-    icon.className = aberto ? 'bi bi-three-dots-vertical' : 'bi bi-x-lg';
+function atualizarBotoesTarefa(tr) {
+    const temArquivo  = !!tr.dataset.arquivoCaminho;
+    const concluido   = tr.dataset.concluido === '1';
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    const p = tr.dataset.data.split('-');
+    const prazo = new Date(p[0], p[1] - 1, p[2]);
+    const prazoPastou = prazo < hoje;
+    const td = tr.querySelector('td:last-child');
+
+    if (concluido && prazoPastou) {
+        td.innerHTML = `<button class="btn btn-sm btn-outline-success opacity-50" disabled title="Concluído"><i class="bi bi-check-lg"></i></button>`;
+    } else if (concluido) {
+        td.innerHTML = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleConcluido(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>`
+            + (temArquivo ? `<button class="btn btn-sm btn-outline-secondary ms-1" onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Ver envio"><i class="bi bi-pencil"></i></button>` : '');
+    } else if (temArquivo) {
+        td.innerHTML = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();toggleConcluido(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
+            + `<button class="btn btn-sm btn-outline-secondary ms-1" onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Editar envio"><i class="bi bi-pencil"></i></button>`;
+    } else {
+        td.innerHTML = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();toggleConcluido(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
+            + `<button class="btn btn-sm ms-1" style="border:1.5px solid #93c5fd;color:#3b82f6;background:transparent;" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Anexar arquivo"><i class="bi bi-paperclip"></i></button>`;
+    }
 }
 
 function abrirDetalheTarefa(tr) {
-    const titulo      = tr.querySelector('td.fw-medium')?.textContent || '';
-    const data        = tr.querySelector('td:nth-child(2)')?.textContent || '';
-    const hora        = tr.querySelector('td:nth-child(3)')?.textContent || '—';
-    const badgeEl     = tr.querySelector('.badge-status');
-    const statusLabel = badgeEl?.textContent || '';
-    const cls         = badgeEl?.className || '';
+    const titulo       = tr.querySelector('td.fw-medium')?.textContent || '';
+    const data         = tr.querySelector('td:nth-child(2)')?.textContent || '';
+    const hora         = tr.querySelector('td:nth-child(3)')?.textContent || '—';
+    const badgeEl      = tr.querySelector('.badge-status');
+    const statusLabel  = badgeEl?.textContent || '';
+    const cls          = badgeEl?.className || '';
+    const arquivoNome  = tr.dataset.arquivoNome || '';
+    const arquivoCam   = tr.dataset.arquivoCaminho || '';
 
     let statusStyle, statusIco;
     if (cls.includes('bg-success'))     { statusStyle = 'background:#dcfce7;color:#16a34a;'; statusIco = 'bi-check-circle'; }
@@ -294,6 +496,23 @@ function abrirDetalheTarefa(tr) {
 
     const descFull = tr.dataset.busca
         ? tr.dataset.busca.replace(titulo.toLowerCase() + ' ', '').trim()
+        : '';
+
+    const arquivoHtml = arquivoNome
+        ? `<hr class="so-divider">
+           <div class="so-campo">
+               <div class="so-label">Arquivo enviado</div>
+               <div class="so-valor mt-1">
+                   <div class="d-flex align-items-center gap-2 p-2 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
+                       <i class="bi bi-file-earmark text-primary"></i>
+                       <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${arquivoNome}</span>
+                       <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
+                               style="width:28px;height:28px;" onclick="abrirModalVisualizar('${arquivoCam}','${arquivoNome.replace(/'/g,'\\\'')}')" title="Visualizar">
+                           <i class="bi bi-eye" style="font-size:0.75rem;"></i>
+                       </button>
+                   </div>
+               </div>
+           </div>`
         : '';
 
     abrirSlideOver(titulo, `
@@ -323,11 +542,159 @@ function abrirDetalheTarefa(tr) {
         <hr class="so-divider">
         <div class="so-campo">
             <div class="so-label">Descrição</div>
-            <div class="so-valor">${descFull ? descFull.replace(/\n/g, '<br>') : '<span class="text-muted">Sem descrição.</span>'}</div>
-        </div>`, {
+            <div class="so-valor">${descFull ? descFull.replace(/\n/g,'<br>') : '<span class="text-muted">Sem descrição.</span>'}</div>
+        </div>
+        ${arquivoHtml}`, {
         badge: '<i class="bi bi-check2-square me-1"></i>Tarefa',
         badgeCor: '#3b82f6'
     });
+}
+
+// ── Modais de upload ──────────────────────────────────────────
+function abrirModalEnvio(tr) {
+    _tarefaAtual = tr;
+    document.getElementById('inputArquivo').value = '';
+    document.getElementById('arquivoSelecionado').style.display = 'none';
+    document.getElementById('obsEnvio').value = '';
+    document.getElementById('btnEnviarArquivo').disabled = false;
+    document.getElementById('btnEnviarArquivo').innerHTML = '<i class="bi bi-cloud-arrow-up me-1"></i>Enviar';
+    document.getElementById('modalEnvioTarefa').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function fecharModalEnvio() {
+    document.getElementById('modalEnvioTarefa').style.display = 'none';
+    document.body.style.overflow = '';
+}
+function selecionarArquivo(input) {
+    if (!input.files[0]) return;
+    document.getElementById('nomeArquivoSel').textContent = input.files[0].name;
+    document.getElementById('arquivoSelecionado').style.display = 'flex';
+}
+function limparArquivoSelecionado() {
+    document.getElementById('inputArquivo').value = '';
+    document.getElementById('arquivoSelecionado').style.display = 'none';
+}
+function enviarArquivoTarefa() {
+    const file = document.getElementById('inputArquivo').files[0];
+    if (!file) { alert('Selecione um arquivo antes de enviar.'); return; }
+    if (file.size > 15 * 1024 * 1024) { alert('O arquivo deve ter no máximo 15 MB.'); return; }
+    const btn = document.getElementById('btnEnviarArquivo');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Enviando...';
+    const fd = new FormData();
+    fd.append('id',     _tarefaAtual.dataset.id);
+    fd.append('titulo', _tarefaAtual.dataset.titulo);
+    fd.append('arquivo', file);
+    fd.append('obs', document.getElementById('obsEnvio').value);
+    fetch('pages-aluno/upload-tarefa.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-cloud-arrow-up me-1"></i>Enviar';
+            if (data.ok) {
+                _tarefaAtual.dataset.arquivoCaminho = data.caminho;
+                _tarefaAtual.dataset.arquivoNome    = data.nome;
+                _tarefaAtual.dataset.idProducao     = data.id_producao;
+                atualizarBotoesTarefa(_tarefaAtual);
+                fecharModalEnvio();
+            } else { alert('Erro: ' + (data.erro || 'Erro desconhecido')); }
+        })
+        .catch(() => { btn.disabled = false; btn.innerHTML = '<i class="bi bi-cloud-arrow-up me-1"></i>Enviar'; alert('Erro ao enviar.'); });
+}
+
+function abrirModalEdicao(tr) {
+    _tarefaAtual = tr;
+    document.getElementById('nomeArquivoEdit').textContent = tr.dataset.arquivoNome || 'arquivo';
+    document.getElementById('inputArquivoEdit').value = '';
+    document.getElementById('arquivoSubstituto').style.display = 'none';
+    document.getElementById('obsEdicaoWrap').style.display = 'none';
+    document.getElementById('modalEdicaoTarefa').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function fecharModalEdicao() {
+    document.getElementById('modalEdicaoTarefa').style.display = 'none';
+    document.body.style.overflow = '';
+}
+function visualizarArquivoTarefa() {
+    abrirModalVisualizar(_tarefaAtual.dataset.arquivoCaminho, _tarefaAtual.dataset.arquivoNome);
+}
+function abrirModalVisualizar(caminho, nome) {
+    document.getElementById('tituloArquivoVis').textContent = nome;
+    const ext = (nome.split('.').pop() || '').toLowerCase();
+    const corpo = document.getElementById('corpoArquivoVis');
+    if (['jpg','jpeg','png','gif','webp','svg'].includes(ext)) {
+        corpo.innerHTML = `<img src="${caminho}" style="max-width:100%;display:block;margin:auto;padding:16px;">`;
+    } else if (ext === 'pdf') {
+        corpo.innerHTML = `<iframe src="${caminho}" style="width:100%;height:65vh;border:0;"></iframe>`;
+    } else {
+        corpo.innerHTML = `<div class="text-center py-5"><i class="bi bi-file-earmark fs-1 text-muted mb-3 d-block"></i><p class="text-muted mb-3">${nome}</p><a href="${caminho}" download class="btn btn-primary btn-sm"><i class="bi bi-download me-1"></i>Baixar arquivo</a></div>`;
+    }
+    document.getElementById('modalVisualizarArquivo').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function fecharModalVisualizar() {
+    document.getElementById('modalVisualizarArquivo').style.display = 'none';
+    document.body.style.overflow = '';
+}
+function confirmarRemoverArquivo() {
+    if (!confirm('Remover o arquivo enviado?')) return;
+    fetch('pages-aluno/remover-arquivo-tarefa.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id_producao=' + encodeURIComponent(_tarefaAtual.dataset.idProducao)
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            _tarefaAtual.dataset.arquivoCaminho = '';
+            _tarefaAtual.dataset.arquivoNome    = '';
+            _tarefaAtual.dataset.idProducao     = '';
+            atualizarBotoesTarefa(_tarefaAtual);
+            fecharModalEdicao();
+        } else { alert('Erro ao remover.'); }
+    })
+    .catch(() => alert('Erro ao remover.'));
+}
+function substituirArquivo(input) {
+    if (!input.files[0]) return;
+    document.getElementById('nomeArquivoSub').textContent = input.files[0].name;
+    document.getElementById('arquivoSubstituto').style.display = 'flex';
+    document.getElementById('obsEdicaoWrap').style.display = 'block';
+}
+function limparSubstituto() {
+    document.getElementById('inputArquivoEdit').value = '';
+    document.getElementById('arquivoSubstituto').style.display = 'none';
+    document.getElementById('obsEdicaoWrap').style.display = 'none';
+}
+function enviarSubstituto() {
+    const file = document.getElementById('inputArquivoEdit').files[0];
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) { alert('O arquivo deve ter no máximo 15 MB.'); return; }
+    const fd = new FormData();
+    fd.append('id',     _tarefaAtual.dataset.id);
+    fd.append('titulo', _tarefaAtual.dataset.titulo);
+    fd.append('arquivo', file);
+    fd.append('obs', document.getElementById('obsEdicao').value);
+    fetch('pages-aluno/upload-tarefa.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            if (data.ok) {
+                _tarefaAtual.dataset.arquivoCaminho = data.caminho;
+                _tarefaAtual.dataset.arquivoNome    = data.nome;
+                _tarefaAtual.dataset.idProducao     = data.id_producao;
+                fecharModalEdicao();
+            } else { alert('Erro: ' + (data.erro || 'Erro desconhecido')); }
+        })
+        .catch(() => alert('Erro ao enviar.'));
+}
+
+function toggleDescricao(btn) {
+    const tr = btn.closest('tr');
+    const descRow = tr.nextElementSibling;
+    const icon = btn.querySelector('i');
+    const aberto = descRow.style.display !== 'none';
+    descRow.style.display = aberto ? 'none' : '';
+    icon.className = aberto ? 'bi bi-three-dots-vertical' : 'bi bi-x-lg';
 }
 
 function filtrarItens() {
