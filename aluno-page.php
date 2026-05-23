@@ -127,7 +127,7 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
             <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px;">Qualquer formato · Máx. 15 MB</div>
         </div>
         <input type="file" id="inputArquivo" style="display:none;" onchange="selecionarArquivo(this)">
-        <div id="arquivoSelecionado" style="display:none;" class="d-flex align-items-center gap-2 p-2 mt-2 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
+        <div id="arquivoSelecionado" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;" class="d-flex align-items-center gap-2 p-2 mt-2 rounded">
             <i class="bi bi-file-earmark text-primary"></i>
             <span id="nomeArquivoSel" class="flex-grow-1 text-truncate" style="font-size:0.85rem;"></span>
             <button class="btn btn-sm btn-link text-danger p-0" onclick="limparArquivoSelecionado()"><i class="bi bi-x-lg"></i></button>
@@ -171,7 +171,7 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
             <span style="font-size:0.82rem;color:#64748b;">Substituir por outro arquivo</span>
         </div>
         <input type="file" id="inputArquivoEdit" style="display:none;" onchange="substituirArquivo(this)">
-        <div id="arquivoSubstituto" style="display:none;" class="d-flex align-items-center gap-2 p-2 mt-2 rounded" style="background:#f8fafc;border:1px solid #e2e8f0;">
+        <div id="arquivoSubstituto" style="display:none;background:#f8fafc;border:1px solid #e2e8f0;" class="d-flex align-items-center gap-2 p-2 mt-2 rounded">
             <i class="bi bi-file-earmark text-primary"></i>
             <span id="nomeArquivoSub" class="flex-grow-1 text-truncate" style="font-size:0.85rem;"></span>
             <button class="btn btn-sm btn-link text-danger p-0" onclick="limparSubstituto()"><i class="bi bi-x-lg"></i></button>
@@ -420,9 +420,12 @@ function toggleConcluido(btn) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: 'id=' + encodeURIComponent(id)
     })
-    .then(r => r.json())
+    .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+    })
     .then(data => {
-        if (!data.ok) { btn.disabled = false; return; }
+        if (!data.ok) { btn.disabled = false; if (data.erro) alert(data.erro); return; }
         const concluido = data.concluido;
         const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
         const p = tr.dataset.data.split('-');
@@ -453,7 +456,7 @@ function toggleConcluido(btn) {
         btn.disabled = false;
         atualizarBotoesTarefa(tr);
     })
-    .catch(() => { btn.disabled = false; });
+    .catch(err => { btn.disabled = false; console.error('Erro toggleConcluido:', err); });
 }
 
 function atualizarBotoesTarefa(tr) {

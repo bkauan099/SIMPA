@@ -186,10 +186,10 @@ class Aluno {
     }
 
     public function toggleConcluido($id, $id_usuario) {
-        $sql = "UPDATE agenda_items SET concluido = NOT concluido WHERE id = :id AND id_usuario = :id_usuario RETURNING concluido";
+        $sql = "UPDATE agenda_items SET concluido = NOT concluido WHERE id = :id AND id_usuario = :id_usuario RETURNING concluido::int";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id, ':id_usuario' => $id_usuario]);
-        return (bool) $stmt->fetchColumn();
+        return (bool)(int)$stmt->fetchColumn();
     }
 
     public function listarAgendaAberta($id_usuario) {
@@ -204,7 +204,7 @@ class Aluno {
                 SELECT p.caminho, p.tipo, p.id_producao
                 FROM producoes p
                 JOIN participacao pa ON pa.id_projeto = p.id_projeto
-                WHERE pa.id_usuario = :id
+                WHERE pa.id_usuario = :uid
                   AND pa.status = 'ativo'
                   AND p.titulo = ai.titulo
                   AND p.status != 'inativo'
@@ -217,7 +217,7 @@ class Aluno {
             ORDER BY ai.data ASC
         ";
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':id' => $id_usuario]);
+        $stmt->execute([':id' => $id_usuario, ':uid' => $id_usuario]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
