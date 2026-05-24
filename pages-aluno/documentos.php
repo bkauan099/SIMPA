@@ -22,19 +22,10 @@ $stmt = $pdo->prepare("
 $stmt->execute([':id' => $id_usuario]);
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Remove registros cujo arquivo não existe no disco
 $documentos = array_values(array_filter($documentos, function($d) {
     if (empty($d['caminho'])) return false;
     return file_exists(__DIR__ . '/../' . ltrim($d['caminho'], '/\\'));
 }));
-
-$totalPdf   = 0;
-$totalOutros = 0;
-foreach ($documentos as $d) {
-    $ext = strtolower(pathinfo($d['nome_arquivo'], PATHINFO_EXTENSION));
-    if ($ext === 'pdf') $totalPdf++; else $totalOutros++;
-}
-$total = count($documentos);
 
 const EXTS_VISUALIZAVEL = ['pdf','jpg','jpeg','png','gif','webp','svg',
     'txt','js','ts','jsx','tsx','mjs','cjs','py','php','rb','java','c','cpp','cc',
@@ -54,6 +45,23 @@ function iconeArquivo(string $ext): string {
         default                               => 'bi-file-earmark text-muted',
     };
 }
+
+function statusInfo(string $s): array {
+    return match($s) {
+        'aprovado'  => ['label' => 'Aprovado',             'icon' => 'bi-check-circle-fill', 'cor' => '#16a34a', 'bg' => '#dcfce7', 'badge' => 'bg-success text-white'],
+        'reprovado' => ['label' => 'Reprovado',            'icon' => 'bi-x-circle-fill',     'cor' => '#dc2626', 'bg' => '#fee2e2', 'badge' => 'bg-danger text-white'],
+        default     => ['label' => 'Aguardando Aprovação', 'icon' => 'bi-hourglass-split',   'cor' => '#d97706', 'bg' => '#fef3c7', 'badge' => 'bg-warning text-dark'],
+    };
+}
+
+$contadores = ['pendente' => 0, 'aprovado' => 0, 'reprovado' => 0];
+foreach ($documentos as $d) {
+    $s = $d['status'];
+    if ($s === 'aprovado') $contadores['aprovado']++;
+    elseif ($s === 'reprovado') $contadores['reprovado']++;
+    else $contadores['pendente']++;
+}
+$total = count($documentos);
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -63,33 +71,62 @@ function iconeArquivo(string $ext): string {
     </div>
 </div>
 
-<!-- Stats -->
+<!-- Cartões de status -->
 <div class="row g-3 mb-4">
-    <div class="col-sm-4">
-        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #3b82f6;position:relative;overflow:hidden;">
-            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#3b82f6;opacity:0.08;line-height:1;pointer-events:none;"><i class="bi bi-files"></i></div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#3b82f6;color:#fff;opacity:0.85;margin-bottom:10px;">
-                <i class="bi bi-files"></i> Total
+    <div class="col-6 col-sm-3">
+        <div style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:13px;padding:16px;box-shadow:0 4px 16px rgba(59,130,246,0.35);position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-13px;bottom:-13px;font-size:4rem;color:#fff;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-files"></i></div>
+            <div style="position:absolute;top:-16px;left:-16px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;">
+                <div style="width:27px;height:27px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">
+                    <i class="bi bi-files" style="color:#fff;font-size:0.8rem;"></i>
+                </div>
+                <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.5px;text-transform:uppercase;">Total</span>
             </div>
-            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $total ?></div>
+            <div style="font-size:1.9rem;font-weight:900;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.15);"><?= $total ?></div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.65);margin-top:3px;">documentos enviados</div>
         </div>
     </div>
-    <div class="col-sm-4">
-        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ef4444;position:relative;overflow:hidden;">
-            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ef4444;opacity:0.08;line-height:1;pointer-events:none;"><i class="bi bi-file-earmark-pdf"></i></div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#ef4444;color:#fff;opacity:0.85;margin-bottom:10px;">
-                <i class="bi bi-file-earmark-pdf"></i> PDFs
+    <div class="col-6 col-sm-3">
+        <div style="background:linear-gradient(135deg,#f59e0b,#b45309);border-radius:13px;padding:16px;box-shadow:0 4px 16px rgba(245,158,11,0.35);position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-13px;bottom:-13px;font-size:4rem;color:#fff;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-hourglass-split"></i></div>
+            <div style="position:absolute;top:-16px;left:-16px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;">
+                <div style="width:27px;height:27px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">
+                    <i class="bi bi-hourglass-split" style="color:#fff;font-size:0.8rem;"></i>
+                </div>
+                <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.5px;text-transform:uppercase;">Aguardando</span>
             </div>
-            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $totalPdf ?></div>
+            <div style="font-size:1.9rem;font-weight:900;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.15);"><?= $contadores['pendente'] ?></div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.65);margin-top:3px;">aguardando aprovação</div>
         </div>
     </div>
-    <div class="col-sm-4">
-        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #64748b;position:relative;overflow:hidden;">
-            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#64748b;opacity:0.08;line-height:1;pointer-events:none;"><i class="bi bi-file-earmark"></i></div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#64748b;color:#fff;opacity:0.85;margin-bottom:10px;">
-                <i class="bi bi-file-earmark"></i> Outros
+    <div class="col-6 col-sm-3">
+        <div style="background:linear-gradient(135deg,#22c55e,#15803d);border-radius:13px;padding:16px;box-shadow:0 4px 16px rgba(34,197,94,0.35);position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-13px;bottom:-13px;font-size:4rem;color:#fff;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-check-circle-fill"></i></div>
+            <div style="position:absolute;top:-16px;left:-16px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;">
+                <div style="width:27px;height:27px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">
+                    <i class="bi bi-check-circle-fill" style="color:#fff;font-size:0.8rem;"></i>
+                </div>
+                <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.5px;text-transform:uppercase;">Aprovados</span>
             </div>
-            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $totalOutros ?></div>
+            <div style="font-size:1.9rem;font-weight:900;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.15);"><?= $contadores['aprovado'] ?></div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.65);margin-top:3px;">aprovados pelo professor</div>
+        </div>
+    </div>
+    <div class="col-6 col-sm-3">
+        <div style="background:linear-gradient(135deg,#ef4444,#991b1b);border-radius:13px;padding:16px;box-shadow:0 4px 16px rgba(239,68,68,0.35);position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-13px;bottom:-13px;font-size:4rem;color:#fff;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-x-circle-fill"></i></div>
+            <div style="position:absolute;top:-16px;left:-16px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;">
+                <div style="width:27px;height:27px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">
+                    <i class="bi bi-x-circle-fill" style="color:#fff;font-size:0.8rem;"></i>
+                </div>
+                <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.5px;text-transform:uppercase;">Reprovados</span>
+            </div>
+            <div style="font-size:1.9rem;font-weight:900;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.15);"><?= $contadores['reprovado'] ?></div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.65);margin-top:3px;">precisam de revisão</div>
         </div>
     </div>
 </div>
@@ -97,7 +134,7 @@ function iconeArquivo(string $ext): string {
 <!-- Filtro -->
 <div class="content-card mb-3 p-3">
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-7">
+        <div class="col-12 col-md-5">
             <div class="input-group">
                 <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                 <input type="text" id="filtroDocBusca" class="form-control border-start-0"
@@ -111,7 +148,15 @@ function iconeArquivo(string $ext): string {
                 <option value="outro">Outros</option>
             </select>
         </div>
-        <div class="col-6 col-md-2 text-muted small text-center" id="contadorDocs">
+        <div class="col-6 col-md-2">
+            <select class="form-select" id="filtroDocStatus" onchange="filtrarDocumentos()">
+                <option value="">Status (Todos)</option>
+                <option value="pendente">Aguardando</option>
+                <option value="aprovado">Aprovado</option>
+                <option value="reprovado">Reprovado</option>
+            </select>
+        </div>
+        <div class="col-12 col-md-2 text-muted small text-center" id="contadorDocs">
             <?= $total ?> resultado(s)
         </div>
     </div>
@@ -127,43 +172,52 @@ function iconeArquivo(string $ext): string {
                     <th>ARQUIVO</th>
                     <th>TAREFA</th>
                     <th>PROJETO</th>
+                    <th>STATUS</th>
                     <th class="text-center">AÇÃO</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($documentos)): ?>
-                    <tr><td colspan="4" class="text-center py-4 text-muted">Nenhum documento encontrado.</td></tr>
+                    <tr><td colspan="5" class="text-center py-4 text-muted">Nenhum documento encontrado.</td></tr>
                 <?php else: ?>
                     <?php foreach ($documentos as $doc):
-                        $nome       = $doc['nome_arquivo'];
-                        $ext        = strtolower(pathinfo($nome, PATHINFO_EXTENSION));
-                        $isPdf      = ($ext === 'pdf');
-                        $podeVisualizar = in_array($ext, EXTS_VISUALIZAVEL);
-                        $icon       = iconeArquivo($ext);
-                        $proxyUrl   = 'pages-aluno/servir-arquivo.php?id=' . $doc['id_producao'];
-                        $buscaKey   = strtolower($nome . ' ' . $doc['tarefa'] . ' ' . $doc['projeto']);
+                        $nome     = $doc['nome_arquivo'];
+                        $ext      = strtolower(pathinfo($nome, PATHINFO_EXTENSION));
+                        $isPdf    = ($ext === 'pdf');
+                        $podeVer  = in_array($ext, EXTS_VISUALIZAVEL);
+                        $icon     = iconeArquivo($ext);
+                        $proxyUrl = 'pages-aluno/servir-arquivo.php?id=' . $doc['id_producao'];
+                        $buscaKey = strtolower($nome . ' ' . $doc['tarefa'] . ' ' . $doc['projeto']);
+                        $st       = statusInfo($doc['status']);
+                        $stKey    = ($doc['status'] === 'aprovado' || $doc['status'] === 'reprovado') ? $doc['status'] : 'pendente';
                     ?>
                     <tr data-busca="<?= htmlspecialchars($buscaKey) ?>"
-                        data-tipo="<?= $isPdf ? 'pdf' : 'outro' ?>">
+                        data-tipo="<?= $isPdf ? 'pdf' : 'outro' ?>"
+                        data-status="<?= $stKey ?>">
                         <td>
                             <i class="bi <?= $icon ?> me-2 fs-5"></i>
                             <span class="fw-medium"><?= htmlspecialchars($nome) ?></span>
                         </td>
                         <td class="text-muted small"><?= htmlspecialchars($doc['tarefa']) ?></td>
                         <td class="text-muted small"><?= htmlspecialchars($doc['projeto']) ?></td>
+                        <td>
+                            <span class="badge <?= $st['badge'] ?>" style="font-size:0.72rem;">
+                                <i class="bi <?= $st['icon'] ?> me-1"></i><?= $st['label'] ?>
+                            </span>
+                        </td>
                         <td class="text-center">
-                            <?php if ($podeVisualizar): ?>
+                            <?php if ($podeVer): ?>
                             <button class="btn btn-sm btn-outline-primary me-1"
                                     data-caminho="<?= htmlspecialchars($proxyUrl, ENT_QUOTES) ?>"
                                     data-nome="<?= htmlspecialchars($nome, ENT_QUOTES) ?>"
                                     onclick="abrirModalVisualizar(this.dataset.caminho, this.dataset.nome)"
-                                    title="Visualizar arquivo">
+                                    title="Visualizar">
                                 <i class="bi bi-eye"></i>
                             </button>
                             <?php endif; ?>
                             <a href="<?= htmlspecialchars($proxyUrl, ENT_QUOTES) ?>"
                                download="<?= htmlspecialchars($nome, ENT_QUOTES) ?>"
-                               class="btn btn-sm btn-outline-secondary" title="Baixar arquivo">
+                               class="btn btn-sm btn-outline-secondary" title="Baixar">
                                 <i class="bi bi-download"></i>
                             </a>
                         </td>
@@ -177,18 +231,19 @@ function iconeArquivo(string $ext): string {
 
 <script>
 function filtrarDocumentos() {
-    const busca = (document.getElementById('filtroDocBusca')?.value || '').toLowerCase();
-    const tipo  = document.getElementById('filtroDocTipo')?.value || '';
+    const busca  = (document.getElementById('filtroDocBusca')?.value || '').toLowerCase();
+    const tipo   = document.getElementById('filtroDocTipo')?.value   || '';
+    const status = document.getElementById('filtroDocStatus')?.value || '';
     const linhas = document.querySelectorAll('#tabelaDocumentos tbody tr[data-busca]');
     let visiveis = 0;
     linhas.forEach(tr => {
-        const okBusca = !busca || tr.dataset.busca.includes(busca);
-        const okTipo  = !tipo  || tr.dataset.tipo === tipo;
-        const visivel = okBusca && okTipo;
-        tr.style.display = visivel ? '' : 'none';
-        if (visivel) visiveis++;
+        const ok = (!busca  || tr.dataset.busca.includes(busca))
+                && (!tipo   || tr.dataset.tipo === tipo)
+                && (!status || tr.dataset.status === status);
+        tr.style.display = ok ? '' : 'none';
+        if (ok) visiveis++;
     });
-    const contador = document.getElementById('contadorDocs');
-    if (contador) contador.textContent = visiveis + ' resultado(s)';
+    const cnt = document.getElementById('contadorDocs');
+    if (cnt) cnt.textContent = visiveis + ' resultado(s)';
 }
 </script>

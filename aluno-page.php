@@ -1163,11 +1163,38 @@ function showDay(el) {
 
     const itens = JSON.parse(el.dataset.itens || '[]');
     document.getElementById('modalDiaTitulo').textContent = el.dataset.titulo;
-    document.getElementById('modalDiaLista').innerHTML = itens.length
-        ? itens.map((item, i, a) =>
-            `<div class="py-2${i < a.length - 1 ? ' border-bottom' : ''}" style="font-size:0.88rem;">${item}</div>`
-          ).join('')
-        : '<p class="text-muted text-center py-2 mb-0">Nenhuma atividade neste dia.</p>';
+
+    if (!itens.length) {
+        document.getElementById('modalDiaLista').innerHTML =
+            '<p class="text-muted text-center py-2 mb-0">Nenhuma atividade neste dia.</p>';
+    } else {
+        const statusCor = { concluido:'#16a34a', atrasado:'#dc2626', proximo:'#d97706', futuro:'#2563eb' };
+        const statusBg  = { concluido:'#dcfce7', atrasado:'#fee2e2', proximo:'#fef3c7', futuro:'#dbeafe' };
+
+        document.getElementById('modalDiaLista').innerHTML = itens.map(item => {
+            const pagina = item.tipo === 'tarefa' ? 'tarefas' : 'cronograma';
+            const label  = item.tipo === 'tarefa' ? 'Ver tarefa' : 'Ver no cronograma';
+            const cor    = statusCor[item.status] || '#64748b';
+            const bg     = statusBg[item.status]  || '#f1f5f9';
+            return `
+            <div onclick="bootstrap.Modal.getInstance(document.getElementById('modalDia')).hide(); carregarPagina('${pagina}')"
+                 style="display:flex;align-items:center;justify-content:space-between;gap:10px;
+                        border-radius:10px;border:1px solid ${cor}30;background:${bg};
+                        padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:opacity .15s;"
+                 onmouseenter="this.style.opacity='.82'" onmouseleave="this.style.opacity='1'">
+                <div style="min-width:0;flex:1;">
+                    <div style="font-size:0.87rem;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        ${item.ico} ${item.titulo}
+                    </div>
+                    ${item.hora ? `<div style="font-size:0.75rem;color:#64748b;margin-top:2px;">🕐 ${item.hora}</div>` : ''}
+                </div>
+                <div style="display:flex;align-items:center;gap:4px;font-size:0.72rem;font-weight:600;
+                            color:${cor};white-space:nowrap;flex-shrink:0;">
+                    ${label} <i class="bi bi-arrow-right-circle-fill"></i>
+                </div>
+            </div>`;
+        }).join('');
+    }
 
     new bootstrap.Modal(document.getElementById('modalDia')).show();
 }

@@ -98,7 +98,7 @@ class Aluno {
 
     public function obterAgenda($id_usuario) {
         $sql = "
-            SELECT titulo, data, hora, tipo, concluido
+            SELECT id, titulo, data, hora, tipo, concluido
             FROM agenda_items
             WHERE id_usuario = :id
             ORDER BY data ASC

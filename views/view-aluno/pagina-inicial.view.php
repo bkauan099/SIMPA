@@ -15,12 +15,19 @@ foreach (array_merge($tarefas, $eventos) as $item) {
     if (!isset($mapa[$d])) {
         $mapa[$d] = ['verde'=>false,'vermelho'=>false,'amarelo'=>false,'azul'=>false,'itens'=>[]];
     }
-    if ($ok)              { $mapa[$d]['verde']    = true; $ico = '✅'; }
-    elseif ($dt < $hoje_str) { $mapa[$d]['vermelho'] = true; $ico = '❌'; }
-    elseif ($dt <= $sete_str){ $mapa[$d]['amarelo']  = true; $ico = '⚠️'; }
-    else                  { $mapa[$d]['azul']     = true; $ico = "\u{1F4CC}"; }
+    if ($ok)              { $mapa[$d]['verde']    = true; $ico = '✅'; $status = 'concluido'; }
+    elseif ($dt < $hoje_str) { $mapa[$d]['vermelho'] = true; $ico = '❌'; $status = 'atrasado'; }
+    elseif ($dt <= $sete_str){ $mapa[$d]['amarelo']  = true; $ico = '⚠️'; $status = 'proximo'; }
+    else                  { $mapa[$d]['azul']     = true; $ico = '📌'; $status = 'futuro'; }
 
-    $mapa[$d]['itens'][] = $ico . ' ' . $item['titulo'] . ($hr ? ' — ' . $hr : '');
+    $mapa[$d]['itens'][] = [
+        'id'     => $item['id'],
+        'titulo' => $item['titulo'],
+        'hora'   => $hr,
+        'tipo'   => $item['tipo'],
+        'ico'    => $ico,
+        'status' => $status,
+    ];
 }
 
 $nomes     = ['','Janeiro','Fevereiro','Março','Abril','Maio','Junho',

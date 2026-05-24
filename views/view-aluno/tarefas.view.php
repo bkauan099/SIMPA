@@ -125,10 +125,10 @@
                             <td><span class="badge badge-status <?= $statusClass ?>"><?= $statusLabel ?></span></td>
                             <td class="text-center">
                                 <?php if ($item['concluido'] && $prazoPassou): ?>
-                                    <button class="btn btn-sm btn-outline-success opacity-50"
+                                    <button class="btn btn-sm btn-outline-secondary opacity-50"
                                             onclick="event.stopPropagation()"
-                                            style="cursor:default;" title="Concluído">
-                                        <i class="bi bi-check-lg"></i>
+                                            style="cursor:default;" title="Prazo encerrado, não é possível desfazer">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
                                     </button>
                                     <?php if ($temArquivo): ?>
                                     <button class="btn btn-sm btn-outline-primary ms-1"
