@@ -1,8 +1,13 @@
 <?php
 session_start();
 
+$id_usuario = $_SESSION['id_usuario'] ?? null;
+if (!$id_usuario) {
+    header('Location: login-page.php');
+    exit;
+}
+
 require_once 'conexao/conexao.php';
-$id_usuario = $_SESSION['id_usuario'] ?? 3;
 $stmt = $pdo->prepare("SELECT nome FROM usuarios WHERE id_usuario = :id");
 $stmt->execute([':id' => $id_usuario]);
 $nomeUsuario  = $stmt->fetchColumn() ?: 'Usuário';
@@ -60,7 +65,7 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
                 <i class="bi bi-file-earmark-text"></i><span class="nav-label">Documentos</span></a></li>
             <li><a href="javascript:void(0)" id="menu-certificados" onclick="carregarPagina('certificados')" title="Certificados">
                 <i class="bi bi-award"></i><span class="nav-label">Certificados</span></a></li>
-            <li class="sidebar-sair"><a href="#" title="Sair">
+            <li class="sidebar-sair"><a href="logout.php" title="Sair">
                 <i class="bi bi-box-arrow-left"></i><span class="nav-label">Sair</span></a></li>
         </ul>
     </nav>
@@ -166,7 +171,7 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
 
 <!-- MODAL: Visualizar arquivo -->
 <div id="modalVisualizarArquivo" style="display:none;position:fixed;inset:0;z-index:1080;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:16px;width:96%;max-width:1140px;max-height:90vh;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.25);display:flex;flex-direction:column;">
+    <div style="background:#fff;border-radius:16px;width:96%;max-width:1140px;height:90vh;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.25);display:flex;flex-direction:column;">
         <div class="d-flex justify-content-between align-items-center p-3" style="border-bottom:1px solid #e2e8f0;gap:8px;flex-shrink:0;">
             <span class="fw-semibold text-truncate" style="font-size:0.88rem;flex:1;min-width:0;" id="tituloArquivoVis"></span>
             <div id="controlesZoom" style="display:none;align-items:center;gap:4px;flex-shrink:0;">
@@ -500,14 +505,20 @@ function abrirDetalheTarefa(tr) {
                <div class="so-label">Arquivos enviados</div>
                <div class="so-valor mt-1">
                    ${arquivos.map(a => {
-                       const cEsc = JSON.stringify(a.caminho), nEsc = JSON.stringify(a.nome);
                        return `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f8fafc;border:1px solid #e2e8f0;">
                            <i class="bi bi-file-earmark text-primary"></i>
                            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${a.nome}</span>
                            <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
-                                   style="width:28px;height:28px;" onclick="abrirModalVisualizar(${cEsc},${nEsc})" title="Visualizar">
+                                   style="width:28px;height:28px;"
+                                   data-caminho="${a.caminho}" data-nome="${a.nome}"
+                                   onclick="abrirModalVisualizar(this.dataset.caminho,this.dataset.nome)" title="Visualizar">
                                <i class="bi bi-eye" style="font-size:0.75rem;"></i>
                            </button>
+                           <a href="${a.caminho}" download="${a.nome}"
+                              class="btn btn-sm btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
+                              style="width:28px;height:28px;" title="Baixar">
+                               <i class="bi bi-download" style="font-size:0.75rem;"></i>
+                           </a>
                        </div>`;
                    }).join('')}
                </div>
@@ -549,6 +560,97 @@ function abrirDetalheTarefa(tr) {
     });
 }
 
+function abrirDetalheCronograma(tr) {
+    const titulo      = tr.querySelector('td.fw-medium')?.textContent || '';
+    const data        = tr.querySelector('td.fw-bold')?.textContent   || '';
+    const hora        = tr.querySelector('td:nth-child(2)')?.textContent || '—';
+    const badgeEl     = tr.querySelector('.badge-status');
+    const statusLabel = badgeEl?.textContent || '';
+    const cls         = badgeEl?.className   || '';
+    const tipo        = tr.dataset.tipo || 'tarefa';
+    const descricao   = tr.dataset.descricao || '';
+    const arquivos    = getArquivos(tr);
+
+    let statusStyle, statusIco;
+    if (cls.includes('bg-success'))     { statusStyle = 'background:#dcfce7;color:#16a34a;'; statusIco = 'bi-check-circle'; }
+    else if (cls.includes('bg-danger')) { statusStyle = 'background:#fee2e2;color:#dc2626;'; statusIco = 'bi-x-circle'; }
+    else                                { statusStyle = 'background:#fef9c3;color:#a16207;'; statusIco = 'bi-hourglass-split'; }
+
+    const tipoHtml = tipo === 'tarefa'
+        ? `<span class="badge bg-light text-dark border"><i class="bi bi-check2-square me-1"></i>Tarefa</span>`
+        : `<span class="badge bg-light text-dark border"><i class="bi bi-calendar-event me-1"></i>Evento</span>`;
+
+    const arquivoHtml = arquivos.length
+        ? `<hr class="so-divider">
+           <div class="so-campo">
+               <div class="so-label">Arquivos enviados</div>
+               <div class="so-valor mt-1">
+                   ${arquivos.map(a => {
+                       return `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f8fafc;border:1px solid #e2e8f0;">
+                           <i class="bi bi-file-earmark text-primary"></i>
+                           <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${a.nome}</span>
+                           <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
+                                   style="width:28px;height:28px;"
+                                   data-caminho="${a.caminho}" data-nome="${a.nome}"
+                                   onclick="abrirModalVisualizar(this.dataset.caminho,this.dataset.nome)" title="Visualizar">
+                               <i class="bi bi-eye" style="font-size:0.75rem;"></i>
+                           </button>
+                           <a href="${a.caminho}" download="${a.nome}"
+                              class="btn btn-sm btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
+                              style="width:28px;height:28px;" title="Baixar">
+                               <i class="bi bi-download" style="font-size:0.75rem;"></i>
+                           </a>
+                       </div>`;
+                   }).join('')}
+               </div>
+           </div>`
+        : '';
+
+    const badgeTipo = tipo === 'tarefa'
+        ? { label: '<i class="bi bi-check2-square me-1"></i>Tarefa', cor: '#3b82f6' }
+        : { label: '<i class="bi bi-calendar-event me-1"></i>Evento', cor: '#7c3aed' };
+
+    abrirSlideOver(titulo, `
+        <div class="so-campo">
+            <div class="so-label">Status</div>
+            <div class="so-valor">
+                <span class="badge rounded-pill px-2 py-1" style="${statusStyle}font-size:0.8rem;">
+                    <i class="bi ${statusIco} me-1"></i>${statusLabel}
+                </span>
+            </div>
+        </div>
+        <hr class="so-divider">
+        <div class="row g-3">
+            <div class="col-4">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Data</div>
+                    <div class="so-valor"><i class="bi bi-calendar2 me-1 text-muted"></i>${data}</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Hora</div>
+                    <div class="so-valor"><i class="bi bi-clock me-1 text-muted"></i>${hora !== '—' ? hora : 'Não definida'}</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="so-campo mb-0">
+                    <div class="so-label">Tipo</div>
+                    <div class="so-valor">${tipoHtml}</div>
+                </div>
+            </div>
+        </div>
+        <hr class="so-divider">
+        <div class="so-campo">
+            <div class="so-label">Descrição</div>
+            <div class="so-valor">${descricao ? descricao.replace(/\n/g,'<br>') : '<span class="text-muted">Sem descrição.</span>'}</div>
+        </div>
+        ${arquivoHtml}`, {
+        badge: badgeTipo.label,
+        badgeCor: badgeTipo.cor
+    });
+}
+
 // ── Helpers multi-arquivo ─────────────────────────────────────
 function getArquivos(tr) {
     try { return JSON.parse(tr.dataset.arquivos || '[]'); } catch(e) { return []; }
@@ -578,13 +680,14 @@ function _renderizarArquivosExistentes(arquivos, somenteLeitura) {
     if (!arquivos || arquivos.length === 0) { container.style.display = 'none'; lista.innerHTML = ''; return; }
     container.style.display = '';
     lista.innerHTML = arquivos.map(a => {
-        const cEsc = JSON.stringify(a.caminho), nEsc = JSON.stringify(a.nome);
         const btnRemove = somenteLeitura ? '' :
             `<button class="btn btn-sm btn-link text-danger p-0" onclick="_removerArquivoExistente(${a.id})" title="Remover"><i class="bi bi-x-lg"></i></button>`;
         return `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f8fafc;border:1px solid #e2e8f0;">
             <i class="bi bi-file-earmark text-primary"></i>
             <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${a.nome}</span>
-            <button class="btn btn-sm btn-link text-primary p-0" onclick="abrirModalVisualizar(${cEsc},${nEsc})" title="Visualizar"><i class="bi bi-eye"></i></button>
+            <button class="btn btn-sm btn-link text-primary p-0"
+                    data-caminho="${a.caminho}" data-nome="${a.nome}"
+                    onclick="abrirModalVisualizar(this.dataset.caminho,this.dataset.nome)" title="Visualizar"><i class="bi bi-eye"></i></button>
             ${btnRemove}
         </div>`;
     }).join('');
@@ -667,14 +770,20 @@ function abrirModalEdicao(tr) {
     document.getElementById('arquivoSubstituto').style.display = 'none';
     document.getElementById('obsEdicaoWrap').style.display = 'none';
     document.getElementById('itensArquivosEdit').innerHTML = arquivos.map(a => {
-        const cEsc = JSON.stringify(a.caminho), nEsc = JSON.stringify(a.nome);
         return `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f8fafc;border:1px solid #e2e8f0;">
             <i class="bi bi-file-earmark text-primary fs-5"></i>
             <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;font-weight:500;">${a.nome}</span>
             <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
-                    style="width:28px;height:28px;" onclick="abrirModalVisualizar(${cEsc},${nEsc})" title="Visualizar">
+                    style="width:28px;height:28px;"
+                    data-caminho="${a.caminho}" data-nome="${a.nome}"
+                    onclick="abrirModalVisualizar(this.dataset.caminho,this.dataset.nome)" title="Visualizar">
                 <i class="bi bi-eye" style="font-size:0.75rem;"></i>
             </button>
+            <a href="${a.caminho}" download="${a.nome}"
+               class="btn btn-sm btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
+               style="width:28px;height:28px;" title="Baixar">
+                <i class="bi bi-download" style="font-size:0.75rem;"></i>
+            </a>
         </div>`;
     }).join('') || '<p class="text-muted small mb-0">Nenhum arquivo enviado.</p>';
     document.getElementById('modalEdicaoTarefa').style.display = 'flex';
