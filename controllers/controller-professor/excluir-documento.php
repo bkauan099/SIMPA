@@ -12,21 +12,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // 1. Buscar o nome do arquivo no banco para poder apagar da pasta
-        $sqlBusca = "SELECT caminho_arquivo FROM documentos_projeto WHERE id_documento = :id";
+        // MIGRADO: documentos_projeto → producoes
+        // id_documento → id_producao | caminho_arquivo → caminho
+        $sqlBusca = "SELECT caminho FROM producoes WHERE id_producao = :id";
         $stmtBusca = $pdo->prepare($sqlBusca);
         $stmtBusca->execute([':id' => $id_documento]);
         $doc = $stmtBusca->fetch(PDO::FETCH_ASSOC);
 
         if ($doc) {
-            $caminhoFisico = "../../uploads/documentos/" . $doc['caminho_arquivo'];
+            $caminhoFisico = "../../uploads/documentos/" . $doc['caminho'];
 
-            // 2. Deletar o registro no Banco de Dados
-            $sqlDelete = "DELETE FROM documentos_projeto WHERE id_documento = :id";
+            // Deletar o registro no Banco de Dados
+            $sqlDelete = "DELETE FROM producoes WHERE id_producao = :id";
             $stmtDelete = $pdo->prepare($sqlDelete);
             $stmtDelete->execute([':id' => $id_documento]);
 
-            // 3. Se deletou no banco, apaga o arquivo físico da pasta
+            // Se deletou no banco, apaga o arquivo físico da pasta
             if (file_exists($caminhoFisico)) {
                 unlink($caminhoFisico);
             }

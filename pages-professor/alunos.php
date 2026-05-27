@@ -125,13 +125,13 @@ try {
 
 <div class="content-card mb-3 p-3">
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-5">
             <div class="input-group">
                 <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                 <input type="text" id="filtro_aluno" class="form-control border-start-0" placeholder="Buscar por nome ou matrícula...">
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-2">
             <select class="form-select" id="filtro_projeto">
                 <option value="">Todos os Projetos</option>
                 <?php foreach (array_unique(array_column($alunos, 'projeto_nome')) as $p): ?>
@@ -139,12 +139,15 @@ try {
                 <?php endforeach; ?>
             </select>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-2">
             <select class="form-select" id="filtro_status">
                 <option value="">Status (Todos)</option>
                 <option value="ativo">Ativo</option>
                 <option value="inativo">Inativo</option>
             </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <button class="btn btn-outline-secondary w-100" onclick="limparFiltrosAlunos()">Limpar</button>
         </div>
     </div>
 </div>
@@ -452,5 +455,12 @@ try {
         document.getElementById('filtro_aluno').addEventListener('input', filtrar);
         document.getElementById('filtro_projeto').addEventListener('change', filtrar);
         document.getElementById('filtro_status').addEventListener('change', filtrar);
+
+        window.limparFiltrosAlunos = function () {
+            document.getElementById('filtro_aluno').value   = '';
+            document.getElementById('filtro_projeto').value = '';
+            document.getElementById('filtro_status').value  = '';
+            filtrar();
+        };
     })();
 </script>

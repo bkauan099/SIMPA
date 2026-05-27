@@ -12,6 +12,9 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
 
 // 3. Conexão e Busca de Tipos (Essencial para o Modal funcionar)
 require_once 'conexao/conexao.php';
+
+// ID fixo para testes
+$_SESSION['id_usuario'] = 5;
 try {
     $stmt_tipos = $pdo->query("SELECT id_tipo, nome FROM tipo_projetos ORDER BY nome ASC");
     $tipos = $stmt_tipos->fetchAll(PDO::FETCH_ASSOC);
@@ -737,7 +740,8 @@ if (!empty($_GET['ajax'])) {
                 'modalEditarProjeto', 'modalNovoProjeto', 'modalAlunos', 'modalDocumentos',
                 'modalSucessoDoc', 'modalConfirmarExclusaoDoc',
                 'modalConfirmarExclusaoAluno', 'modalAvisoCH',
-                'modalAvisoSelecao', 'modalAvisoDuplicado', 'modalSucessoCadastro'
+                'modalAvisoSelecao', 'modalAvisoDuplicado', 'modalSucessoCadastro',
+                'modalTarefa', 'modalVerTarefa', 'modalConfirmarExclusaoTarefa'
             ];
 
             modais.forEach(id => {
@@ -923,9 +927,6 @@ if (!empty($_GET['ajax'])) {
 
                         // Atualiza a listagem interna do modal
                         listarDocumentos(idProjeto);
-
-                        // 3. ADIÇÃO: Sinaliza que houve alteração para atualizar a aba "Documentos" geral se necessário
-                        houveAlteracaoNoBanco = true;
                     } else {
                         alert("Erro: " + data.mensagem);
                     }
@@ -1268,7 +1269,13 @@ if (!empty($_GET['ajax'])) {
             }
         }
 
-        function alterarStatusDoc(idDoc, novoStatus) {
+        function alterarStatusDoc(idDoc, novoStatus, btnEl) {
+            if (btnEl) {
+                btnEl.disabled = true;
+                btnEl._original = btnEl.innerHTML;
+                btnEl.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
+            }
+
             const formData = new FormData();
             formData.append('id_documento', idDoc);
             formData.append('status', novoStatus);
@@ -1280,20 +1287,27 @@ if (!empty($_GET['ajax'])) {
                 .then(res => res.json())
                 .then(data => {
                     if (data.sucesso) {
-                        // Tenta encontrar o link da aba Documentos e clica nele para atualizar a tela
-                        const linkDocs = document.querySelector('a[onclick*="documentos"]');
-
+                        const linkDocs = document.querySelector('a[href*="documentos"]');
                         if (linkDocs) {
                             linkDocs.click();
                         } else {
-                            // Se não achar o link, recarrega a página inteira como plano B
                             window.location.reload();
                         }
                     } else {
+                        if (btnEl) {
+                            btnEl.disabled = false;
+                            btnEl.innerHTML = btnEl._original;
+                        }
                         alert('Erro: ' + data.mensagem);
                     }
                 })
-                .catch(err => console.error('Erro na requisição:', err));
+                .catch(err => {
+                    if (btnEl) {
+                        btnEl.disabled = false;
+                        btnEl.innerHTML = btnEl._original;
+                    }
+                    console.error('Erro na requisição:', err);
+                });
         }
 
         function filtrarDocumentosModal() {

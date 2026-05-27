@@ -63,13 +63,13 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
 <!-- BARRA DE FILTROS -->
 <div class="content-card mb-3 p-3">
     <div class="row g-2 align-items-center">
-        <div class="col-12 col-md-6">
+        <div class="col-12 col-md-5">
             <div class="input-group">
                 <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
                 <input type="text" id="filtro_projeto" class="form-control border-start-0" placeholder="Buscar projeto...">
             </div>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-2">
             <select class="form-select" id="filtro_tipo">
                 <option value="">Tipo (Todos)</option>
                 <option>Projeto Especial</option>
@@ -78,7 +78,7 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
                 <option>Extensão</option>
             </select>
         </div>
-        <div class="col-6 col-md-3">
+        <div class="col-6 col-md-2">
             <select class="form-select" id="filtro_status">
                 <option value="">Status (Todos)</option>
                 <option>Ativo</option>
@@ -86,6 +86,9 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
                 <option>Concluído</option>
                 <option>Inativo</option>
             </select>
+        </div>
+        <div class="col-12 col-md-3">
+            <button class="btn btn-outline-secondary w-100" onclick="limparFiltrosProjetos()">Limpar</button>
         </div>
     </div>
 </div>
@@ -237,6 +240,11 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
         if (elTipo) elTipo.addEventListener('change', filtrarProjetos);
         if (elStatus) elStatus.addEventListener('change', filtrarProjetos);
 
-        console.log('[SIMPA] Filtro "Começa com" ativo.');
+        window.limparFiltrosProjetos = function () {
+            document.getElementById('filtro_projeto').value = '';
+            document.getElementById('filtro_tipo').value    = '';
+            document.getElementById('filtro_status').value  = '';
+            filtrarProjetos();
+        };
     })();
 </script>

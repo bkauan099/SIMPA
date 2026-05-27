@@ -35,18 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nomeNoServidor = uniqid() . "." . $extensao;
     $caminhoFinal = $diretorioDestino . $nomeNoServidor;
 
-    // ... (seu código de upload anterior permanece igual)
-
-    // ... (parte inicial do upload igual)
-
     if (move_uploaded_file($arquivo['tmp_name'], $caminhoFinal)) {
         try {
-            $titulo = !empty($_POST['titulo']) ? $_POST['titulo'] : null;
+            $titulo = !empty($_POST['titulo']) ? $_POST['titulo'] : $nomeOriginal;
             $nomeOriginal = $arquivo['name'];
             $caminhoParaBanco = "uploads/documentos/" . $nomeNoServidor;
 
-            // Inserindo na coluna 'titulo' e ignorando 'descricao'
-            $sql = "INSERT INTO documentos_projeto (id_projeto, nome_original, caminho_arquivo, titulo, status, data_upload) 
+            // MIGRADO: documentos_projeto → producoes
+            // nome_original → tipo | caminho_arquivo → caminho | data_upload → data_registro
+            $sql = "INSERT INTO producoes (id_projeto, tipo, caminho, titulo, status, data_registro)
                 VALUES (:id_projeto, :nome_orig, :caminho, :titulo, 'pendente', NOW())";
 
             $stmt = $pdo->prepare($sql);

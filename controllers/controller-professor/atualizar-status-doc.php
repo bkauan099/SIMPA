@@ -13,9 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // O status_doc é um tipo ENUM ou customizado no seu Postgres, 
-        // então garantimos que o valor enviado é válido.
-        $sql = "UPDATE documentos_projeto SET status = :status WHERE id_documento = :id";
+        // MIGRADO: documentos_projeto → producoes
+        // id_documento → id_producao
+        $sql = "UPDATE producoes SET status = :status WHERE id_producao = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
             ':status' => $status,
