@@ -240,10 +240,15 @@ class Aluno {
 
     public function listarTodosRegistros($id_usuario) {
         $sql = "
-            SELECT id, titulo, descricao, tipo, data, hora, concluido, created_at
-            FROM agenda_items
-            WHERE id_usuario = :id
-            ORDER BY data DESC, created_at DESC
+            SELECT
+                ai.id, ai.titulo, ai.descricao, ai.tipo,
+                ai.data, ai.hora, ai.concluido, ai.created_at,
+                ai.id_projeto,
+                COALESCE(proj.titulo, '—') AS projeto
+            FROM agenda_items ai
+            LEFT JOIN projetos proj ON proj.id_projeto = ai.id_projeto
+            WHERE ai.id_usuario = :id
+            ORDER BY ai.data DESC, ai.created_at DESC
         ";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id_usuario]);

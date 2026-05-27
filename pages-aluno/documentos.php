@@ -74,59 +74,43 @@ $total = count($documentos);
 <!-- Cartões de status -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-sm-3">
-        <div style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:13px;padding:16px;box-shadow:0 4px 16px rgba(59,130,246,0.35);position:relative;overflow:hidden;">
-            <div style="position:absolute;right:-13px;bottom:-13px;font-size:4rem;color:#fff;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-files"></i></div>
-            <div style="position:absolute;top:-16px;left:-16px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;">
-                <div style="width:27px;height:27px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">
-                    <i class="bi bi-files" style="color:#fff;font-size:0.8rem;"></i>
-                </div>
-                <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.5px;text-transform:uppercase;">Total</span>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #3b82f6;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#3b82f6;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#3b82f6;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-files"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#3b82f6;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-files"></i> Total
             </div>
-            <div style="font-size:1.9rem;font-weight:900;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.15);"><?= $total ?></div>
-            <div style="font-size:0.6rem;color:rgba(255,255,255,0.65);margin-top:3px;">documentos enviados</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $total ?></div>
         </div>
     </div>
     <div class="col-6 col-sm-3">
-        <div style="background:linear-gradient(135deg,#f59e0b,#b45309);border-radius:13px;padding:16px;box-shadow:0 4px 16px rgba(245,158,11,0.35);position:relative;overflow:hidden;">
-            <div style="position:absolute;right:-13px;bottom:-13px;font-size:4rem;color:#fff;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-hourglass-split"></i></div>
-            <div style="position:absolute;top:-16px;left:-16px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;">
-                <div style="width:27px;height:27px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">
-                    <i class="bi bi-hourglass-split" style="color:#fff;font-size:0.8rem;"></i>
-                </div>
-                <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.5px;text-transform:uppercase;">Aguardando</span>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #f59e0b;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#f59e0b;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#f59e0b;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-hourglass-split"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#f59e0b;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-hourglass-split"></i> Aguardando
             </div>
-            <div style="font-size:1.9rem;font-weight:900;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.15);"><?= $contadores['pendente'] ?></div>
-            <div style="font-size:0.6rem;color:rgba(255,255,255,0.65);margin-top:3px;">aguardando aprovação</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $contadores['pendente'] ?></div>
         </div>
     </div>
     <div class="col-6 col-sm-3">
-        <div style="background:linear-gradient(135deg,#22c55e,#15803d);border-radius:13px;padding:16px;box-shadow:0 4px 16px rgba(34,197,94,0.35);position:relative;overflow:hidden;">
-            <div style="position:absolute;right:-13px;bottom:-13px;font-size:4rem;color:#fff;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-check-circle-fill"></i></div>
-            <div style="position:absolute;top:-16px;left:-16px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;">
-                <div style="width:27px;height:27px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">
-                    <i class="bi bi-check-circle-fill" style="color:#fff;font-size:0.8rem;"></i>
-                </div>
-                <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.5px;text-transform:uppercase;">Aprovados</span>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #16a34a;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#16a34a;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#16a34a;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-check-circle-fill"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#16a34a;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-check-circle-fill"></i> Aprovados
             </div>
-            <div style="font-size:1.9rem;font-weight:900;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.15);"><?= $contadores['aprovado'] ?></div>
-            <div style="font-size:0.6rem;color:rgba(255,255,255,0.65);margin-top:3px;">aprovados pelo professor</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $contadores['aprovado'] ?></div>
         </div>
     </div>
     <div class="col-6 col-sm-3">
-        <div style="background:linear-gradient(135deg,#ef4444,#991b1b);border-radius:13px;padding:16px;box-shadow:0 4px 16px rgba(239,68,68,0.35);position:relative;overflow:hidden;">
-            <div style="position:absolute;right:-13px;bottom:-13px;font-size:4rem;color:#fff;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-x-circle-fill"></i></div>
-            <div style="position:absolute;top:-16px;left:-16px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.08);"></div>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;">
-                <div style="width:27px;height:27px;border-radius:8px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;">
-                    <i class="bi bi-x-circle-fill" style="color:#fff;font-size:0.8rem;"></i>
-                </div>
-                <span style="font-size:0.6rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.5px;text-transform:uppercase;">Reprovados</span>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ef4444;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#ef4444;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ef4444;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-x-circle-fill"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#ef4444;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-x-circle-fill"></i> Reprovados
             </div>
-            <div style="font-size:1.9rem;font-weight:900;color:#fff;line-height:1;text-shadow:0 2px 8px rgba(0,0,0,0.15);"><?= $contadores['reprovado'] ?></div>
-            <div style="font-size:0.6rem;color:rgba(255,255,255,0.65);margin-top:3px;">precisam de revisão</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $contadores['reprovado'] ?></div>
         </div>
     </div>
 </div>
