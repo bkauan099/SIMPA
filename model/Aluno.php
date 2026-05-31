@@ -19,18 +19,17 @@ class Aluno {
         return $stmt->fetchColumn();
     }
 
-    // Busca o projeto ativo do aluno (para exibir no cabeçalho de tarefas)
-    public function obterProjetoAtivo($id_usuario) {
+    public function obterProjetosAtivos($id_usuario) {
         $sql = "
             SELECT p.titulo
             FROM projetos p
             JOIN participacao pa ON p.id_projeto = pa.id_projeto
             WHERE pa.id_usuario = :id AND pa.status = 'ativo'
-            LIMIT 1
+            ORDER BY p.titulo ASC
         ";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id_usuario]);
-        return $stmt->fetchColumn();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function obterEstatisticasProjetos($id_usuario) {
@@ -98,10 +97,23 @@ class Aluno {
 
     public function obterAgenda($id_usuario) {
         $sql = "
-            SELECT id, titulo, data, hora, tipo, concluido
-            FROM agenda_items
-            WHERE id_usuario = :id
-            ORDER BY data ASC
+            SELECT ai.id, ai.titulo, ai.data, ai.hora, ai.tipo, ai.concluido,
+                   COALESCE(
+                       (SELECT proj_a.titulo FROM producoes prod_a
+                        JOIN projetos proj_a ON proj_a.id_projeto = prod_a.id_projeto
+                        JOIN participacao pa_a ON pa_a.id_projeto = prod_a.id_projeto
+                            AND pa_a.id_usuario = ai.id_usuario AND pa_a.status = 'ativo'
+                        WHERE prod_a.titulo = ai.titulo AND prod_a.status != 'inativo'
+                        LIMIT 1),
+                       (SELECT proj_b.titulo FROM participacao pa_b
+                        JOIN projetos proj_b ON proj_b.id_projeto = pa_b.id_projeto
+                        WHERE pa_b.id_usuario = ai.id_usuario AND pa_b.status = 'ativo'
+                        LIMIT 1),
+                       '—'
+                   ) AS projeto
+            FROM agenda_items ai
+            WHERE ai.id_usuario = :id
+            ORDER BY ai.data ASC
             LIMIT 50
         ";
         $stmt = $this->pdo->prepare($sql);
@@ -133,7 +145,7 @@ class Aluno {
             ";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([':id'=>$id_usuario]);
-            return $stmt->fetchALL(PDO::FETCH_ASSOC);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function obterEstatisticasTarefas($id_usuario) {
@@ -176,8 +188,26 @@ class Aluno {
         $sql = "
             SELECT
                 ai.id, ai.titulo, ai.descricao, ai.tipo, ai.data, ai.hora, ai.concluido,
+                COALESCE(pm.pnome, pfb.pnome, '—') AS projeto,
+                COALESCE(pm.pid::text, pfb.pid::text, '') AS id_projeto_ref,
                 lp.arquivos
             FROM agenda_items ai
+            LEFT JOIN LATERAL (
+                SELECT proj_a.titulo AS pnome, proj_a.id_projeto AS pid
+                FROM producoes prod_a
+                JOIN projetos proj_a ON proj_a.id_projeto = prod_a.id_projeto
+                JOIN participacao pa_a ON pa_a.id_projeto = prod_a.id_projeto
+                    AND pa_a.id_usuario = ai.id_usuario AND pa_a.status = 'ativo'
+                WHERE prod_a.titulo = ai.titulo AND prod_a.status != 'inativo'
+                LIMIT 1
+            ) pm ON true
+            LEFT JOIN LATERAL (
+                SELECT proj_b.titulo AS pnome, proj_b.id_projeto AS pid
+                FROM participacao pa_b
+                JOIN projetos proj_b ON proj_b.id_projeto = pa_b.id_projeto
+                WHERE pa_b.id_usuario = ai.id_usuario AND pa_b.status = 'ativo'
+                LIMIT 1
+            ) pfb ON true
             LEFT JOIN LATERAL (
                 SELECT COALESCE(
                     json_agg(json_build_object('id', p.id_producao, 'caminho', 'pages-aluno/servir-arquivo.php?id=' || p.id_producao::text, 'nome', p.tipo)
@@ -212,8 +242,26 @@ class Aluno {
         $sql = "
             SELECT
                 ai.id, ai.titulo, ai.descricao, ai.tipo, ai.data, ai.hora, ai.concluido,
+                COALESCE(pm.pnome, pfb.pnome, '—') AS projeto,
+                COALESCE(pm.pid::text, pfb.pid::text, '') AS id_projeto_ref,
                 lp.arquivos
             FROM agenda_items ai
+            LEFT JOIN LATERAL (
+                SELECT proj_a.titulo AS pnome, proj_a.id_projeto AS pid
+                FROM producoes prod_a
+                JOIN projetos proj_a ON proj_a.id_projeto = prod_a.id_projeto
+                JOIN participacao pa_a ON pa_a.id_projeto = prod_a.id_projeto
+                    AND pa_a.id_usuario = ai.id_usuario AND pa_a.status = 'ativo'
+                WHERE prod_a.titulo = ai.titulo AND prod_a.status != 'inativo'
+                LIMIT 1
+            ) pm ON true
+            LEFT JOIN LATERAL (
+                SELECT proj_b.titulo AS pnome, proj_b.id_projeto AS pid
+                FROM participacao pa_b
+                JOIN projetos proj_b ON proj_b.id_projeto = pa_b.id_projeto
+                WHERE pa_b.id_usuario = ai.id_usuario AND pa_b.status = 'ativo'
+                LIMIT 1
+            ) pfb ON true
             LEFT JOIN LATERAL (
                 SELECT COALESCE(
                     json_agg(json_build_object('id', p.id_producao, 'caminho', 'pages-aluno/servir-arquivo.php?id=' || p.id_producao::text, 'nome', p.tipo)
@@ -243,10 +291,20 @@ class Aluno {
             SELECT
                 ai.id, ai.titulo, ai.descricao, ai.tipo,
                 ai.data, ai.hora, ai.concluido, ai.created_at,
-                ai.id_projeto,
-                COALESCE(proj.titulo, '—') AS projeto
+                COALESCE(
+                    (SELECT proj_a.titulo FROM producoes prod_a
+                     JOIN projetos proj_a ON proj_a.id_projeto = prod_a.id_projeto
+                     JOIN participacao pa_a ON pa_a.id_projeto = prod_a.id_projeto
+                         AND pa_a.id_usuario = ai.id_usuario AND pa_a.status = 'ativo'
+                     WHERE prod_a.titulo = ai.titulo AND prod_a.status != 'inativo'
+                     LIMIT 1),
+                    (SELECT proj_b.titulo FROM participacao pa_b
+                     JOIN projetos proj_b ON proj_b.id_projeto = pa_b.id_projeto
+                     WHERE pa_b.id_usuario = ai.id_usuario AND pa_b.status = 'ativo'
+                     LIMIT 1),
+                    '—'
+                ) AS projeto
             FROM agenda_items ai
-            LEFT JOIN projetos proj ON proj.id_projeto = ai.id_projeto
             WHERE ai.id_usuario = :id
             ORDER BY ai.data DESC, ai.created_at DESC
         ";

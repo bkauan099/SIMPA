@@ -21,7 +21,7 @@ class DashboardAlunoController {
 
             // 2. Pede os dados ao Model — cada variável guarda um resultado
             $cargaHoraria   = $alunoModel->obterCargaHorariaTotal($this->id_usuario);
-            $projetoAtivo   = $alunoModel->obterProjetoAtivo($this->id_usuario);
+            $projetosAtivos = $alunoModel->obterProjetosAtivos($this->id_usuario);
             $agenda         = $alunoModel->obterAgenda($this->id_usuario);
             $tarefas        = $agenda['tarefas'];
             $eventos        = $agenda['eventos'];

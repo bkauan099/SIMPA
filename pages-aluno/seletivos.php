@@ -58,7 +58,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Liga acadêmica voltada ao estudo e pesquisa em bovinos, com foco em saúde animal, 
+            Liga acadêmica voltada ao estudo e pesquisa em bovinos, com foco em saúde animal,
             produção e bem-estar. Atividades práticas em campo e laboratório.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -87,7 +87,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Liga dedicada ao estudo da suinocultura, abrangendo nutrição, sanidade, reprodução 
+            Liga dedicada ao estudo da suinocultura, abrangendo nutrição, sanidade, reprodução
             e manejo de suínos. Voltada para alunos de Zootecnia e Medicina Veterinária.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -116,7 +116,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Equipe de competição Baja SAE Brasil com identidade cultural maranhense. Buscamos alunos 
+            Equipe de competição Baja SAE Brasil com identidade cultural maranhense. Buscamos alunos
             de Engenharia Mecânica, Elétrica e Computação para estrutura, eletrônica e sistemas embarcados.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -145,7 +145,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Equipe de robótica e automação da UEMA. Desenvolve projetos em eletrônica embarcada, 
+            Equipe de robótica e automação da UEMA. Desenvolve projetos em eletrônica embarcada,
             programação e robôs autônomos. Participação em competições nacionais.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -174,7 +174,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Empresa júnior de tecnologia da UEMA focada no desenvolvimento de soluções digitais 
+            Empresa júnior de tecnologia da UEMA focada no desenvolvimento de soluções digitais
             para clientes reais. Oportunidade de vivência profissional ainda na graduação.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -203,7 +203,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Projeto de extensão voltado ao debate político, cidadania e participação social. 
+            Projeto de extensão voltado ao debate político, cidadania e participação social.
             Promove fóruns, simulações de assembleia e formação em liderança estudantil.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -232,7 +232,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Projeto focado em metodologias ágeis, gestão de projetos e desenvolvimento de software. 
+            Projeto focado em metodologias ágeis, gestão de projetos e desenvolvimento de software.
             Ideal para alunos de Computação, Sistemas de Informação e Engenharia de Software.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">

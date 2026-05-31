@@ -23,10 +23,35 @@ $stmt->execute([':id' => $id_usuario]);
 $matricula = $stmt->fetchColumn();
 if (!$matricula) { echo json_encode(['ok' => false, 'erro' => 'Matrícula não encontrada.']); exit; }
 
-// Projeto ativo do aluno
-$stmt = $pdo->prepare("SELECT id_projeto FROM participacao WHERE id_usuario = :id AND status = 'ativo' LIMIT 1");
-$stmt->execute([':id' => $id_usuario]);
-$id_projeto = $stmt->fetchColumn();
+// 1. Projeto enviado pelo front-end (id identificado via producoes/participacao)
+$id_projeto = null;
+$id_projeto_post = trim($_POST['id_projeto'] ?? '');
+if ($id_projeto_post) {
+    $stmt = $pdo->prepare("SELECT id_projeto FROM participacao WHERE id_usuario = :id AND id_projeto = :proj AND status = 'ativo'");
+    $stmt->execute([':id' => $id_usuario, ':proj' => $id_projeto_post]);
+    $id_projeto = $stmt->fetchColumn() ?: null;
+}
+
+// 2. Fallback: inferir pelo título da produção já existente
+if (!$id_projeto) {
+    $stmt = $pdo->prepare("
+        SELECT prod.id_projeto FROM producoes prod
+        JOIN participacao pa ON pa.id_projeto = prod.id_projeto
+            AND pa.id_usuario = :id AND pa.status = 'ativo'
+        WHERE prod.titulo = :titulo AND prod.status != 'inativo'
+        LIMIT 1
+    ");
+    $stmt->execute([':id' => $id_usuario, ':titulo' => $titulo]);
+    $id_projeto = $stmt->fetchColumn() ?: null;
+}
+
+// 3. Último recurso: primeiro projeto ativo
+if (!$id_projeto) {
+    $stmt = $pdo->prepare("SELECT id_projeto FROM participacao WHERE id_usuario = :id AND status = 'ativo' LIMIT 1");
+    $stmt->execute([':id' => $id_usuario]);
+    $id_projeto = $stmt->fetchColumn() ?: null;
+}
+
 if (!$id_projeto) { echo json_encode(['ok' => false, 'erro' => 'Nenhum projeto ativo encontrado.']); exit; }
 
 // Validação do arquivo

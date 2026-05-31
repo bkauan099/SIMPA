@@ -13,16 +13,34 @@ if (!$id_usuario) {
 $id_producao = (int)($_POST['id_producao'] ?? 0);
 if (!$id_producao) { echo json_encode(['ok' => false, 'erro' => 'ID inválido.']); exit; }
 
-// Verificar que o arquivo pertence ao aluno via projeto
+// Obter matrícula do aluno logado — usada como prova de ownership
+$stmt = $pdo->prepare("SELECT matricula FROM usuarios WHERE id_usuario = :uid");
+$stmt->execute([':uid' => $id_usuario]);
+$matricula = $stmt->fetchColumn();
+
+if (!$matricula) {
+    echo json_encode(['ok' => false, 'erro' => 'Usuário inválido.']);
+    exit;
+}
+
+// O caminho de qualquer arquivo enviado por este aluno começa com este prefixo.
+// Verificar pelo prefixo garante que um colega de projeto não pode remover
+// um arquivo que não foi enviado por ele.
+$prefixo = 'uploads/alunos/' . $matricula . '/';
+
 $stmt = $pdo->prepare(
-    "SELECT p.caminho FROM producoes p
-     JOIN participacao pa ON pa.id_projeto = p.id_projeto
-     WHERE p.id_producao = :id AND pa.id_usuario = :uid"
+    "SELECT caminho FROM producoes
+     WHERE id_producao = :id
+       AND caminho LIKE :prefix
+       AND status != 'inativo'"
 );
-$stmt->execute([':id' => $id_producao, ':uid' => $id_usuario]);
+$stmt->execute([':id' => $id_producao, ':prefix' => $prefixo . '%']);
 $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$item) { echo json_encode(['ok' => false, 'erro' => 'Arquivo não encontrado.']); exit; }
+if (!$item) {
+    echo json_encode(['ok' => false, 'erro' => 'Arquivo não encontrado.']);
+    exit;
+}
 
 $fullPath = __DIR__ . '/../' . $item['caminho'];
 if (file_exists($fullPath)) unlink($fullPath);

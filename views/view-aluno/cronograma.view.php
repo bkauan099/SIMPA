@@ -92,7 +92,7 @@
 </div>
 
 <div class="content-card">
-    <h5 class="fw-bold mb-3">Próximas Atividades</h5>
+    <h5 class="fw-bold mb-3">Atividades Recentes e Futuras</h5>
     <div class="table-responsive">
         <table class="table table-hover align-middle w-100" id="tabelaCronograma">
             <thead class="table-light">
@@ -100,6 +100,7 @@
                     <th>DATA</th>
                     <th>HORA</th>
                     <th>TÍTULO</th>
+                    <th>PROJETO</th>
                     <th>TIPO</th>
                     <th>STATUS</th>
                     <th class="text-center">AÇÃO</th>
@@ -107,7 +108,7 @@
             </thead>
             <tbody>
                 <?php if (empty($itens)): ?>
-                    <tr><td colspan="6" class="text-center py-4 text-muted">Nenhuma atividade encontrada.</td></tr>
+                    <tr><td colspan="7" class="text-center py-4 text-muted">Nenhuma atividade encontrada.</td></tr>
                 <?php else: ?>
                     <?php foreach ($itens as $item):
                         $hoje = new DateTime(); $hoje->setTime(0,0,0);
@@ -125,6 +126,11 @@
                         $arquivosArr  = json_decode($arquivosJson, true) ?: [];
                         $temArquivo   = !empty($arquivosArr);
                         $prazoPassou  = $prazo < $hoje;
+                        if (!$prazoPassou && !empty($item['hora'])) {
+                            $agora = new DateTime();
+                            $prazoComHora = new DateTime($item['data'] . ' ' . substr($item['hora'], 0, 5));
+                            $prazoPassou  = $agora > $prazoComHora;
+                        }
                     ?>
                         <tr style="cursor:pointer;"
                             onclick="abrirDetalheCronograma(this)"
@@ -137,10 +143,14 @@
                             data-titulo="<?= htmlspecialchars($item['titulo'], ENT_QUOTES) ?>"
                             data-concluido="<?= $item['concluido'] ? '1' : '0' ?>"
                             data-arquivos="<?= htmlspecialchars($arquivosJson, ENT_QUOTES) ?>"
-                            data-descricao="<?= htmlspecialchars($descricao, ENT_QUOTES) ?>">
+                            data-descricao="<?= htmlspecialchars($descricao, ENT_QUOTES) ?>"
+                            data-projeto="<?= htmlspecialchars($item['projeto'] ?? '—', ENT_QUOTES) ?>"
+                            data-id-projeto="<?= htmlspecialchars($item['id_projeto_ref'] ?? '', ENT_QUOTES) ?>"
+                            >
                             <td class="fw-bold"><?= date('d/m/Y', strtotime($item['data'])) ?></td>
                             <td><?= $item['hora'] ? substr($item['hora'], 0, 5) : '—' ?></td>
                             <td class="fw-medium"><?= htmlspecialchars($item['titulo']) ?></td>
+                            <td class="text-muted small"><?= htmlspecialchars($item['projeto'] ?? '—') ?></td>
                             <td>
                                 <?php if ($item['tipo'] === 'tarefa'): ?>
                                     <span class="badge bg-light text-dark border"><i class="bi bi-check2-square me-1"></i>Tarefa</span>
@@ -185,6 +195,17 @@
                                         <i class="bi bi-eye"></i>
                                     </button>
                                     <?php endif; ?>
+                                <?php elseif ($prazoPassou): ?>
+                                    <button class="btn btn-sm btn-outline-secondary opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            disabled title="Prazo encerrado">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1 opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            disabled title="Prazo encerrado">
+                                        <i class="bi bi-paperclip"></i>
+                                    </button>
                                 <?php elseif ($temArquivo): ?>
                                     <button class="btn btn-sm btn-outline-success"
                                             onclick="event.stopPropagation();toggleCronograma(this)" title="Marcar como concluído">

@@ -12,6 +12,118 @@ $stmt = $pdo->prepare("SELECT nome FROM usuarios WHERE id_usuario = :id");
 $stmt->execute([':id' => $id_usuario]);
 $nomeUsuario  = $stmt->fetchColumn() ?: 'Usuário';
 $primeiroNome = explode(' ', $nomeUsuario)[0];
+
+/* ── Notificações reais ─────────────────────────────────────── */
+$_stmtMat = $pdo->prepare("SELECT matricula FROM usuarios WHERE id_usuario = :id");
+$_stmtMat->execute([':id' => $id_usuario]);
+$_matricula = $_stmtMat->fetchColumn();
+
+$_notificacoes = [];
+
+// Tarefas em atraso
+try {
+    $s = $pdo->prepare(
+        "SELECT titulo, data FROM agenda_items
+         WHERE id_usuario = :id AND tipo = 'tarefa'
+           AND (concluido = false OR concluido IS NULL)
+           AND data < CURRENT_DATE
+           AND data >= CURRENT_DATE - INTERVAL '7 days'
+         ORDER BY data ASC LIMIT 10"
+    );
+    $s->execute([':id' => $id_usuario]);
+    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
+        $dt = new DateTime($r['data']);
+        $_notificacoes[] = [
+            'icone' => 'bi-exclamation-triangle-fill',
+            'cor'   => '#ef4444',
+            'texto' => 'Tarefa em atraso: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (venceu em ' . $dt->format('d/m/Y') . ')',
+        ];
+    }
+} catch (Exception $__e) {}
+
+// Tarefas que vencem hoje
+try {
+    $s = $pdo->prepare(
+        "SELECT titulo FROM agenda_items
+         WHERE id_usuario = :id AND tipo = 'tarefa'
+           AND (concluido = false OR concluido IS NULL)
+           AND data = CURRENT_DATE
+         ORDER BY titulo ASC LIMIT 10"
+    );
+    $s->execute([':id' => $id_usuario]);
+    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
+        $_notificacoes[] = [
+            'icone' => 'bi-alarm-fill',
+            'cor'   => '#f97316',
+            'texto' => 'Prazo hoje: <strong>' . htmlspecialchars($r['titulo']) . '</strong> — entregue antes da meia-noite!',
+        ];
+    }
+} catch (Exception $__e) {}
+
+// Tarefas próximas (até 7 dias, exceto hoje)
+try {
+    $s = $pdo->prepare(
+        "SELECT titulo, data FROM agenda_items
+         WHERE id_usuario = :id AND tipo = 'tarefa'
+           AND (concluido = false OR concluido IS NULL)
+           AND data > CURRENT_DATE
+           AND data <= CURRENT_DATE + INTERVAL '7 days'
+         ORDER BY data ASC LIMIT 10"
+    );
+    $s->execute([':id' => $id_usuario]);
+    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
+        $dt = new DateTime($r['data']);
+        $_notificacoes[] = [
+            'icone' => 'bi-calendar-check',
+            'cor'   => '#f59e0b',
+            'texto' => 'Tarefa próxima: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (vence em ' . $dt->format('d/m/Y') . ')',
+        ];
+    }
+} catch (Exception $__e) {}
+
+// Eventos da semana
+try {
+    $s = $pdo->prepare(
+        "SELECT titulo, data FROM agenda_items
+         WHERE id_usuario = :id AND tipo = 'evento'
+           AND (concluido = false OR concluido IS NULL)
+           AND data >= CURRENT_DATE
+           AND data <= CURRENT_DATE + INTERVAL '7 days'
+         ORDER BY data ASC LIMIT 10"
+    );
+    $s->execute([':id' => $id_usuario]);
+    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
+        $dt = new DateTime($r['data']);
+        $hoje = (new DateTime())->format('Y-m-d');
+        $label = $r['data'] === $hoje ? 'hoje' : 'em ' . $dt->format('d/m/Y');
+        $_notificacoes[] = [
+            'icone' => 'bi-calendar-event-fill',
+            'cor'   => '#3b82f6',
+            'texto' => 'Evento esta semana: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (' . $label . ')',
+        ];
+    }
+} catch (Exception $__e) {}
+
+// Documentos aprovados ou reprovados
+if ($_matricula) {
+    try {
+        $s = $pdo->prepare(
+            "SELECT titulo, status FROM producoes
+             WHERE caminho LIKE :prefix AND status IN ('aprovado', 'reprovado')
+             ORDER BY id_producao DESC LIMIT 10"
+        );
+        $s->execute([':prefix' => 'uploads/alunos/' . $_matricula . '/%']);
+        foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
+            $_notificacoes[] = [
+                'icone' => $r['status'] === 'aprovado' ? 'bi-check-circle-fill' : 'bi-x-circle-fill',
+                'cor'   => $r['status'] === 'aprovado' ? '#22c55e' : '#ef4444',
+                'texto' => 'Documento <strong>' . htmlspecialchars($r['titulo']) . '</strong> foi ' . ($r['status'] === 'aprovado' ? 'aprovado' : 'reprovado'),
+            ];
+        }
+    } catch (Exception $__e) {}
+}
+
+$_totalNotif = count($_notificacoes);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -79,14 +191,56 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
                 <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">
             </div>
             <div class="topbar-right">
-                <div class="position-relative">
-                    <i class="bi bi-bell fs-5" style="cursor:pointer;"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.6rem;">2</span>
+
+                <!-- SININHO -->
+                <div class="tb-dropdown-wrap" id="wrapNotif">
+                    <button class="tb-icon-btn" id="btnNotif" aria-label="Notificações">
+                        <i class="bi bi-bell fs-5"></i>
+                        <span class="tb-badge" id="badgeNotif"<?= $_totalNotif === 0 ? ' style="display:none"' : '' ?>><?= $_totalNotif ?></span>
+                    </button>
+                    <div class="tb-dropdown tb-dropdown-notif" id="dropNotif">
+                        <div class="tb-drop-header">
+                            <span class="fw-semibold" style="font-size:0.85rem;color:#1e293b;">Notificações</span>
+                            <button class="tb-btn-lerall" id="btnLerTodas">Marcar todas como lidas</button>
+                        </div>
+                        <div id="listaNotif">
+                            <?php if (empty($_notificacoes)): ?>
+                            <div class="tb-notif-vazia">
+                                <i class="bi bi-bell-slash" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                                Nenhuma notificação
+                            </div>
+                            <?php else: foreach ($_notificacoes as $_n): ?>
+                            <div class="tb-notif-item" data-lida="0">
+                                <div class="tb-notif-texto">
+                                    <i class="bi <?= $_n['icone'] ?>" style="color:<?= $_n['cor'] ?>;margin-right:6px;flex-shrink:0;"></i><span><?= $_n['texto'] ?></span>
+                                </div>
+                                <button class="tb-notif-toggle">Marcar como lida</button>
+                            </div>
+                            <?php endforeach; endif; ?>
+                        </div>
+                    </div>
                 </div>
-                <div class="d-flex align-items-center gap-2" style="cursor:pointer">
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($nomeUsuario) ?>&background=random" class="rounded-circle" width="34">
-                    <span class="fw-medium d-none d-sm-inline"><?= htmlspecialchars($primeiroNome) ?> <i class="bi bi-chevron-down small"></i></span>
+
+                <!-- PERFIL -->
+                <div class="tb-dropdown-wrap" id="wrapPerfil">
+                    <button class="tb-icon-btn" id="btnPerfil" aria-label="Perfil">
+                        <img src="https://ui-avatars.com/api/?name=<?= urlencode($nomeUsuario) ?>&background=1d4ed8&color=fff"
+                             class="rounded-circle" width="32" alt="Avatar">
+                        <span class="fw-medium d-none d-sm-inline" style="font-size:0.88rem;">
+                            <?= htmlspecialchars($primeiroNome) ?> <i class="bi bi-chevron-down" style="font-size:0.7rem;"></i>
+                        </span>
+                    </button>
+                    <div class="tb-dropdown tb-dropdown-perfil" id="dropPerfil">
+                        <button class="tb-drop-item" onclick="abrirModalPerfil()">
+                            <i class="bi bi-person me-2"></i>Meu Perfil
+                        </button>
+                        <div class="tb-drop-divider"></div>
+                        <a href="logout.php" class="tb-drop-item tb-drop-sair">
+                            <i class="bi bi-box-arrow-right me-2"></i>Sair
+                        </a>
+                    </div>
                 </div>
+
             </div>
         </header>
 
@@ -142,10 +296,6 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
         <div id="listaArquivosNovos" style="display:none;" class="mt-2">
             <div id="itensArquivosNovos"></div>
         </div>
-        <div class="mt-3">
-            <label class="form-label" style="font-size:0.8rem;color:#64748b;">Observação <span style="color:#94a3b8;">(opcional)</span></label>
-            <textarea id="obsEnvio" class="form-control form-control-sm" rows="2" placeholder="Descreva algo sobre o envio..."></textarea>
-        </div>
         <div class="mt-3 d-flex justify-content-end">
             <button class="btn btn-primary" id="btnEnviarArquivo" onclick="enviarArquivoTarefa()">
                 <i class="bi bi-floppy me-1"></i>Salvar Rascunho
@@ -185,6 +335,8 @@ $primeiroNome = explode(' ', $nomeUsuario)[0];
         <div id="corpoArquivoVis" style="flex:1;overflow:hidden;min-height:0;position:relative;"></div>
     </div>
 </div>
+
+<?php require_once 'pages-aluno/perfil.php'; ?>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -296,7 +448,14 @@ function fecharSlideOver() {
     document.body.style.overflow = '';
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharSlideOver(); });
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (document.getElementById('modalPerfil')?.style.display          === 'flex') { fecharModalPerfil();    return; }
+    if (document.getElementById('modalVisualizarArquivo').style.display === 'flex') { fecharModalVisualizar(); return; }
+    if (document.getElementById('modalEnvioTarefa').style.display       === 'flex') { fecharModalEnvio();      return; }
+    if (document.getElementById('modalEdicaoTarefa').style.display      === 'flex') { fecharModalEdicao();     return; }
+    fecharSlideOver();
+});
 
 // ── Projetos ──────────────────────────────────────────────────
 function abrirDetalhesProjeto(tr) {
@@ -483,11 +642,12 @@ function atualizarBotoesTarefa(tr) {
 
 function abrirDetalheTarefa(tr) {
     const titulo       = tr.querySelector('td.fw-medium')?.textContent || '';
-    const data         = tr.querySelector('td:nth-child(2)')?.textContent || '';
-    const hora         = tr.querySelector('td:nth-child(3)')?.textContent || '—';
+    const data         = tr.querySelector('td:nth-child(3)')?.textContent || '';
+    const hora         = tr.querySelector('td:nth-child(4)')?.textContent || '—';
     const badgeEl      = tr.querySelector('.badge-status');
     const statusLabel  = badgeEl?.textContent || '';
     const cls          = badgeEl?.className || '';
+    const projeto      = tr.dataset.projeto || '—';
     const arquivos     = getArquivos(tr);
 
     let statusStyle, statusIco;
@@ -495,9 +655,7 @@ function abrirDetalheTarefa(tr) {
     else if (cls.includes('bg-danger')) { statusStyle = 'background:#fee2e2;color:#dc2626;'; statusIco = 'bi-x-circle'; }
     else                                { statusStyle = 'background:#fef9c3;color:#a16207;'; statusIco = 'bi-hourglass-split'; }
 
-    const descFull = tr.dataset.busca
-        ? tr.dataset.busca.replace(titulo.toLowerCase() + ' ', '').trim()
-        : '';
+    const descFull = tr.dataset.descricao || '';
 
     const arquivoHtml = arquivos.length
         ? `<hr class="so-divider">
@@ -535,6 +693,11 @@ function abrirDetalheTarefa(tr) {
             </div>
         </div>
         <hr class="so-divider">
+        <div class="so-campo">
+            <div class="so-label">Projeto</div>
+            <div class="so-valor"><i class="bi bi-folder2 me-1 text-muted"></i>${projeto}</div>
+        </div>
+        <hr class="so-divider">
         <div class="row g-3">
             <div class="col-6">
                 <div class="so-campo mb-0">
@@ -569,6 +732,7 @@ function abrirDetalheCronograma(tr) {
     const cls         = badgeEl?.className   || '';
     const tipo        = tr.dataset.tipo || 'tarefa';
     const descricao   = tr.dataset.descricao || '';
+    const projeto     = tr.dataset.projeto || '—';
     const arquivos    = getArquivos(tr);
 
     let statusStyle, statusIco;
@@ -620,6 +784,11 @@ function abrirDetalheCronograma(tr) {
             </div>
         </div>
         <hr class="so-divider">
+        <div class="so-campo">
+            <div class="so-label">Projeto</div>
+            <div class="so-valor"><i class="bi bi-folder2 me-1 text-muted"></i>${projeto}</div>
+        </div>
+        <hr class="so-divider">
         <div class="row g-3">
             <div class="col-4">
                 <div class="so-campo mb-0">
@@ -663,7 +832,6 @@ function abrirModalEnvio(tr) {
     document.getElementById('inputArquivo').value = '';
     document.getElementById('listaArquivosNovos').style.display = 'none';
     document.getElementById('itensArquivosNovos').innerHTML = '';
-    document.getElementById('obsEnvio').value = '';
     document.getElementById('btnEnviarArquivo').disabled = false;
     document.getElementById('btnEnviarArquivo').innerHTML = '<i class="bi bi-floppy me-1"></i>Salvar Rascunho';
     _renderizarArquivosExistentes(getArquivos(tr), false);
@@ -743,8 +911,8 @@ async function enviarArquivoTarefa() {
         const fd = new FormData();
         fd.append('id', _tarefaAtual.dataset.id);
         fd.append('titulo', _tarefaAtual.dataset.titulo);
+        fd.append('id_projeto', _tarefaAtual.dataset.idProjeto || '');
         fd.append('arquivo', file);
-        fd.append('obs', document.getElementById('obsEnvio').value);
         try {
             const res = await fetch('pages-aluno/upload-tarefa.php', { method: 'POST', body: fd });
             const data = await res.json();
@@ -1046,20 +1214,20 @@ function atualizarBotoesCronograma(tr) {
     const td = tr.querySelector('td:last-child');
 
     const eyeBtn = temArquivo
-        ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="abrirModalEdicao(this.closest('tr'))" title="Ver arquivo"><i class="bi bi-eye"></i></button>`
+        ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Ver arquivo"><i class="bi bi-eye"></i></button>`
         : `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Nenhum arquivo anexado"><i class="bi bi-eye"></i></button>`;
 
     let acoes = '';
     if (concluido && prazoPastou) {
         acoes = `<button class="btn btn-sm btn-outline-success opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Concluído"><i class="bi bi-check-lg"></i></button>` + eyeBtn;
     } else if (concluido) {
-        acoes = `<button class="btn btn-sm btn-outline-warning" onclick="toggleCronograma(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
+        acoes = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleCronograma(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (temArquivo) {
-        acoes = `<button class="btn btn-sm btn-outline-success" onclick="toggleCronograma(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
-              + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="abrirModalEnvio(this.closest('tr'))" title="Editar arquivo"><i class="bi bi-pencil"></i></button>`;
+        acoes = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();toggleCronograma(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
+              + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Editar arquivo"><i class="bi bi-pencil"></i></button>`;
     } else {
-        acoes = `<button class="btn btn-sm btn-outline-success" onclick="toggleCronograma(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
-              + `<button class="btn btn-sm btn-outline-primary ms-1" onclick="abrirModalEnvio(this.closest('tr'))" title="Enviar arquivo"><i class="bi bi-paperclip"></i></button>`;
+        acoes = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();toggleCronograma(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
+              + `<button class="btn btn-sm btn-outline-primary ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Enviar arquivo"><i class="bi bi-paperclip"></i></button>`;
     }
 
     if (temDescricao) {
@@ -1101,6 +1269,7 @@ function abrirDetalheRegistro(el) {
     const statusLabel = el.dataset.statusLabel;
     const desc        = el.dataset.desc;
     const hora        = el.dataset.hora;
+    const projeto     = el.dataset.projeto || '—';
 
     abrirSlideOver(el.dataset.titulo, `
         <div class="so-campo">
@@ -1110,6 +1279,11 @@ function abrirDetalheRegistro(el) {
                     <i class="bi ${statusIco} me-1"></i>${statusLabel}
                 </span>
             </div>
+        </div>
+        <hr class="so-divider">
+        <div class="so-campo">
+            <div class="so-label">Projeto</div>
+            <div class="so-valor"><i class="bi bi-folder2 me-1 text-muted"></i>${projeto}</div>
         </div>
         <hr class="so-divider">
         <div class="row g-3">
@@ -1171,9 +1345,28 @@ function showDay(el) {
         const statusCor = { concluido:'#16a34a', atrasado:'#dc2626', proximo:'#d97706', futuro:'#2563eb' };
         const statusBg  = { concluido:'#dcfce7', atrasado:'#fee2e2', proximo:'#fef3c7', futuro:'#dbeafe' };
 
+        const hojeMs = new Date(); hojeMs.setHours(0,0,0,0);
+
         document.getElementById('modalDiaLista').innerHTML = itens.map(item => {
-            const pagina = item.tipo === 'tarefa' ? 'tarefas' : 'cronograma';
-            const label  = item.tipo === 'tarefa' ? 'Ver tarefa' : 'Ver no cronograma';
+            let pagina, label;
+            if (item.data) {
+                const p = item.data.split('-');
+                const itemDate = new Date(+p[0], +p[1]-1, +p[2]);
+                if (itemDate < hojeMs) {
+                    // Prazo passou → sempre em Registros
+                    pagina = 'participacoes';
+                    label  = 'Ver em Registros';
+                } else if (item.tipo === 'tarefa') {
+                    pagina = 'tarefas';
+                    label  = 'Ver tarefa';
+                } else {
+                    pagina = 'cronograma';
+                    label  = 'Ver no cronograma';
+                }
+            } else {
+                pagina = item.tipo === 'tarefa' ? 'tarefas' : 'cronograma';
+                label  = item.tipo === 'tarefa' ? 'Ver tarefa' : 'Ver no cronograma';
+            }
             const cor    = statusCor[item.status] || '#64748b';
             const bg     = statusBg[item.status]  || '#f1f5f9';
             return `
@@ -1199,5 +1392,6 @@ function showDay(el) {
     new bootstrap.Modal(document.getElementById('modalDia')).show();
 }
 </script>
+<script src="assets/js/topbar.js"></script>
 </body>
 </html>

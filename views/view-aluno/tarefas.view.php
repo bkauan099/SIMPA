@@ -73,6 +73,7 @@
             <thead class="table-light">
                 <tr class="text-muted small">
                     <th>TÍTULO</th>
+                    <th>PROJETO</th>
                     <th>PRAZO</th>
                     <th>HORA</th>
                     <th>STATUS</th>
@@ -81,7 +82,7 @@
             </thead>
             <tbody>
                 <?php if (empty($itens)): ?>
-                    <tr><td colspan="5" class="text-center py-4 text-muted">Nenhuma atividade encontrada.</td></tr>
+                    <tr><td colspan="6" class="text-center py-4 text-muted">Nenhuma atividade encontrada.</td></tr>
                 <?php else: ?>
                     <?php foreach ($itens as $item):
                         $hoje = new DateTime();
@@ -108,6 +109,11 @@
                             $arquivosArr  = json_decode($arquivosJson, true) ?: [];
                             $temArquivo   = !empty($arquivosArr);
                             $prazoPassou  = $prazo < $hoje;
+                            if (!$prazoPassou && !empty($item['hora'])) {
+                                $agora = new DateTime();
+                                $prazoComHora = new DateTime($item['data'] . ' ' . substr($item['hora'], 0, 5));
+                                $prazoPassou  = $agora > $prazoComHora;
+                            }
                         ?>
                         <tr style="cursor:pointer;"
                             onclick="abrirDetalheTarefa(this)"
@@ -118,8 +124,13 @@
                             data-data="<?= htmlspecialchars($item['data']) ?>"
                             data-titulo="<?= htmlspecialchars($item['titulo'], ENT_QUOTES) ?>"
                             data-concluido="<?= $item['concluido'] ? '1' : '0' ?>"
-                            data-arquivos="<?= htmlspecialchars($arquivosJson, ENT_QUOTES) ?>">
+                            data-arquivos="<?= htmlspecialchars($arquivosJson, ENT_QUOTES) ?>"
+                            data-descricao="<?= htmlspecialchars($descricao, ENT_QUOTES) ?>"
+                            data-projeto="<?= htmlspecialchars($item['projeto'] ?? '—', ENT_QUOTES) ?>"
+                            data-id-projeto="<?= htmlspecialchars($item['id_projeto_ref'] ?? '', ENT_QUOTES) ?>"
+                            >
                             <td class="fw-medium"><?= htmlspecialchars($item['titulo']) ?></td>
+                            <td class="text-muted small"><?= htmlspecialchars($item['projeto'] ?? '—') ?></td>
                             <td><?= date('d/m/Y', strtotime($item['data'])) ?></td>
                             <td><?= $item['hora'] ? substr($item['hora'], 0, 5) : '—' ?></td>
                             <td><span class="badge badge-status <?= $statusClass ?>"><?= $statusLabel ?></span></td>
@@ -162,6 +173,17 @@
                                         <i class="bi bi-eye"></i>
                                     </button>
                                     <?php endif; ?>
+                                <?php elseif ($prazoPassou): ?>
+                                    <button class="btn btn-sm btn-outline-secondary opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            disabled title="Prazo encerrado">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1 opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            disabled title="Prazo encerrado">
+                                        <i class="bi bi-paperclip"></i>
+                                    </button>
                                 <?php else: ?>
                                     <button class="btn btn-sm btn-outline-success"
                                             onclick="event.stopPropagation(); toggleConcluido(this)"

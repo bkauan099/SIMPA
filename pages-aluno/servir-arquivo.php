@@ -8,17 +8,27 @@ require_once __DIR__ . '/../conexao/conexao.php';
 $id_producao = (int)($_GET['id'] ?? 0);
 if (!$id_producao) { http_response_code(400); exit; }
 
-// Garante que o arquivo pertence ao aluno (via projeto em que participa)
+// Obter matrícula do aluno logado — prova de ownership do arquivo
+$stmt = $pdo->prepare("SELECT matricula FROM usuarios WHERE id_usuario = :uid");
+$stmt->execute([':uid' => $id_usuario]);
+$matricula = $stmt->fetchColumn();
+
+if (!$matricula) { http_response_code(403); exit; }
+
+// O caminho de qualquer arquivo enviado por este aluno começa com este prefixo.
+// Verificar pelo prefixo impede que um aluno acesse arquivos de outro aluno
+// mesmo que ambos participem do mesmo projeto.
+$prefixo = 'uploads/alunos/' . $matricula . '/';
+
 $stmt = $pdo->prepare("
-    SELECT p.caminho, p.tipo
-    FROM producoes p
-    JOIN participacao pa ON pa.id_projeto = p.id_projeto
-    WHERE p.id_producao = :id
-      AND pa.id_usuario = :uid
-      AND p.status != 'inativo'
+    SELECT caminho, tipo
+    FROM producoes
+    WHERE id_producao = :id
+      AND caminho LIKE :prefix
+      AND status != 'inativo'
     LIMIT 1
 ");
-$stmt->execute([':id' => $id_producao, ':uid' => $id_usuario]);
+$stmt->execute([':id' => $id_producao, ':prefix' => $prefixo . '%']);
 $arquivo = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$arquivo) { http_response_code(403); exit; }
@@ -26,7 +36,7 @@ if (!$arquivo) { http_response_code(403); exit; }
 $baseDir  = realpath(__DIR__ . '/../uploads');
 $fullPath = realpath(__DIR__ . '/../' . $arquivo['caminho']);
 
-// Bloqueia path traversal
+// Bloqueia path traversal mesmo que o caminho do banco seja manipulado
 if (!$fullPath || !$baseDir || !str_starts_with($fullPath, $baseDir)) {
     http_response_code(403); exit;
 }

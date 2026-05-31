@@ -30,63 +30,56 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
 
 <!-- STAT CARDS -->
 <div class="row g-3 mb-4">
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 p-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                     style="width:46px;height:46px;background:#eff6ff;">
-                    <i class="bi bi-collection fs-5" style="color:#3b82f6;"></i>
-                </div>
-                <div>
-                    <div class="fw-bold fs-4 lh-1"><?= $estatisticas['total'] ?></div>
-                    <div class="text-muted" style="font-size:0.78rem;">Total de registros</div>
-                </div>
+    <div class="col-sm-6 col-lg-3">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #3b82f6;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#3b82f6;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#3b82f6;opacity:0.1;line-height:1;pointer-events:none;">
+                <i class="bi bi-collection-fill"></i>
             </div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#3b82f6;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-collection-fill"></i> Total
+            </div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['total'] ?></div>
+            <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">REGISTROS</div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 p-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                     style="width:46px;height:46px;background:#f0fdf4;">
-                    <i class="bi bi-check-circle fs-5" style="color:#22c55e;"></i>
-                </div>
-                <div class="flex-grow-1">
-                    <div class="fw-bold fs-4 lh-1"><?= $estatisticas['concluidos'] ?></div>
-                    <div class="text-muted" style="font-size:0.78rem;">Concluídos</div>
-                    <div class="progress mt-1" style="height:4px;">
-                        <div class="progress-bar bg-success" style="width:<?= $pct ?>%"></div>
-                    </div>
-                </div>
+    <div class="col-sm-6 col-lg-3">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #22c55e;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#22c55e;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#22c55e;opacity:0.1;line-height:1;pointer-events:none;">
+                <i class="bi bi-check-circle-fill"></i>
             </div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#22c55e;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-check-circle-fill"></i> Concluídos
+            </div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['concluidos'] ?></div>
+            <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">ATIVIDADES CONCLUÍDAS</div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 p-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                     style="width:46px;height:46px;background:#fff1f2;">
-                    <i class="bi bi-x-circle fs-5" style="color:#ef4444;"></i>
-                </div>
-                <div>
-                    <div class="fw-bold fs-4 lh-1"><?= $estatisticas['pendentes'] ?></div>
-                    <div class="text-muted" style="font-size:0.78rem;">Não concluídos</div>
-                </div>
+    <div class="col-sm-6 col-lg-3">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ef4444;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#ef4444;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ef4444;opacity:0.1;line-height:1;pointer-events:none;">
+                <i class="bi bi-x-circle-fill"></i>
             </div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#ef4444;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-x-circle-fill"></i> Não Concluídos
+            </div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['pendentes'] ?></div>
+            <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">NÃO CONCLUÍDAS</div>
         </div>
     </div>
-    <div class="col-6 col-lg-3">
-        <div class="card border-0 shadow-sm h-100 p-3">
-            <div class="d-flex align-items-center gap-3">
-                <div class="rounded-3 d-flex align-items-center justify-content-center flex-shrink-0"
-                     style="width:46px;height:46px;background:#f5f3ff;">
-                    <i class="bi bi-calendar2-week fs-5" style="color:#a855f7;"></i>
-                </div>
-                <div>
-                    <div class="fw-bold fs-4 lh-1"><?= $estatisticas['este_mes'] ?></div>
-                    <div class="text-muted" style="font-size:0.78rem;">Este mês</div>
-                </div>
+    <div class="col-sm-6 col-lg-3">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #a855f7;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#a855f7;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#a855f7;opacity:0.1;line-height:1;pointer-events:none;">
+                <i class="bi bi-calendar2-week-fill"></i>
             </div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#a855f7;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-calendar2-week-fill"></i> Este Mês
+            </div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['este_mes'] ?></div>
+            <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">NO MÊS ATUAL</div>
         </div>
     </div>
 </div>
@@ -162,7 +155,9 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
              data-cor="<?= $cor ?>"
              data-status-label="<?= $statusLabel ?>"
              data-status-style="<?= htmlspecialchars($statusStyle) ?>"
-             data-status-ico="<?= $statusIco ?>">
+             data-status-ico="<?= $statusIco ?>"
+             data-projeto="<?= htmlspecialchars($r['projeto'] ?? '—', ENT_QUOTES) ?>"
+             >
 
             <div class="d-flex justify-content-between align-items-start gap-3">
 
@@ -179,10 +174,15 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
                             <?= htmlspecialchars(mb_substr($desc, 0, 100)) ?><?= mb_strlen($desc) > 100 ? '…' : '' ?>
                         </div>
                         <?php endif; ?>
-                        <div class="mt-1 d-flex align-items-center gap-2" style="font-size:0.75rem;color:#94a3b8;">
+                        <div class="mt-1 d-flex align-items-center gap-2 flex-wrap" style="font-size:0.75rem;color:#94a3b8;">
                             <span class="badge px-2 py-1 rounded-pill" style="background:<?= $cor ?>18;color:<?= $cor ?>;">
                                 <i class="bi <?= $icone ?> me-1"></i><?= htmlspecialchars($label) ?>
                             </span>
+                            <?php if (!empty($r['projeto']) && $r['projeto'] !== '—'): ?>
+                            <span style="background:#f1f5f9;color:#475569;padding:2px 8px;border-radius:20px;">
+                                <i class="bi bi-folder2 me-1"></i><?= htmlspecialchars($r['projeto']) ?>
+                            </span>
+                            <?php endif; ?>
                             <span><i class="bi bi-calendar2 me-1"></i><?= $dataFmt ?></span>
                             <?php if ($hora): ?>
                             <span><i class="bi bi-clock me-1"></i><?= $hora ?></span>

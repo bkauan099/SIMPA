@@ -27,6 +27,7 @@ foreach (array_merge($tarefas, $eventos) as $item) {
         'tipo'   => $item['tipo'],
         'ico'    => $ico,
         'status' => $status,
+        'data'   => $dt,
     ];
 }
 
@@ -49,31 +50,52 @@ $diaHoje   = (int) $hojeObj->format('j');
 
                 <div class="d-flex align-items-center gap-2 mb-3 p-3 rounded flex-wrap"
                      style="background:#f8fafc;border:1px solid #e2e8f0;">
-                    <i class="bi bi-person-badge text-primary"></i>
-                    <span class="fw-medium" style="font-size:0.9rem;">
-                        <?= $projetoAtivo ? htmlspecialchars($projetoAtivo) : 'Nenhum projeto ativo' ?>
-                    </span>
+                    <i class="bi bi-folder2-open text-primary flex-shrink-0"></i>
+                    <?php if (empty($projetosAtivos)): ?>
+                        <span class="text-muted" style="font-size:0.9rem;">Nenhum projeto ativo</span>
+                    <?php else: ?>
+                        <?php foreach ($projetosAtivos as $nomeProjeto): ?>
+                            <span class="badge rounded-pill px-3 py-2"
+                                  style="background:#eff6ff;color:#1d4ed8;font-size:0.8rem;font-weight:600;">
+                                <?= htmlspecialchars($nomeProjeto) ?>
+                            </span>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 </div>
+
+                <?php
+                function _statusBadge(array $item, string $hoje_str): string {
+                    if (!empty($item['concluido'])) {
+                        return '<span class="badge bg-success">Concluído</span>';
+                    } elseif ($item['data'] < $hoje_str) {
+                        return '<span class="badge bg-danger">Não Concluído</span>';
+                    } else {
+                        return '<span class="badge bg-warning text-dark">Pendente</span>';
+                    }
+                }
+                ?>
 
                 <h6><i class="bi bi-list-check"></i> Tarefas</h6>
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
                         <thead class="table-primary">
                             <tr>
-                                <th style="width:50%">Título</th>
-                                <th style="width:30%">Data</th>
-                                <th style="width:20%">Hora</th>
+                                <th style="width:40%">Título</th>
+                                <th style="width:25%">Data</th>
+                                <th style="width:15%">Hora</th>
+                                <th style="width:20%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($tarefas)): ?>
-                                <tr><td colspan="3" class="text-muted text-center">Nenhuma tarefa cadastrada.</td></tr>
+                                <tr><td colspan="4" class="text-muted text-center">Nenhuma tarefa cadastrada.</td></tr>
                             <?php else: ?>
                                 <?php foreach ($tarefas as $t): ?>
                                     <tr>
                                         <td><?= htmlspecialchars($t['titulo']) ?></td>
                                         <td><?= date('d/m/Y', strtotime($t['data'])) ?></td>
                                         <td><?= $t['hora'] ? substr($t['hora'], 0, 5) : '—' ?></td>
+                                        <td><?= _statusBadge($t, $hoje_str) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -86,20 +108,22 @@ $diaHoje   = (int) $hojeObj->format('j');
                     <table class="table table-hover mb-0">
                         <thead class="table-success">
                             <tr>
-                                <th style="width:50%">Título</th>
-                                <th style="width:30%">Data</th>
-                                <th style="width:20%">Hora</th>
+                                <th style="width:40%">Título</th>
+                                <th style="width:25%">Data</th>
+                                <th style="width:15%">Hora</th>
+                                <th style="width:20%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php if (empty($eventos)): ?>
-                                <tr><td colspan="3" class="text-muted text-center">Nenhum evento cadastrado.</td></tr>
+                                <tr><td colspan="4" class="text-muted text-center">Nenhum evento cadastrado.</td></tr>
                             <?php else: ?>
                                 <?php foreach ($eventos as $e): ?>
                                     <tr>
                                         <td><?= htmlspecialchars($e['titulo']) ?></td>
                                         <td><?= date('d/m/Y', strtotime($e['data'])) ?></td>
                                         <td><?= $e['hora'] ? substr($e['hora'], 0, 5) : '—' ?></td>
+                                        <td><?= _statusBadge($e, $hoje_str) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
