@@ -22,8 +22,8 @@
                             <tr><th>Título</th><th>Data</th><th>Hora</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>Revisão do Artigo</td><td>20/11/2026</td><td>10:00</td></tr>
-                            <tr><td>Entrega Relatório</td><td>22/11/2026</td><td>14:00</td></tr>
+                            <tr><td>Revisão do Artigo</td><td>20/11/2023</td><td>10:00</td></tr>
+                            <tr><td>Entrega Relatório</td><td>22/11/2023</td><td>14:00</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -35,8 +35,8 @@
                             <tr><th>Título</th><th>Data</th><th>Hora</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td>Apresentação Final</td><td>25/11/2026</td><td>10:00</td></tr>
-                            <tr><td>Workshop Engenharia</td><td>28/11/2026</td><td>19:00</td></tr>
+                            <tr><td>Apresentação Final</td><td>25/11/2023</td><td>10:00</td></tr>
+                            <tr><td>Workshop Engenharia</td><td>28/11/2023</td><td>19:00</td></tr>
                         </tbody>
                     </table>
                 </div>

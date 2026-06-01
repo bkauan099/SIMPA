@@ -52,7 +52,7 @@
                     <td class="fw-medium">Projeto Social Comunitário</td>
                     <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
                     <td>Pesquisador</td>
-                    <td>Jun/2026</td>
+                    <td>Jun/2025</td>
                     <td>85h</td>
                     <td><span class="status-ativo">Ativo</span></td>
                 </tr>
@@ -68,7 +68,7 @@
                     <td class="fw-medium">Inovação Tecnológica Ambiental</td>
                     <td><span class="badge bg-light text-dark border">Ligas Acadêmicas</span></td>
                     <td>Colaborador</td>
-                    <td>Mar/2026</td>
+                    <td>Mar/2025</td>
                     <td>80h</td>
                     <td><span class="status-ativo">Ativo</span></td>
                 </tr>
@@ -76,7 +76,7 @@
                     <td class="fw-medium">Workshop Engenharia de Software</td>
                     <td><span class="badge bg-success">Evento</span></td>
                     <td>Participante</td>
-                    <td>28/11/2026</td>
+                    <td>28/11/2023</td>
                     <td>8h</td>
                     <td><span class="badge bg-secondary text-white">Concluído</span></td>
                 </tr>
@@ -84,7 +84,7 @@
                     <td class="fw-medium">Apresentação Final PROEXAE</td>
                     <td><span class="badge bg-success">Evento</span></td>
                     <td>Apresentador</td>
-                    <td>25/11/2026</td>
+                    <td>25/11/2023</td>
                     <td>4h</td>
                     <td><span class="badge bg-secondary text-white">Concluído</span></td>
                 </tr>
@@ -92,7 +92,7 @@
                     <td class="fw-medium">Atlética Predadores</td>
                     <td><span class="badge bg-light text-dark border">Atlética</span></td>
                     <td>Membro</td>
-                    <td>Ago/2026 – Dez/2026</td>
+                    <td>Ago/2024 – Dez/2024</td>
                     <td>40h</td>
                     <td><span class="badge bg-secondary text-white">Concluído</span></td>
                 </tr>

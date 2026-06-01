@@ -2,7 +2,7 @@
 session_start();
 
 // 1. Verificação de Acesso
-if (!isset($_SESSION["usuario"]) || $_SESSION["tipo"] != "professor") {
+if (empty($_SESSION['id_usuario']) || !str_contains(strtolower($_SESSION['perfil'] ?? ''), 'professor')) {
     header("Location: login-page.php");
     exit();
 }
@@ -13,8 +13,6 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'pagina-inicial';
 // 3. Conexão e Busca de Tipos (Essencial para o Modal funcionar)
 require_once 'conexao/conexao.php';
 
-// ID fixo para testes
-$_SESSION['id_usuario'] = 5;
 try {
     $stmt_tipos = $pdo->query("SELECT id_tipo, nome FROM tipo_projetos ORDER BY nome ASC");
     $tipos = $stmt_tipos->fetchAll(PDO::FETCH_ASSOC);
@@ -1095,6 +1093,13 @@ if (!empty($_GET['ajax'])) {
 
         // 5. AUXILIARES E EVENTOS
         document.addEventListener('DOMContentLoaded', function() {
+            // Sincroniza estado real do sidebar com o localStorage
+            const sidebarEl = document.getElementById('sidebar');
+            if (localStorage.getItem('sidebarExpanded') === 'true' && window.innerWidth >= 768) {
+                sidebarEl.classList.add('expanded');
+            }
+            document.documentElement.classList.remove('sidebar-pre-expanded');
+
             const inputBusca = document.getElementById('busca_aluno');
             const divResultados = document.getElementById('resultados_busca');
             let debounceTimer;
@@ -1171,6 +1176,7 @@ if (!empty($_GET['ajax'])) {
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
+            document.documentElement.classList.remove('sidebar-pre-expanded');
             if (window.innerWidth < 768) {
                 sidebar.classList.toggle('open');
                 overlay.classList.toggle('active');

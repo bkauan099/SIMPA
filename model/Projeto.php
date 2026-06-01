@@ -79,13 +79,13 @@ class Projeto
 
     public function obterDadosGrafico($id_prof)
     {
-        $sql = "SELECT tp.nome, COUNT(p.id_projeto) as total 
+        $sql = "SELECT tp.nome, COUNT(p.id_projeto) as total
                     FROM tipo_projetos tp
-                    JOIN projetos p ON tp.id_tipo = p.id_tipo
+                    JOIN projetos p ON p.id_tipo = tp.id_tipo
                     JOIN participacao pa ON p.id_projeto = pa.id_projeto
-                    WHERE pa.id_usuario = ? 
-                    AND p.status = 'ativo'
-                    GROUP BY tp.nome";
+                    WHERE pa.id_usuario = ?
+                    GROUP BY tp.nome
+                    HAVING COUNT(p.id_projeto) > 0";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$id_prof]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

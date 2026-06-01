@@ -3,7 +3,7 @@ require_once 'conexao/conexao.php';
 require_once 'model/Projeto.php';
 
 $projetoModel = new Projeto($pdo);
-$id_logado = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : 5;
+$id_logado = $_SESSION['id_usuario'] ?? 0;
 
 $projetos = $projetoModel->listarProjetosPorProfessor($id_logado);
 $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);

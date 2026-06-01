@@ -3,53 +3,65 @@ class Usuario
 {
     private $pdo;
 
-    public function __construct($pdo)
+    public function __construct($conexao)
     {
-        $this->pdo = $pdo;
+        $this->pdo = $conexao;
     }
 
-    // Busca alunos para o dropdown de sugestões (Filtro por letras)
-    public function buscarAlunosPorNome($termo)
+    // ── ADMIN ─────────────────────────────────────────────────────────────────
+
+    public function obterEstatisticas()
     {
-        // 1. Usamos unaccent no nome e no termo para ignorar acentos e cedilha
-        // 2. O ILIKE continua tratando o Case Insensitive (maiusc/minusc)
-        $sql = "SELECT id_usuario, nome, matricula, curso 
-            FROM usuarios 
-            WHERE unaccent(nome) ILIKE unaccent(?) AND perfil = 'aluno' 
-            ORDER BY nome ASC 
-            LIMIT 6";
+        $stats = ['total' => 0, 'ativos' => 0, 'inativos' => 0, 'admins' => 0];
 
+        $stats['total']    = $this->pdo->query("SELECT COUNT(*) FROM usuarios")->fetchColumn();
+        $stats['ativos']   = $this->pdo->query("SELECT COUNT(*) FROM usuarios WHERE status = 'ativo'")->fetchColumn();
+        $stats['inativos'] = $this->pdo->query("SELECT COUNT(*) FROM usuarios WHERE status = 'inativo'")->fetchColumn();
+        $stats['admins']   = $this->pdo->query("SELECT COUNT(*) FROM usuarios WHERE perfil = 'admin'")->fetchColumn();
+
+        return $stats;
+    }
+
+    public function listarUsuarios()
+    {
+        $sql = "SELECT id_usuario, nome, email, perfil, status FROM usuarios ORDER BY id_usuario ASC";
         $stmt = $this->pdo->prepare($sql);
-
-        // Mantemos o % no final para performance (busca por início do nome)
-        $stmt->execute(["$termo%"]);
-
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    // Vincula um aluno ao projeto (Tabela participacao)
+
+    // ── PROFESSOR ─────────────────────────────────────────────────────────────
+
+    public function buscarAlunosPorNome($termo)
+    {
+        $sql = "SELECT id_usuario, nome, matricula, curso
+                FROM usuarios
+                WHERE unaccent(nome) ILIKE unaccent(?) AND perfil = 'aluno'
+                ORDER BY nome ASC
+                LIMIT 6";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(["$termo%"]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function vincularAoProjeto($id_usuario, $id_projeto, $carga_horaria)
     {
-        // 1. Verificar se o aluno já está vinculado a este projeto específico
         $sqlCheck = "SELECT 1 FROM participacao WHERE id_usuario = ? AND id_projeto = ?";
         $stmtCheck = $this->pdo->prepare($sqlCheck);
         $stmtCheck->execute([$id_usuario, $id_projeto]);
 
         if ($stmtCheck->fetch()) {
-            // Retorna um código de erro específico para o Controller tratar
             return ['sucesso' => false, 'erro' => 'duplicado'];
         }
 
-        // 2. Se não existir, realiza o cadastro
-        $sql = "INSERT INTO participacao (id_usuario, id_projeto, carga_horaria, data_entrada, funcao) 
-            VALUES (?, ?, ?, CURRENT_DATE, 'Bolsista')";
-
+        $sql = "INSERT INTO participacao (id_usuario, id_projeto, carga_horaria, data_entrada, funcao)
+                VALUES (?, ?, ?, CURRENT_DATE, 'Bolsista')";
         $stmt = $this->pdo->prepare($sql);
         $sucesso = $stmt->execute([$id_usuario, $id_projeto, (int)$carga_horaria]);
 
         return ['sucesso' => $sucesso];
     }
 
-    // Remove um aluno do projeto
     public function removerDoProjeto($id_usuario, $id_projeto)
     {
         $sql = "DELETE FROM participacao WHERE id_usuario = ? AND id_projeto = ? AND funcao <> 'Orientador'";

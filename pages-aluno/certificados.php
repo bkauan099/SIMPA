@@ -58,12 +58,12 @@
 <div class="row g-3">
     <?php
     $certificados = [
-        ['titulo' => 'Equipe SIMPA UEMA', 'tipo' => 'Projeto', 'carga' => '120h', 'data' => 'Dez/2026', 'cor' => 'primary'],
-        ['titulo' => 'Workshop Engenharia de Software', 'tipo' => 'Workshop', 'carga' => '8h', 'data' => 'Nov/2026', 'cor' => 'success'],
-        ['titulo' => 'Apresentação Final PROEXAE', 'tipo' => 'Evento', 'carga' => '4h', 'data' => 'Nov/2026', 'cor' => 'info'],
-        ['titulo' => 'Inovação Tecnológica Ambiental', 'tipo' => 'Projeto', 'carga' => '80h', 'data' => 'Out/2026', 'cor' => 'primary'],
-        ['titulo' => 'Semana Acadêmica UEMA', 'tipo' => 'Evento', 'carga' => '16h', 'data' => 'Set/2026', 'cor' => 'info'],
-        ['titulo' => 'Atlética Predadores', 'tipo' => 'Projeto', 'carga' => '40h', 'data' => 'Dez/2026', 'cor' => 'secondary'],
+        ['titulo' => 'Equipe SIMPA UEMA', 'tipo' => 'Projeto', 'carga' => '120h', 'data' => 'Dez/2023', 'cor' => 'primary'],
+        ['titulo' => 'Workshop Engenharia de Software', 'tipo' => 'Workshop', 'carga' => '8h', 'data' => 'Nov/2023', 'cor' => 'success'],
+        ['titulo' => 'Apresentação Final PROEXAE', 'tipo' => 'Evento', 'carga' => '4h', 'data' => 'Nov/2023', 'cor' => 'info'],
+        ['titulo' => 'Inovação Tecnológica Ambiental', 'tipo' => 'Projeto', 'carga' => '80h', 'data' => 'Out/2023', 'cor' => 'primary'],
+        ['titulo' => 'Semana Acadêmica UEMA', 'tipo' => 'Evento', 'carga' => '16h', 'data' => 'Set/2023', 'cor' => 'info'],
+        ['titulo' => 'Atlética Predadores', 'tipo' => 'Projeto', 'carga' => '40h', 'data' => 'Dez/2023', 'cor' => 'secondary'],
     ];
     foreach ($certificados as $cert): ?>
     <div class="col-sm-6 col-lg-4">

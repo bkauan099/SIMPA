@@ -1,5 +1,5 @@
 <?php
-$id_professor = $_SESSION['id_usuario'] ?? 5;
+$id_professor = $_SESSION['id_usuario'] ?? 0;
 
 // Stats gerais
 $stats_rel = ['carga_total' => 0, 'media_aluno' => 0, 'certificados' => 0, 'taxa_conclusao' => 0];

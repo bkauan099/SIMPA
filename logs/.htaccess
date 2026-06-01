@@ -1,0 +1,3 @@
+# Bloquear acesso direto via HTTP à pasta de logs
+Order deny,allow
+Deny from all

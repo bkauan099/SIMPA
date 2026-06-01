@@ -4,9 +4,6 @@ require_once '../../conexao/conexao.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
-// ID fixo para testes
-$_SESSION['id_usuario'] = 5;
-
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Método inválido.']);
     exit;

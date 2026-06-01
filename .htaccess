@@ -1,0 +1,40 @@
+# ============================================================
+# SIMPA — Regras de Segurança e Redirecionamento
+# ============================================================
+
+Options -Indexes
+
+# Bloquear acesso direto a pastas sensíveis via URL
+RewriteEngine On
+
+# Redirecionar raiz para login se não autenticado
+RewriteRule ^$ login-page.php [L]
+
+# Bloquear acesso direto a .env, logs, lib, model, controllers, views
+RewriteRule ^\.env$              - [F,L]
+RewriteRule ^logs/               - [F,L]
+RewriteRule ^lib/                - [F,L]
+RewriteRule ^model/              - [F,L]
+RewriteRule ^controllers/        - [F,L]
+RewriteRule ^views/              - [F,L]
+RewriteRule ^conexao/            - [F,L]
+
+# Bloquear acesso a arquivos de configuração e backup
+<FilesMatch "\.(env|log|sql|bak|sh|git|md|json|lock)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Bloquear composer files
+<FilesMatch "^(composer\.(json|lock)|package\.json)$">
+    Order deny,allow
+    Deny from all
+</FilesMatch>
+
+# Headers de segurança
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

@@ -1,8 +1,7 @@
 <?php
 require_once 'conexao/conexao.php';
 
-// ID fixado conforme solicitado
-$id_professor = 5;
+$id_professor = $_SESSION['id_usuario'] ?? 0;
 
 try {
     // 1. Estatísticas

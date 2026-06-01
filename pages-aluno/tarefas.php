@@ -82,7 +82,7 @@
                     <td class="fw-medium">Revisão do Artigo</td>
                     <td>SIMPA UEMA</td>
                                     <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
-                    <td>20/11/2026</td>
+                    <td>20/11/2023</td>
                     <td><span class="badge bg-danger">Alta</span></td>
                     <td><span class="badge bg-warning text-dark">Pendente</span></td>
                     <td class="text-center">
@@ -94,7 +94,7 @@
                     <td class="fw-medium">Entrega Relatório</td>
                     <td>Inovação Tec.</td>
                                     <td><span class="badge bg-light text-dark border">Ligas Acadêmicas</span></td>
-                    <td>22/11/2026</td>
+                    <td>22/11/2023</td>
                     <td><span class="badge bg-danger">Alta</span></td>
                     <td><span class="badge bg-info text-dark">Em Andamento</span></td>
                     <td class="text-center">
@@ -106,7 +106,7 @@
                     <td class="fw-medium">Levantamento Bibliográfico</td>
                     <td>Projeto Social</td>
                                     <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
-                    <td>30/11/2026</td>
+                    <td>30/11/2023</td>
                     <td><span class="badge bg-warning text-dark">Média</span></td>
                     <td><span class="badge bg-info text-dark">Em Andamento</span></td>
                     <td class="text-center">
@@ -118,7 +118,7 @@
                     <td class="fw-medium">Reunião com Orientador</td>
                     <td>SIMPA UEMA</td>
                                     <td><span class="badge bg-light text-dark border">Projeto Especial</span></td>
-                    <td>10/11/2026</td>
+                    <td>10/11/2023</td>
                     <td><span class="badge bg-secondary">Baixa</span></td>
                     <td><span class="badge bg-success">Concluída</span></td>
                     <td class="text-center">
@@ -129,7 +129,7 @@
                     <td class="fw-medium">Submissão do Formulário PROEXAE</td>
                     <td>Inovação Tec.</td>
                                     <td><span class="badge bg-light text-dark border">Ligas Acadêmicas</span></td>
-                    <td>05/11/2026</td>
+                    <td>05/11/2023</td>
                     <td><span class="badge bg-warning text-dark">Média</span></td>
                     <td><span class="badge bg-success">Concluída</span></td>
                     <td class="text-center">

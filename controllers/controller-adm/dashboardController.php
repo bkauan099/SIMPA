@@ -1,5 +1,5 @@
 <?php
-// /controllers/controller-adm/dashboardController.php
+// Backend/controllers/controller-adm/dashboardController.php
 
 require_once __DIR__ . '/../../model/Projeto.php';
 
@@ -14,11 +14,9 @@ class DashboardController {
         try {
             $projetoModel = new Projeto($this->pdo);
 
-            // Aqui as variáveis nascem
             $estatisticas = $projetoModel->obterEstatisticas();
             $projetosAtivos = $projetoModel->listarProjetosAtivos();
-
-            // Usamos REQUIRE em vez de REQUIRE_ONCE
+            
             require __DIR__ . '/../../views/view-adm/pagina-inicial.view.php';
 
         } catch (Exception $e) {

@@ -1,5 +1,5 @@
 <?php
-$id_professor = $_SESSION['id_usuario'] ?? 5;
+$id_professor = $_SESSION['id_usuario'] ?? 0;
 
 // Garante colunas necessárias
 try {

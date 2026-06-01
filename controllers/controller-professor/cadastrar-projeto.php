@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $dados['data_fim'] = formatarDataParaBanco($dados['data_fim'] ?? '');
 
         // Identifica o usuário (Professor)
-        $id_usuario_logado = isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] : 5;
+        $id_usuario_logado = $_SESSION['id_usuario'] ?? null;
 
         // Executa o cadastro
         if ($projetoModel->cadastrar($dados, $id_usuario_logado)) {

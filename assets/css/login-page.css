@@ -1,95 +1,108 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
 * {
-
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
-    background-size: cover;
+    font-family: 'Montserrat', sans-serif;
 }
 
 body {
-
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-image: url(../img/portal_uema.png);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 1;
     min-height: 100vh;
+    background-image: url(../img/portal_uema.png);
     background-size: cover;
     background-position: center;
-
-
+    padding: 20px;
 }
 
 body::before {
     content: "";
     position: fixed;
     inset: 0;
-    background: rgba(255, 255, 255, 0.5);
-    z-index: -1;
+    background: rgba(255,255,255,0.45);
+    z-index: 0;
 }
-
 
 .container {
-    width: 500px;
-
-    background-color: transparent;
-    border: 2px solid;
-    border-radius: 10px;
-    color: black;
-    padding: 30PX 40PX;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
-
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 460px;
     background: #ffffff;
-}
-
-.logo {
-    width: 150px;
-    display: flex;
-    margin: 0 auto 20px auto;
-    background: url(uema-logo.png) no-repeat center;
-    background: url(Proexae.png) no-repeat center;
-
-
+    border: 1.5px solid #ddd;
+    border-radius: 12px;
+    padding: 36px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
 }
 
 .uema {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
+    gap: 30px; /* Um espaçamento elegante entre elas */
+    margin-bottom: 28px;
+}
+
+/* Estilo comum às duas logos */
+.uema img {
+    opacity: 0.85;
+    filter: none;
+    transition: opacity 0.2s;
+}
+
+.uema img:hover {
+    opacity: 1;
+}
+
+/* Logo UEMA (uema-logo2 — crest + texto) */
+.uema img:first-child {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.uema .logo:first-child {
+    height: 60px !important;
+    width: auto !important;
+    flex: none !important;
+    object-fit: contain;
+    margin-right: 0 !important;
+}
+
+/* Logo Proexae */
+.uema img:last-child {
+    height: 55px;
+    width: auto;
+    object-fit: contain;
 }
 
 .input-box {
-
-    position: relative;
     width: 100%;
-    height: 50px;
-    margin: 30px 0;
-
-
+    margin-bottom: 20px;
 }
 
 .input-box input {
     width: 100%;
-    height: 100%;
+    height: 50px;
     background: transparent;
     border-radius: 10px;
-    border: 2px solid rgb(145, 145, 145);
+    border: 1.5px solid #b0b0b0;
     outline: none;
-    font-size: 16px;
-    padding: 0 45px 0 10px;
-    /* 🔥 espaço pro botão */
-    color: black;
+    font-size: 15px;
+    padding: 0 14px;
+    color: #1e293b;
+    transition: border-color 0.2s;
+}
+
+.input-box input:focus {
+    border-color: #2B3C50;
 }
 
 .input-box input::placeholder {
-    color: rgb(101, 101, 101);
+    color: #8a8a8a;
 }
 
 .login {
@@ -98,47 +111,31 @@ body::before {
     border: none;
     background: #111ec9;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
+    font-weight: 600;
     border-radius: 40px;
     cursor: pointer;
-
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
+    transition: background 0.3s;
+    margin-top: 4px;
 }
 
 .login:hover {
     background: #0000a2;
-    color: #ffffff;
-    transition: 0.7s;
 }
 
-
-.login a {
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-    display: block;
+.create {
+    margin-top: 18px;
     text-align: center;
 }
 
-
-.create {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-}
-
-
-
 .create a {
-    color: #2200ff;
+    color: #2B3C50;
     text-decoration: none;
+    font-size: 0.9rem;
 }
 
 .create a:hover {
     text-decoration: underline;
-    color: #ff0000;
-    transition: 0.3s;
-
 }
 
 .campo {
@@ -149,18 +146,14 @@ body::before {
     position: absolute;
     left: 5px;
     top: -20px;
-
     color: red;
     font-size: 12px;
-
     display: flex;
     align-items: center;
     gap: 5px;
-
     opacity: 0;
     transform: translateY(8px);
     transition: all .3s ease;
-
     pointer-events: none;
 }
 
@@ -168,20 +161,6 @@ body::before {
     opacity: 1;
     transform: translateY(0);
     display: flex;
-}
-
-.btn-redefinir {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
-
-    color: #6c757d;
-    text-decoration: none;
-    font-size: 13px;
-}
-
-.btn-redefinir:hover {
-    color: #0d6efd;
 }
 
 .loader {
@@ -195,13 +174,12 @@ body::before {
 }
 
 @keyframes girar {
-    from {
-        transform: rotate(0deg);
-    }
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
 
-    to {
-        transform: rotate(360deg);
-    }
+.senha-box {
+    position: relative;
 }
 
 .toggle-senha {
@@ -209,24 +187,17 @@ body::before {
     top: 50%;
     right: 10px;
     transform: translateY(-50%);
-
     background: transparent;
     border: none;
     cursor: pointer;
-
     font-size: 14px;
     color: #666;
-
     width: 35px;
     height: 35px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     z-index: 2;
-    pointer-events: auto;
-    /* 🔥 garante clique */
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
@@ -237,15 +208,18 @@ body::before {
     pointer-events: auto;
 }
 
-.toggle-senha:hover {
-    color: #000;
-}
+.toggle-senha:hover { color: #000; }
+.toggle-senha:focus, .toggle-senha:focus-visible { outline: none; box-shadow: none; }
 
-.toggle-senha:focus {
-    outline: none;
-}
-
-.toggle-senha:focus-visible {
-    outline: none;
-    box-shadow: none;
+/* Responsivo para manter a elegância na tela do celular */
+@media (max-width: 480px) {
+    .uema {
+        gap: 20px;
+    }
+    .uema img:first-child {
+        height: 46px;
+    }
+    .uema img:last-child {
+        height: 40px;
+    }
 }

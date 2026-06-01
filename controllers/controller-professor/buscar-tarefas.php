@@ -2,9 +2,6 @@
 session_start();
 require_once '../../conexao/conexao.php';
 
-// ID fixo para testes
-$_SESSION['id_usuario'] = 5;
-
 $id_professor = $_SESSION['id_usuario'] ?? 0;
 $modo = $_GET['modo'] ?? 'rows';
 

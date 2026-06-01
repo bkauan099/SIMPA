@@ -12,27 +12,127 @@ class DashboardController {
 
     public function index() {
         try {
-            // VERIFICAÇÃO DE LOGIN / ID
-            // Se existir id_usuario na SESSION, usa ele. Caso contrário, assume o ID 2.
-            if (isset($_SESSION['id_usuario']) && !empty($_SESSION['id_usuario'])) {
-                $id_professor = $_SESSION['id_usuario'];
-            } else {
-                $id_professor = 2; // ID padrão de teste
-            }
+            $id_professor = (isset($_SESSION['id_usuario']) && !empty($_SESSION['id_usuario']))
+                ? $_SESSION['id_usuario']
+                : 2;
 
             $projetoModel = new Projeto($this->pdo);
 
-            // Chamada dos métodos dinâmicos
-            $estatisticas = $projetoModel->obterEstatisticasProfessor($id_professor);
+            $estatisticas      = $projetoModel->obterEstatisticasProfessor($id_professor);
             $distribuicaoTipos = $projetoModel->obterDadosGrafico($id_professor);
 
-            // Dados da agenda (ainda simulados, mas preparados para o ID atual)
-            $agenda = [
-                ['titulo' => 'Reunião de Orientação', 'projeto' => 'Projeto Social', 'hora' => '09:00', 'quando' => 'Hoje', 'cor' => '#8b5cf6'],
-                ['titulo' => 'Prazo Entrega Relatório', 'projeto' => 'SIMPA UEMA', 'hora' => '14:00', 'quando' => 'Hoje', 'cor' => '#f59e0b']
-            ];
+            // Docs pendentes (producoes status='pendente' nos projetos do professor)
+            $stmtDocs = $this->pdo->prepare("
+                SELECT COUNT(DISTINCT pr.id_producao)
+                FROM producoes pr
+                JOIN participacao pa ON pr.id_projeto = pa.id_projeto
+                WHERE pa.id_usuario = ? AND pr.status = 'pendente'
+            ");
+            $stmtDocs->execute([$id_professor]);
+            $estatisticas['docs_pendentes'] = (int)$stmtDocs->fetchColumn();
 
-            // Caminho da View
+            // Tarefas vencendo (prazo hoje ou passado, não concluídas)
+            $stmtTarefas = $this->pdo->prepare("
+                SELECT COUNT(DISTINCT a.id)
+                FROM agenda_items a
+                JOIN participacao pa ON a.id_projeto = pa.id_projeto
+                WHERE pa.id_usuario = ?
+                  AND a.id_projeto IS NOT NULL
+                  AND COALESCE(a.status_tarefa, 'pendente') != 'concluida'
+                  AND COALESCE(a.concluido, false) = false
+                  AND a.data <= CURRENT_DATE
+            ");
+            $stmtTarefas->execute([$id_professor]);
+            $estatisticas['tarefas_vencendo'] = (int)$stmtTarefas->fetchColumn();
+
+            // Agenda: hoje e amanhã
+            $stmtAgenda = $this->pdo->prepare("
+                SELECT DISTINCT ON (a.id)
+                    a.id, a.titulo,
+                    COALESCE(a.tipo, 'Tarefa') AS tipo,
+                    a.data,
+                    COALESCE(CAST(a.hora AS TEXT), '') AS hora,
+                    p.titulo AS nome_projeto
+                FROM agenda_items a
+                JOIN participacao pa ON a.id_projeto = pa.id_projeto
+                LEFT JOIN projetos p ON a.id_projeto = p.id_projeto
+                WHERE pa.id_usuario = ?
+                  AND a.id_projeto IS NOT NULL
+                  AND a.data IN (CURRENT_DATE, CURRENT_DATE + INTERVAL '1 day')
+                ORDER BY a.id, a.data ASC, a.hora ASC NULLS LAST
+                LIMIT 10
+            ");
+            $stmtAgenda->execute([$id_professor]);
+            $agenda = $stmtAgenda->fetchAll(PDO::FETCH_ASSOC);
+
+            // Atenção necessária: alunos com tarefas atrasadas/urgentes
+            $stmtAtencao = $this->pdo->prepare("
+                SELECT
+                    u.id_usuario,
+                    u.nome,
+                    COUNT(a.id) AS total_atrasadas,
+                    MAX(a.prioridade) AS max_prioridade
+                FROM agenda_items a
+                JOIN participacao pa ON a.id_projeto = pa.id_projeto
+                JOIN usuarios u ON a.id_usuario = u.id_usuario
+                WHERE pa.id_usuario = ?
+                  AND a.id_projeto IS NOT NULL
+                  AND COALESCE(a.status_tarefa, 'pendente') != 'concluida'
+                  AND COALESCE(a.concluido, false) = false
+                  AND a.data < CURRENT_DATE
+                GROUP BY u.id_usuario, u.nome
+                ORDER BY total_atrasadas DESC
+                LIMIT 5
+            ");
+            $stmtAtencao->execute([$id_professor]);
+            $atencaoNecessaria = $stmtAtencao->fetchAll(PDO::FETCH_ASSOC);
+
+            // Atividade recente: uploads recentes nos projetos do professor
+            $stmtAtiv = $this->pdo->prepare("
+                SELECT
+                    pr.id_producao,
+                    COALESCE(pr.titulo, pr.tipo) AS nome_arquivo,
+                    pr.data_registro,
+                    pr.status,
+                    (SELECT u2.nome FROM participacao pa3
+                     JOIN usuarios u2 ON pa3.id_usuario = u2.id_usuario
+                     WHERE pa3.id_projeto = pr.id_projeto AND u2.perfil = 'aluno'
+                     ORDER BY pa3.id_participacao ASC LIMIT 1) AS nome_aluno,
+                    p.titulo AS nome_projeto
+                FROM producoes pr
+                JOIN projetos p ON pr.id_projeto = p.id_projeto
+                WHERE pr.id_projeto IN (
+                    SELECT id_projeto FROM participacao WHERE id_usuario = ?
+                )
+                ORDER BY pr.data_registro DESC
+                LIMIT 8
+            ");
+            $stmtAtiv->execute([$id_professor]);
+            $atividadeRecente = $stmtAtiv->fetchAll(PDO::FETCH_ASSOC);
+
+            // Documentos pendentes (lista)
+            $stmtDocList = $this->pdo->prepare("
+                SELECT
+                    pr.id_producao,
+                    COALESCE(pr.titulo, pr.tipo) AS nome_arquivo,
+                    pr.data_registro,
+                    pr.caminho,
+                    (SELECT u2.nome FROM participacao pa3
+                     JOIN usuarios u2 ON pa3.id_usuario = u2.id_usuario
+                     WHERE pa3.id_projeto = pr.id_projeto AND u2.perfil = 'aluno'
+                     ORDER BY pa3.id_participacao ASC LIMIT 1) AS nome_aluno,
+                    p.titulo AS nome_projeto
+                FROM producoes pr
+                JOIN projetos p ON pr.id_projeto = p.id_projeto
+                WHERE pr.id_projeto IN (
+                    SELECT id_projeto FROM participacao WHERE id_usuario = ?
+                ) AND pr.status = 'pendente'
+                ORDER BY pr.data_registro DESC
+                LIMIT 5
+            ");
+            $stmtDocList->execute([$id_professor]);
+            $documentosPendentes = $stmtDocList->fetchAll(PDO::FETCH_ASSOC);
+
             require __DIR__ . '/../../views/view-professor/pagina-inicial.view.php';
 
         } catch (Exception $e) {
