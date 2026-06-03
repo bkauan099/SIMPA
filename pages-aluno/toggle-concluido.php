@@ -18,14 +18,21 @@ if (!$id) {
 }
 
 try {
-    // Bloquear desfazer se prazo passou e já está concluído
-    $stmt = $pdo->prepare("SELECT concluido::int AS concluido, data FROM agenda_items WHERE id = :id AND id_usuario = :uid");
+    // Bloquear desfazer se prazo passou (data + hora)
+    $stmt = $pdo->prepare("SELECT concluido::int AS concluido, data, hora FROM agenda_items WHERE id = :id AND id_usuario = :uid");
     $stmt->execute([':id' => $id, ':uid' => $id_usuario]);
     $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($item && (int)$item['concluido'] === 1 && $item['data'] < date('Y-m-d')) {
-        echo json_encode(['ok' => false, 'erro' => 'Prazo encerrado. Não é possível desfazer.']);
-        exit;
+    if ($item && (int)$item['concluido'] === 1) {
+        $prazoPassou = $item['data'] < date('Y-m-d');
+        if (!$prazoPassou && !empty($item['hora'])) {
+            $prazoComHora = new DateTime($item['data'] . ' ' . substr($item['hora'], 0, 5));
+            $prazoPassou  = new DateTime() > $prazoComHora;
+        }
+        if ($prazoPassou) {
+            echo json_encode(['ok' => false, 'erro' => 'Prazo encerrado. Não é possível desfazer.']);
+            exit;
+        }
     }
 
     $aluno = new Aluno($pdo);

@@ -22,7 +22,8 @@
         <h6 class="fw-bold mb-0"><i class="bi bi-calendar-week me-2 text-primary"></i>Semana Atual</h6>
         <span class="text-muted small"><?= $domingo->format('d/m') ?> – <?= $sabado->format('d/m/Y') ?></span>
     </div>
-    <div class="row g-2">
+    <div style="overflow-x:auto;">
+    <div class="row g-2 flex-nowrap" style="min-width:480px;">
         <?php for ($i = 0; $i < 7; $i++):
             $dia     = (clone $domingo)->modify('+' . $i . ' days');
             $dataKey = $dia->format('Y-m-d');
@@ -59,6 +60,7 @@
             </div>
         </div>
         <?php endfor; ?>
+    </div>
     </div>
 </div>
 
@@ -130,6 +132,11 @@
                             $agora = new DateTime();
                             $prazoComHora = new DateTime($item['data'] . ' ' . substr($item['hora'], 0, 5));
                             $prazoPassou  = $agora > $prazoComHora;
+                        }
+                        if ($prazoPassou && $statusKey === 'proximo') {
+                            $statusKey   = 'nao_concluido';
+                            $statusLabel = 'Não Concluído';
+                            $statusClass = 'bg-danger text-white';
                         }
                     ?>
                         <tr style="cursor:pointer;"

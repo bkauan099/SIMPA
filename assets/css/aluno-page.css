@@ -33,7 +33,20 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .logo-proexae-top { max-height:52px; width:auto; }
 .logo-sep { width:1px; height:32px; background:rgba(255,255,255,0.25); }
 
-.topbar-toggle { display: none; }
+.topbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    flex-shrink: 0;
+}
+.topbar-toggle:hover { background: rgba(255,255,255,0.12); }
 
 /* ══ SIDEBAR ══ */
 #sidebar {
@@ -481,9 +494,12 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 
 /* ══ RESPONSIVIDADE COMPLETA ══ */
 
-/* ── Landscape pequeno (celular deitado) ── */
+/* ── Mobile e celular deitado (< 768px) ── */
 @media (max-width: 767px), (max-height: 500px) and (orientation: landscape) {
-    /* Sidebar vira overlay */
+    /* Hamburger no topbar aparece */
+    .topbar-toggle { display: flex !important; }
+
+    /* Sidebar vira overlay deslizante */
     #sidebar {
         position: fixed;
         top: 0; left: 0;
@@ -498,16 +514,24 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     #sidebar.open .nav-label { display: inline; }
     #sidebar.open ul li a { justify-content: flex-start; padding: 12px 20px; }
     #sidebar.open ul li a i { width: 28px; }
-    .topbar-toggle:hover { background: rgba(255,255,255,0.1); }
 
-    /* Sidebar interna some no mobile */
+    /* Botão interno da sidebar some — substituído pelo topbar */
     .sidebar-toggle-wrap { display: none !important; }
 
-    .navbar-custom { padding: 0 12px; }
+    .navbar-custom { padding: 0 10px; gap: 8px; }
     .dashboard-container { padding: 12px; }
-    .logo-uema-top    { max-height: 40px; }
-    .logo-proexae-top { max-height: 30px; }
+    .logo-uema-top    { max-height: 38px; }
+    .logo-proexae-top { max-height: 28px; }
     .logo-sep { display: none; }
+
+    /* Dropdown notificações: limitar largura e evitar transbordamento */
+    .tb-dropdown-notif {
+        width: calc(100vw - 20px);
+        right: -8px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    .tb-dropdown-perfil { right: 0; }
 
     /* Colunas em bloco único */
     .col-lg-8, .col-lg-4,
@@ -518,10 +542,25 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .seletivo-card .d-flex.justify-content-between { flex-direction: column; }
     .seletivo-card button { width: 100%; margin-top: 10px; }
+
+    /* Slide-over em tela cheia no mobile */
+    .slide-over-panel {
+        width: 100vw !important;
+        max-height: 90vh;
+        border-radius: 16px 16px 0 0;
+        top: auto !important;
+        bottom: 0;
+        left: 0 !important;
+        transform: translateY(100%) !important;
+    }
+    .slide-over.aberto .slide-over-panel {
+        transform: translateY(0) !important;
+    }
 }
 
 /* ── Tablet vertical (768–991px) ── */
 @media (min-width: 768px) and (max-width: 991px) and (orientation: portrait) {
+    .topbar-toggle { display: flex !important; }
     #sidebar {
         position: fixed;
         top: 0; left: 0;
@@ -536,7 +575,6 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     #sidebar.open .nav-label { display: inline; }
     #sidebar.open ul li a { justify-content: flex-start; padding: 12px 20px; }
     #sidebar.open ul li a i { width: 28px; }
-    .topbar-toggle:hover { background: rgba(255,255,255,0.1); }
     .sidebar-toggle-wrap { display: none !important; }
 
     #content { margin-left: 0; }

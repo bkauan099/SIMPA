@@ -20,6 +20,25 @@ $_matricula = $_stmtMat->fetchColumn();
 
 $_notificacoes = [];
 
+// Tarefas recém-cadastradas (últimas 24h)
+try {
+    $s = $pdo->prepare(
+        "SELECT titulo, data FROM agenda_items
+         WHERE id_usuario = :id AND tipo = 'tarefa'
+           AND created_at >= NOW() - INTERVAL '24 hours'
+         ORDER BY created_at DESC LIMIT 10"
+    );
+    $s->execute([':id' => $id_usuario]);
+    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
+        $dt = new DateTime($r['data']);
+        $_notificacoes[] = [
+            'icone' => 'bi-plus-circle-fill',
+            'cor'   => '#ef4444',
+            'texto' => 'Nova tarefa: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (prazo: ' . $dt->format('d/m/Y') . ')',
+        ];
+    }
+} catch (Exception $__e) {}
+
 // Tarefas em atraso
 try {
     $s = $pdo->prepare(
@@ -169,9 +188,7 @@ $_totalNotif = count($_notificacoes);
                 <i class="bi bi-calendar-event"></i><span class="nav-label">Cronograma</span></a></li>
             <li><a href="javascript:void(0)" id="menu-seletivos" onclick="carregarPagina('seletivos')" title="Seletivos">
                 <i class="bi bi-megaphone"></i>
-                <span class="badge-icon">3</span>
                 <span class="nav-label">Seletivos</span>
-                <span class="badge bg-danger ms-auto badge-text" style="font-size:0.65rem;">3</span>
             </a></li>
             <li><a href="javascript:void(0)" id="menu-documentos" onclick="carregarPagina('documentos')" title="Documentos">
                 <i class="bi bi-file-earmark-text"></i><span class="nav-label">Documentos</span></a></li>
@@ -186,6 +203,9 @@ $_totalNotif = count($_notificacoes);
     <div id="content">
         <header class="navbar-custom">
             <div class="topbar-left">
+                <button class="topbar-toggle" onclick="toggleSidebar()" aria-label="Menu">
+                    <i class="bi bi-list fs-4"></i>
+                </button>
                 <img src="assets/img/uema-logo.png"      alt="UEMA"    class="logo-uema-top">
                 <div class="logo-sep"></div>
                 <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">

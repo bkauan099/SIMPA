@@ -114,6 +114,11 @@
                                 $prazoComHora = new DateTime($item['data'] . ' ' . substr($item['hora'], 0, 5));
                                 $prazoPassou  = $agora > $prazoComHora;
                             }
+                            if ($prazoPassou && $statusKey === 'pendente') {
+                                $statusKey   = 'nao_concluido';
+                                $statusLabel = 'Não Concluído';
+                                $statusClass = 'bg-danger text-white';
+                            }
                         ?>
                         <tr style="cursor:pointer;"
                             onclick="abrirDetalheTarefa(this)"

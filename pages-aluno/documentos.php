@@ -48,17 +48,17 @@ function iconeArquivo(string $ext): string {
 
 function statusInfo(string $s): array {
     return match($s) {
-        'aprovado'  => ['label' => 'Aprovado',             'icon' => 'bi-check-circle-fill', 'cor' => '#16a34a', 'bg' => '#dcfce7', 'badge' => 'bg-success text-white'],
-        'reprovado' => ['label' => 'Reprovado',            'icon' => 'bi-x-circle-fill',     'cor' => '#dc2626', 'bg' => '#fee2e2', 'badge' => 'bg-danger text-white'],
-        default     => ['label' => 'Aguardando Aprovação', 'icon' => 'bi-hourglass-split',   'cor' => '#d97706', 'bg' => '#fef3c7', 'badge' => 'bg-warning text-dark'],
+        'ativo'   => ['label' => 'Aprovado',             'icon' => 'bi-check-circle-fill', 'cor' => '#16a34a', 'bg' => '#dcfce7', 'badge' => 'bg-success text-white'],
+        'inativo' => ['label' => 'Reprovado',            'icon' => 'bi-x-circle-fill',     'cor' => '#dc2626', 'bg' => '#fee2e2', 'badge' => 'bg-danger text-white'],
+        default   => ['label' => 'Aguardando Aprovação', 'icon' => 'bi-hourglass-split',   'cor' => '#d97706', 'bg' => '#fef3c7', 'badge' => 'bg-warning text-dark'],
     };
 }
 
 $contadores = ['pendente' => 0, 'aprovado' => 0, 'reprovado' => 0];
 foreach ($documentos as $d) {
     $s = $d['status'];
-    if ($s === 'aprovado') $contadores['aprovado']++;
-    elseif ($s === 'reprovado') $contadores['reprovado']++;
+    if ($s === 'ativo') $contadores['aprovado']++;
+    elseif ($s === 'inativo') $contadores['reprovado']++;
     else $contadores['pendente']++;
 }
 $total = count($documentos);
@@ -173,7 +173,7 @@ $total = count($documentos);
                         $proxyUrl = 'pages-aluno/servir-arquivo.php?id=' . $doc['id_producao'];
                         $buscaKey = strtolower($nome . ' ' . $doc['tarefa'] . ' ' . $doc['projeto']);
                         $st       = statusInfo($doc['status']);
-                        $stKey    = ($doc['status'] === 'aprovado' || $doc['status'] === 'reprovado') ? $doc['status'] : 'pendente';
+                        $stKey    = match($doc['status']) { 'ativo' => 'aprovado', 'inativo' => 'reprovado', default => 'pendente' };
                     ?>
                     <tr data-busca="<?= htmlspecialchars($buscaKey) ?>"
                         data-tipo="<?= $isPdf ? 'pdf' : 'outro' ?>"
