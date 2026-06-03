@@ -58,8 +58,8 @@ try {
 
 $prioLabels  = ['alta' => 'Alta', 'media' => 'Média', 'baixa' => 'Baixa'];
 $prioClasses = ['alta' => 'bg-danger', 'media' => 'bg-warning text-dark', 'baixa' => 'bg-secondary'];
-$stLabels    = ['pendente' => 'Pendente', 'em_andamento' => 'Em Andamento', 'concluida' => 'Concluída'];
-$stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info text-dark', 'concluida' => 'bg-success'];
+$stLabels    = ['pendente' => 'Pendente', 'em_andamento' => 'Em Andamento', 'concluida' => 'Concluída', 'concluido' => 'Concluída'];
+$stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info text-dark', 'concluida' => 'bg-success text-white', 'concluido' => 'bg-success text-white'];
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -224,11 +224,15 @@ $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info
             </div>
 
             <div class="row mb-3">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label class="form-label fw-semibold">Prazo</label>
                     <input type="date" id="tarefaPrazo" class="form-control">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Hora</label>
+                    <input type="time" id="tarefaHora" class="form-control">
+                </div>
+                <div class="col-md-4">
                     <label class="form-label fw-semibold">Prioridade</label>
                     <select id="tarefaPrioridade" class="form-select">
                         <option value="alta">Alta</option>
@@ -295,10 +299,11 @@ $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info
 <script>
 (function () {
     // ── Filtragem client-side ──────────────────────────────────────────────
-    const começa = (texto, termo) => texto.split(' ').some(p => p.startsWith(termo));
+    const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    const começa = (texto, termo) => norm(texto).startsWith(termo);
 
     const filtrar = () => {
-        const busca   = document.getElementById('buscaTarefa').value.toLowerCase().trim();
+        const busca   = norm(document.getElementById('buscaTarefa').value.trim());
         const projeto = document.getElementById('filtroProjeto').value;
         const status  = document.getElementById('filtroStatus').value;
         const linhas  = document.querySelectorAll('.linha-tarefa');
@@ -389,6 +394,7 @@ window.salvarTarefa = function () {
     fd.append('id_projeto',    idProjeto);
     fd.append('id_usuario',    document.getElementById('tarefaAluno').value);
     fd.append('data',          document.getElementById('tarefaPrazo').value);
+    fd.append('hora',          document.getElementById('tarefaHora').value);
     fd.append('prioridade',    document.getElementById('tarefaPrioridade').value);
     fd.append('status_tarefa', document.getElementById('tarefaStatusInput').value);
     fd.append('descricao',     document.getElementById('tarefaDescricao').value);
@@ -426,6 +432,7 @@ window.editarTarefa = function (id) {
             document.getElementById('tarefaTituloInput').value = t.titulo;
             document.getElementById('tarefaProjeto').value     = t.id_projeto || '';
             document.getElementById('tarefaPrazo').value       = t.data || '';
+            document.getElementById('tarefaHora').value        = t.hora ? t.hora.substring(0,5) : '';
             document.getElementById('tarefaPrioridade').value  = t.prioridade || 'media';
             document.getElementById('tarefaStatusInput').value = t.status_tarefa || 'pendente';
             document.getElementById('tarefaDescricao').value   = t.descricao || '';

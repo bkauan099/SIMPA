@@ -431,19 +431,21 @@ try {
         };
 
         // --- FILTRO DA TABELA ---
+        const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
         const filtrar = () => {
-            const busca = document.getElementById('filtro_aluno').value.toLowerCase().trim();
+            const busca = norm(document.getElementById('filtro_aluno').value.trim());
             const projeto = document.getElementById('filtro_projeto').value.toLowerCase();
             const status = document.getElementById('filtro_status').value.toLowerCase();
             const linhas = document.querySelectorAll('.linha-aluno');
 
             linhas.forEach(linha => {
-                const nome = linha.querySelector('.nome-txt').textContent.toLowerCase();
-                const mat = linha.querySelector('.matricula-txt').textContent.toLowerCase();
+                const nome = norm(linha.querySelector('.nome-txt').textContent);
+                const mat = norm(linha.querySelector('.matricula-txt').textContent);
                 const proj = linha.querySelector('.projeto-txt').textContent.toLowerCase();
                 const st = linha.querySelector('.status-txt').textContent.toLowerCase();
 
-                const bateBusca = nome.startsWith(busca) || mat.startsWith(busca);
+                const bateBusca = busca === '' || nome.startsWith(busca) || mat.startsWith(busca);
                 const bateProj = projeto === "" || proj === projeto;
                 const bateStatus = status === "" || st === status;
 

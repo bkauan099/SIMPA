@@ -86,6 +86,20 @@ $status_label = [
 </div>
 
 <script>
+function filtrarDocumentosModal() {
+    const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    const busca  = norm(document.getElementById('buscaDocModal').value.trim());
+    const status = document.getElementById('filtroStatusModal').value;
+
+    document.querySelectorAll('#corpo_tabela_docs .linha-doc').forEach(tr => {
+        const nomeDoc   = norm(tr.dataset.nome || '');
+        const stDoc     = tr.dataset.status || '';
+        const bateBusca = busca  === '' || nomeDoc.startsWith(busca);
+        const bateStatus = status === '' || stDoc === status;
+        tr.style.display = (bateBusca && bateStatus) ? '' : 'none';
+    });
+}
+
 function limparFiltrosDocs() {
     document.getElementById('buscaDocModal').value    = '';
     document.getElementById('filtroStatusModal').value = '';
@@ -107,7 +121,7 @@ function limparFiltrosDocs() {
                     $badgeLabel = $status_label[$s] ?? ucfirst($s);
                     $exibirNome = !empty($doc['titulo']) ? $doc['titulo'] : $doc['tipo'];
                 ?>
-                <tr>
+                <tr class="linha-doc" data-nome="<?= htmlspecialchars(strtolower($exibirNome)) ?>" data-status="<?= htmlspecialchars($s) ?>">
                     <td><div class="d-flex align-items-center"><i class="bi <?= getIconeArquivo($doc['tipo']) ?> fs-4 me-3"></i>
                     <span class="fw-bold text-dark"><?= htmlspecialchars($exibirNome) ?></span></div></td>
                     <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($doc['nome_projeto']) ?></span></td>

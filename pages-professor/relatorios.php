@@ -246,14 +246,15 @@ try {
 
 <script>
 function filtrarRelatorios() {
-    const busca   = (document.getElementById('filtroRelAluno')?.value   || '').toLowerCase().trim();
+    const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    const busca   = norm((document.getElementById('filtroRelAluno')?.value   || '').trim());
     const projeto = document.getElementById('filtroRelProjeto')?.value  || '';
 
     document.querySelectorAll('#tabelaRelatorios tr[data-aluno]').forEach(tr => {
-        const nomeAluno  = tr.dataset.aluno  || '';
+        const nomeAluno  = norm(tr.dataset.aluno  || '');
         const idProjeto  = tr.dataset.projetoId || '';
 
-        const bateAluno   = busca   === '' || nomeAluno.split(' ').some(p => p.startsWith(busca));
+        const bateAluno   = busca   === '' || nomeAluno.startsWith(busca);
         const bateProjeto = projeto === '' || idProjeto === projeto;
         tr.style.display  = (bateAluno && bateProjeto) ? '' : 'none';
     });

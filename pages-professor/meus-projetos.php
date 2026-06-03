@@ -173,6 +173,8 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
 
 <script>
     (function() {
+        const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
         const filtrarProjetos = () => {
             const input = document.getElementById('filtro_projeto');
             const selectTipo = document.getElementById('filtro_tipo');
@@ -181,7 +183,7 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
 
             if (!tabela || !input) return;
 
-            const termo = input.value.toLowerCase().trim();
+            const termo = norm(input.value.trim());
             const tipoSelecionado = selectTipo.value.toLowerCase().trim();
             const statusSelecionado = selectStatus.value.toLowerCase().trim();
 
@@ -189,11 +191,11 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
             let encontrouAlgum = false; // Variável de controle
 
             linhas.forEach(linha => {
-                const txtTitulo = linha.querySelector('.projeto-titulo').textContent.toLowerCase().trim();
+                const txtTitulo = norm(linha.querySelector('.projeto-titulo').textContent.trim());
                 const txtTipo = linha.querySelector('.projeto-tipo').textContent.toLowerCase().trim();
                 const txtStatus = linha.querySelector('.projeto-status-badge').textContent.toLowerCase().trim();
 
-                const bateTitulo = txtTitulo.startsWith(termo);
+                const bateTitulo = termo === '' || txtTitulo.startsWith(termo);
                 const bateTipo = tipoSelecionado === "" || txtTipo.includes(tipoSelecionado);
                 const bateStatus = statusSelecionado === "" || txtStatus.includes(statusSelecionado);
 

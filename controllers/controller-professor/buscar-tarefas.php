@@ -36,8 +36,8 @@ if ($modo === 'detalhe' || $modo === 'detalhe_json') {
 
         $prioLabels  = ['alta' => 'Alta', 'media' => 'Média', 'baixa' => 'Baixa'];
         $prioClasses = ['alta' => 'bg-danger', 'media' => 'bg-warning text-dark', 'baixa' => 'bg-secondary'];
-        $stLabels    = ['pendente' => 'Pendente', 'em_andamento' => 'Em Andamento', 'concluida' => 'Concluída'];
-        $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info text-dark', 'concluida' => 'bg-success'];
+        $stLabels    = ['pendente' => 'Pendente', 'em_andamento' => 'Em Andamento', 'concluida' => 'Concluída', 'concluido' => 'Concluída'];
+        $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info text-dark', 'concluida' => 'bg-success text-white', 'concluido' => 'bg-success text-white'];
 
         $prio   = $tarefa['prioridade']    ?? 'media';
         $status = $tarefa['status_tarefa'] ?? 'pendente';
@@ -115,8 +115,8 @@ try {
     } else {
         $prioLabels  = ['alta' => 'Alta', 'media' => 'Média', 'baixa' => 'Baixa'];
         $prioClasses = ['alta' => 'bg-danger', 'media' => 'bg-warning text-dark', 'baixa' => 'bg-secondary'];
-        $stLabels    = ['pendente' => 'Pendente', 'em_andamento' => 'Em Andamento', 'concluida' => 'Concluída'];
-        $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info text-dark', 'concluida' => 'bg-success'];
+        $stLabels    = ['pendente' => 'Pendente', 'em_andamento' => 'Em Andamento', 'concluida' => 'Concluída', 'concluido' => 'Concluída'];
+        $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info text-dark', 'concluida' => 'bg-success text-white', 'concluido' => 'bg-success text-white'];
 
         foreach ($tarefas as $t) {
             $prio       = $t['prioridade']    ?? 'media';

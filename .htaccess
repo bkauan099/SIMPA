@@ -10,14 +10,22 @@ RewriteEngine On
 # Redirecionar raiz para login se não autenticado
 RewriteRule ^$ login-page.php [L]
 
-# Bloquear acesso direto a .env, logs, lib, model, controllers, views
+# Bloquear acesso direto a .env, logs, lib, model, views
 RewriteRule ^\.env$              - [F,L]
 RewriteRule ^logs/               - [F,L]
 RewriteRule ^lib/                - [F,L]
 RewriteRule ^model/              - [F,L]
-RewriteRule ^controllers/        - [F,L]
 RewriteRule ^views/              - [F,L]
 RewriteRule ^conexao/            - [F,L]
+
+# Permitir endpoints de API nos controllers (chamados via AJAX pelo front-end)
+RewriteRule ^controllers/controller-professor/salvar-tarefa\.php$      - [L]
+RewriteRule ^controllers/controller-professor/excluir-tarefa\.php$     - [L]
+RewriteRule ^controllers/controller-professor/buscar-tarefas\.php$     - [L]
+RewriteRule ^controllers/controller-professor/alunos-por-projeto\.php$ - [L]
+
+# Bloquear todo o resto de controllers/
+RewriteRule ^controllers/        - [F,L]
 
 # Bloquear acesso a arquivos de configuração e backup
 <FilesMatch "\.(env|log|sql|bak|sh|git|md|json|lock)$">
