@@ -42,22 +42,92 @@ if ($modo === 'detalhe' || $modo === 'detalhe_json') {
         $prio   = $tarefa['prioridade']    ?? 'media';
         $status = $tarefa['status_tarefa'] ?? 'pendente';
 
-        echo "<dl class='row mb-0'>
-            <dt class='col-sm-4 text-muted small'>Título</dt>
-            <dd class='col-sm-8 fw-bold'>" . htmlspecialchars($tarefa['titulo']) . "</dd>
-            <dt class='col-sm-4 text-muted small'>Aluno</dt>
-            <dd class='col-sm-8'>" . htmlspecialchars($tarefa['nome_aluno'] ?? 'Não atribuído') . "</dd>
-            <dt class='col-sm-4 text-muted small'>Projeto</dt>
-            <dd class='col-sm-8'>" . htmlspecialchars($tarefa['nome_projeto'] ?? '—') . "</dd>
-            <dt class='col-sm-4 text-muted small'>Prazo</dt>
-            <dd class='col-sm-8'>" . ($tarefa['data'] ? date('d/m/Y', strtotime($tarefa['data'])) : '—') . "</dd>
-            <dt class='col-sm-4 text-muted small'>Prioridade</dt>
-            <dd class='col-sm-8'><span class='badge " . ($prioClasses[$prio] ?? 'bg-secondary') . "'>" . ($prioLabels[$prio] ?? ucfirst($prio)) . "</span></dd>
-            <dt class='col-sm-4 text-muted small'>Status</dt>
-            <dd class='col-sm-8'><span class='badge " . ($stClasses[$status] ?? 'bg-secondary') . "'>" . ($stLabels[$status] ?? ucfirst($status)) . "</span></dd>
-            <dt class='col-sm-4 text-muted small'>Descrição</dt>
-            <dd class='col-sm-8'>" . (empty($tarefa['descricao']) ? '—' : nl2br(htmlspecialchars($tarefa['descricao']))) . "</dd>
+        // Busca documentos enviados pelo aluno para esta tarefa
+        $docs = [];
+        if (!empty($tarefa['titulo']) && !empty($tarefa['id_projeto'])) {
+            $stmtDocs = $pdo->prepare("
+                SELECT id_producao, tipo, caminho, status
+                FROM producoes
+                WHERE titulo = :titulo AND id_projeto = :id_projeto
+                ORDER BY id_producao ASC
+            ");
+            $stmtDocs->execute([':titulo' => $tarefa['titulo'], ':id_projeto' => $tarefa['id_projeto']]);
+            $docs = $stmtDocs->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        $docStatusLabel = ['pendente' => 'Pendente', 'ativo' => 'Aprovado', 'inativo' => 'Reprovado'];
+        $docStatusClass = ['pendente' => 'bg-warning text-dark', 'ativo' => 'bg-success text-white', 'inativo' => 'bg-danger text-white'];
+
+        // Coluna esquerda: detalhes da tarefa
+        $colDetalhes = "<dl class='row mb-0'>
+            <dt class='col-sm-5 text-muted small'>Título</dt>
+            <dd class='col-sm-7 fw-bold'>" . htmlspecialchars($tarefa['titulo']) . "</dd>
+            <dt class='col-sm-5 text-muted small'>Aluno</dt>
+            <dd class='col-sm-7'>" . htmlspecialchars($tarefa['nome_aluno'] ?? 'Não atribuído') . "</dd>
+            <dt class='col-sm-5 text-muted small'>Projeto</dt>
+            <dd class='col-sm-7'>" . htmlspecialchars($tarefa['nome_projeto'] ?? '—') . "</dd>
+            <dt class='col-sm-5 text-muted small'>Prazo</dt>
+            <dd class='col-sm-7'>" . ($tarefa['data'] ? date('d/m/Y', strtotime($tarefa['data'])) : '—') . "</dd>
+            <dt class='col-sm-5 text-muted small'>Prioridade</dt>
+            <dd class='col-sm-7'><span class='badge " . ($prioClasses[$prio] ?? 'bg-secondary') . "'>" . ($prioLabels[$prio] ?? ucfirst($prio)) . "</span></dd>
+            <dt class='col-sm-5 text-muted small'>Status</dt>
+            <dd class='col-sm-7'><span class='badge " . ($stClasses[$status] ?? 'bg-secondary') . "'>" . ($stLabels[$status] ?? ucfirst($status)) . "</span></dd>
+            <dt class='col-sm-5 text-muted small'>Descrição</dt>
+            <dd class='col-sm-7'>" . (empty($tarefa['descricao']) ? '—' : nl2br(htmlspecialchars($tarefa['descricao']))) . "</dd>
         </dl>";
+
+        // Coluna direita: documentos anexados
+        if (empty($docs)) {
+            $colDocs = "<div class='text-center py-4 text-muted'>
+                <i class='bi bi-paperclip' style='font-size:2rem;display:block;margin-bottom:8px;'></i>
+                <small>Nenhum documento enviado</small>
+            </div>";
+        } else {
+            $colDocs = "<div class='d-flex flex-column gap-2'>";
+            foreach ($docs as $doc) {
+                $ds     = $doc['status'] ?? 'pendente';
+                $dLabel = $docStatusLabel[$ds] ?? ucfirst($ds);
+                $dClass = $docStatusClass[$ds] ?? 'bg-secondary';
+                $caminho = htmlspecialchars($doc['caminho']);
+                $nome    = htmlspecialchars($doc['tipo']);
+                $idProd  = intval($doc['id_producao']);
+
+                $btnAprovar = $btnReprovar = '';
+                if ($ds !== 'ativo') {
+                    $btnAprovar = "<button class='btn btn-sm btn-success' onclick=\"avaliarDoc({$idProd},'aprovar',this)\" title='Aprovar'>
+                        <i class='bi bi-check-lg'></i> Aprovar
+                    </button>";
+                }
+                if ($ds !== 'inativo') {
+                    $btnReprovar = "<button class='btn btn-sm btn-outline-danger ms-1' onclick=\"avaliarDoc({$idProd},'reprovar',this)\" title='Reprovar'>
+                        <i class='bi bi-x-lg'></i> Reprovar
+                    </button>";
+                }
+
+                $colDocs .= "<div class='border rounded p-2' id='doc-{$idProd}'>
+                    <div class='d-flex align-items-center gap-2 mb-2'>
+                        <i class='bi bi-file-earmark-text text-primary flex-shrink-0'></i>
+                        <span class='text-truncate small fw-medium flex-grow-1' title='{$nome}'>{$nome}</span>
+                        <a href='controllers/controller-professor/servir-doc-tarefa.php?id={$idProd}' target='_blank' class='btn btn-sm btn-outline-primary flex-shrink-0' title='Visualizar'>
+                            <i class='bi bi-eye'></i>
+                        </a>
+                    </div>
+                    <div class='d-flex align-items-center gap-1 justify-content-between flex-wrap'>
+                        <span class='badge {$dClass} doc-status-badge'>{$dLabel}</span>
+                        <div class='doc-acoes'>{$btnAprovar}{$btnReprovar}</div>
+                    </div>
+                </div>";
+            }
+            $colDocs .= "</div>";
+        }
+
+        echo "<div class='row g-3'>
+            <div class='col-md-6 border-end'>{$colDetalhes}</div>
+            <div class='col-md-6'>
+                <p class='fw-semibold small text-muted mb-2'><i class='bi bi-paperclip me-1'></i>DOCUMENTOS ENVIADOS</p>
+                {$colDocs}
+            </div>
+        </div>";
     } catch (PDOException $e) {
         echo "<p class='text-danger'>Erro: " . htmlspecialchars($e->getMessage()) . "</p>";
     }
@@ -76,7 +146,9 @@ try {
         COALESCE(a.status_tarefa, 'pendente') AS status_tarefa,
         a.id_usuario, a.id_projeto,
         u.nome AS nome_aluno,
-        p.titulo AS nome_projeto
+        p.titulo AS nome_projeto,
+        (SELECT COUNT(*) FROM producoes pr
+         WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto AND pr.status = 'pendente') AS docs_pendentes
     FROM agenda_items a
     JOIN participacao par ON a.id_projeto = par.id_projeto
     LEFT JOIN usuarios u ON a.id_usuario = u.id_usuario
@@ -129,8 +201,14 @@ try {
             $stClass    = $stClasses[$status]   ?? 'bg-secondary';
             $stLabel    = $stLabels[$status]    ?? ucfirst($status);
 
-            $acoes = "<button class='btn btn-sm btn-outline-primary' onclick=\"verTarefa('{$id}')\" title='Ver detalhes'>
-                <i class='bi bi-eye'></i></button>";
+            $temDocPendente = intval($t['docs_pendentes'] ?? 0) > 0;
+            $dotHtml = $temDocPendente
+                ? "<span class='position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle' style='width:10px;height:10px;'></span>"
+                : '';
+            $acoes = "<div class='position-relative d-inline-block'>
+                <button class='btn btn-sm btn-outline-primary' onclick=\"verTarefa('{$id}')\" title='Ver detalhes'><i class='bi bi-eye'></i></button>
+                {$dotHtml}
+            </div>";
             if ($status !== 'concluida') {
                 $acoes .= " <button class='btn btn-sm btn-outline-secondary ms-1' onclick=\"editarTarefa('{$id}')\" title='Editar'>
                     <i class='bi bi-pencil'></i></button>";

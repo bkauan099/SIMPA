@@ -19,10 +19,11 @@ RewriteRule ^views/              - [F,L]
 RewriteRule ^conexao/            - [F,L]
 
 # Permitir endpoints de API nos controllers (chamados via AJAX pelo front-end)
-RewriteRule ^controllers/controller-professor/salvar-tarefa\.php$      - [L]
-RewriteRule ^controllers/controller-professor/excluir-tarefa\.php$     - [L]
-RewriteRule ^controllers/controller-professor/buscar-tarefas\.php$     - [L]
-RewriteRule ^controllers/controller-professor/alunos-por-projeto\.php$ - [L]
+RewriteRule ^controllers/controller-professor/salvar-tarefa\.php$        - [L]
+RewriteRule ^controllers/controller-professor/excluir-tarefa\.php$       - [L]
+RewriteRule ^controllers/controller-professor/buscar-tarefas\.php$       - [L]
+RewriteRule ^controllers/controller-professor/alunos-por-projeto\.php$   - [L]
+RewriteRule ^controllers/controller-professor/avaliar-doc-tarefa\.php$   - [L]
 
 # Bloquear todo o resto de controllers/
 RewriteRule ^controllers/        - [F,L]

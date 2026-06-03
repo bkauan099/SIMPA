@@ -45,7 +45,9 @@ try {
         COALESCE(a.status_tarefa, 'pendente') AS status_tarefa,
         a.id_usuario, a.id_projeto,
         u.nome AS nome_aluno,
-        p.titulo AS nome_projeto
+        p.titulo AS nome_projeto,
+        (SELECT COUNT(*) FROM producoes pr
+         WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto AND pr.status = 'pendente') AS docs_pendentes
     FROM agenda_items a
     JOIN participacao par ON a.id_projeto = par.id_projeto
     LEFT JOIN usuarios u ON a.id_usuario = u.id_usuario
@@ -156,7 +158,14 @@ $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info
                         $nomeProjeto = $t['nome_projeto'] ?? '—';
                         $prazo     = $t['data'] ? date('d/m/Y', strtotime($t['data'])) : '—';
                         $id        = htmlspecialchars($t['id'], ENT_QUOTES);
-                        $acoes = "<button class='btn btn-sm btn-outline-primary' onclick=\"verTarefa('{$id}')\" title='Ver detalhes'><i class='bi bi-eye'></i></button>";
+                        $temDocPendente = intval($t['docs_pendentes'] ?? 0) > 0;
+                        $dotHtml = $temDocPendente
+                            ? "<span class='position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle' style='width:10px;height:10px;'></span>"
+                            : '';
+                        $acoes = "<div class='position-relative d-inline-block'>
+                            <button class='btn btn-sm btn-outline-primary' onclick=\"verTarefa('{$id}')\" title='Ver detalhes'><i class='bi bi-eye'></i></button>
+                            {$dotHtml}
+                        </div>";
                         if ($status !== 'concluida') {
                             $acoes .= " <button class='btn btn-sm btn-outline-secondary ms-1' onclick=\"editarTarefa('{$id}')\" title='Editar'><i class='bi bi-pencil'></i></button>";
                             $acoes .= " <button class='btn btn-sm btn-outline-danger ms-1' onclick=\"confirmarExcluirTarefa('{$id}')\" title='Excluir'><i class='bi bi-trash'></i></button>";
@@ -446,6 +455,48 @@ window.editarTarefa = function (id) {
 window.confirmarExcluirTarefa = function (id) {
     document.getElementById('tarefaParaExcluir').value = id;
     document.getElementById('modalConfirmarExclusaoTarefa').style.display = 'flex';
+};
+
+window.avaliarDoc = function (idProducao, acao, btn) {
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+    const fd = new FormData();
+    fd.append('id_producao', idProducao);
+    fd.append('acao', acao);
+
+    fetch('controllers/controller-professor/avaliar-doc-tarefa.php', { method: 'POST', body: fd })
+        .then(r => r.text())
+        .then(txt => {
+            let data;
+            try { data = JSON.parse(txt); }
+            catch(e) { throw new Error('Resposta inválida: ' + txt.substring(0, 200)); }
+            return data;
+        })
+        .then(data => {
+            if (!data.sucesso) {
+                alert('Erro: ' + data.mensagem);
+                btn.disabled = false;
+                btn.innerHTML = orig;
+                return;
+            }
+            // Atualiza o card do documento sem recarregar o modal
+            const card = document.getElementById('doc-' + idProducao);
+            if (!card) return;
+            const novoStatus  = data.novo_status;
+            const statusLabel = { ativo: 'Aprovado', inativo: 'Reprovado', pendente: 'Pendente' };
+            const statusClass = { ativo: 'bg-success text-white', inativo: 'bg-danger text-white', pendente: 'bg-warning text-dark' };
+            card.querySelector('.doc-status-badge').className = 'badge doc-status-badge ' + (statusClass[novoStatus] ?? 'bg-secondary');
+            card.querySelector('.doc-status-badge').textContent = statusLabel[novoStatus] ?? novoStatus;
+            // Reconstrói os botões de ação
+            const acoes = card.querySelector('.doc-acoes');
+            let btns = '';
+            if (novoStatus !== 'ativo')    btns += `<button class="btn btn-sm btn-success"         onclick="avaliarDoc(${idProducao},'aprovar',this)"  title="Aprovar"><i class="bi bi-check-lg"></i> Aprovar</button>`;
+            if (novoStatus !== 'inativo')  btns += `<button class="btn btn-sm btn-outline-danger ms-1" onclick="avaliarDoc(${idProducao},'reprovar',this)" title="Reprovar"><i class="bi bi-x-lg"></i> Reprovar</button>`;
+            acoes.innerHTML = btns;
+        })
+        .catch(err => { alert('Erro: ' + err.message); btn.disabled = false; btn.innerHTML = orig; });
 };
 
 window.executarExclusaoTarefa = function () {
