@@ -79,60 +79,101 @@ $diaHoje   = (int) $hojeObj->format('j');
                 ?>
 
                 <h6><i class="bi bi-list-check"></i> Tarefas</h6>
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-primary">
-                            <tr>
-                                <th style="width:40%">Título</th>
-                                <th style="width:25%">Data</th>
-                                <th style="width:15%">Hora</th>
-                                <th style="width:20%">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($tarefas)): ?>
-                                <tr><td colspan="4" class="text-muted text-center">Nenhuma tarefa cadastrada.</td></tr>
-                            <?php else: ?>
-                                <?php foreach ($tarefas as $t): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($t['titulo']) ?></td>
-                                        <td><?= date('d/m/Y', strtotime($t['data'])) ?></td>
-                                        <td><?= $t['hora'] ? substr($t['hora'], 0, 5) : '—' ?></td>
-                                        <td><?= _statusBadge($t, $hoje_str) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                <table class="table table-hover mb-0" style="table-layout:fixed;width:100%">
+                    <colgroup><col style="width:55%"><col style="width:25%"><col style="width:20%"></colgroup>
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Título</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyTarefas">
+                        <?php if (empty($tarefas)): ?>
+                            <tr><td colspan="3" class="text-muted text-center">Nenhuma tarefa cadastrada.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($tarefas as $i => $t): ?>
+                                <tr<?= $i >= 3 ? ' class="linha-extra-t" style="display:none"' : '' ?>
+                                    style="cursor:pointer;" onclick="carregarPagina('tarefas')" title="Ver em Minhas Tarefas">
+                                    <td>
+                                        <div class="fw-medium"><?= htmlspecialchars($t['titulo']) ?></div>
+                                        <?php if (!empty($t['projeto']) && $t['projeto'] !== '—'): ?>
+                                        <span style="font-size:0.7rem;background:#eff6ff;color:#1d4ed8;padding:1px 8px;border-radius:20px;font-weight:600;">
+                                            <i class="bi bi-folder2 me-1"></i><?= htmlspecialchars($t['projeto']) ?>
+                                        </span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <div style="font-size:0.85rem;"><?= date('d/m/Y', strtotime($t['data'])) ?></div>
+                                        <?php if ($t['hora']): ?><div class="text-muted" style="font-size:0.75rem;"><?= substr($t['hora'], 0, 5) ?></div><?php endif; ?>
+                                    </td>
+                                    <td><?= _statusBadge($t, $hoje_str) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+                <?php if (count($tarefas) > 3): ?>
+                <div class="text-center mt-2">
+                    <button class="btn btn-sm btn-outline-primary" onclick="toggleMais('tbodyTarefas','linha-extra-t',this)">
+                        <i class="bi bi-chevron-down me-1"></i>Mostrar mais (<?= count($tarefas) - 3 ?>)
+                    </button>
                 </div>
+                <?php endif; ?>
 
                 <h6 class="mt-4"><i class="bi bi-calendar-event"></i> Eventos</h6>
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-success">
-                            <tr>
-                                <th style="width:40%">Título</th>
-                                <th style="width:25%">Data</th>
-                                <th style="width:15%">Hora</th>
-                                <th style="width:20%">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($eventos)): ?>
-                                <tr><td colspan="4" class="text-muted text-center">Nenhum evento cadastrado.</td></tr>
-                            <?php else: ?>
-                                <?php foreach ($eventos as $e): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($e['titulo']) ?></td>
-                                        <td><?= date('d/m/Y', strtotime($e['data'])) ?></td>
-                                        <td><?= $e['hora'] ? substr($e['hora'], 0, 5) : '—' ?></td>
-                                        <td><?= _statusBadge($e, $hoje_str) ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+                <table class="table table-hover mb-0" style="table-layout:fixed;width:100%">
+                    <colgroup><col style="width:55%"><col style="width:25%"><col style="width:20%"></colgroup>
+                    <thead class="table-success">
+                        <tr>
+                            <th>Título</th>
+                            <th>Data</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyEventos">
+                        <?php if (empty($eventos)): ?>
+                            <tr><td colspan="3" class="text-muted text-center">Nenhum evento cadastrado.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($eventos as $i => $e): ?>
+                                <tr<?= $i >= 3 ? ' class="linha-extra-e" style="display:none"' : '' ?>
+                                    style="cursor:pointer;" onclick="carregarPagina('cronograma')" title="Ver no Cronograma">
+                                    <td>
+                                        <div class="fw-medium"><?= htmlspecialchars($e['titulo']) ?></div>
+                                        <?php if (!empty($e['projeto']) && $e['projeto'] !== '—'): ?>
+                                        <span style="font-size:0.7rem;background:#f0fdf4;color:#15803d;padding:1px 8px;border-radius:20px;font-weight:600;">
+                                            <i class="bi bi-folder2 me-1"></i><?= htmlspecialchars($e['projeto']) ?>
+                                        </span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <div style="font-size:0.85rem;"><?= date('d/m/Y', strtotime($e['data'])) ?></div>
+                                        <?php if ($e['hora']): ?><div class="text-muted" style="font-size:0.75rem;"><?= substr($e['hora'], 0, 5) ?></div><?php endif; ?>
+                                    </td>
+                                    <td><?= _statusBadge($e, $hoje_str) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+                <?php if (count($eventos) > 3): ?>
+                <div class="text-center mt-2">
+                    <button class="btn btn-sm btn-outline-success" onclick="toggleMais('tbodyEventos','linha-extra-e',this)">
+                        <i class="bi bi-chevron-down me-1"></i>Mostrar mais (<?= count($eventos) - 3 ?>)
+                    </button>
                 </div>
+                <?php endif; ?>
+
+                <script>
+                function toggleMais(tbodyId, cls, btn) {
+                    const linhas = document.querySelectorAll('#' + tbodyId + ' .' + cls);
+                    const aberto = linhas[0]?.style.display !== 'none';
+                    linhas.forEach(l => l.style.display = aberto ? 'none' : '');
+                    btn.innerHTML = aberto
+                        ? '<i class="bi bi-chevron-down me-1"></i>Mostrar mais (' + linhas.length + ')'
+                        : '<i class="bi bi-chevron-up me-1"></i>Mostrar menos';
+                }
+                </script>
             </div>
         </div>
 

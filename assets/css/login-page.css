@@ -46,21 +46,11 @@ body::before {
     margin-bottom: 28px;
 }
 
-/* Alvo cirúrgico na logo da UEMA (a 1ª imagem) */
+/* Logo UEMA horizontal */
 .uema img:first-child {
-    height:110px; /* Forçamos o brasão a ficar grande e imponente */
+    height: 60px;
     width: auto;
     object-fit: contain;
-}
-
-/* Brasão da UEMA */
-.uema .logo:first-child {
-    height: 110px !important;
-    width: auto !important;
-    flex: none !important;
-    object-fit: contain;
-    /* Puxa a próxima imagem (Proexae) para a ESQUERDA, invadindo o espaço transparente */
-    margin-right: -60px !important; 
 }
 
 /* Alvo cirúrgico na logo da Proexae (a 2ª imagem) */

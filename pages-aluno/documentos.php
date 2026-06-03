@@ -4,22 +4,26 @@ $id_usuario = $_SESSION['id_usuario'] ?? null;
 require_once __DIR__ . '/../conexao/conexao.php';
 if (!$id_usuario) { echo '<p class="text-danger p-4">Sessão expirada. Recarregue a página.</p>'; exit; }
 
+// Busca matrícula do aluno para filtrar apenas seus próprios arquivos
+$stmtMat = $pdo->prepare("SELECT matricula FROM usuarios WHERE id_usuario = :id");
+$stmtMat->execute([':id' => $id_usuario]);
+$_matriculaDoc = $stmtMat->fetchColumn();
+
 $stmt = $pdo->prepare("
     SELECT
         p.id_producao,
-        p.titulo        AS tarefa,
-        p.tipo          AS nome_arquivo,
+        p.titulo               AS tarefa,
+        p.tipo                 AS nome_arquivo,
         p.caminho,
-        p.status,
-        proj.titulo     AS projeto
+        CAST(p.status AS TEXT) AS status,
+        p.data_registro,
+        proj.titulo            AS projeto
     FROM producoes p
-    JOIN participacao pa ON pa.id_projeto = p.id_projeto
-    JOIN projetos proj   ON proj.id_projeto = p.id_projeto
-    WHERE pa.id_usuario = :id
-      AND p.status != 'inativo'
-    ORDER BY p.id_producao DESC
+    JOIN projetos proj ON proj.id_projeto = p.id_projeto
+    WHERE p.caminho LIKE :prefix
+    ORDER BY p.data_registro DESC
 ");
-$stmt->execute([':id' => $id_usuario]);
+$stmt->execute([':prefix' => 'uploads/alunos/' . $_matriculaDoc . '/%']);
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $documentos = array_values(array_filter($documentos, function($d) {
@@ -48,17 +52,17 @@ function iconeArquivo(string $ext): string {
 
 function statusInfo(string $s): array {
     return match($s) {
-        'ativo'   => ['label' => 'Aprovado',             'icon' => 'bi-check-circle-fill', 'cor' => '#16a34a', 'bg' => '#dcfce7', 'badge' => 'bg-success text-white'],
-        'inativo' => ['label' => 'Reprovado',            'icon' => 'bi-x-circle-fill',     'cor' => '#dc2626', 'bg' => '#fee2e2', 'badge' => 'bg-danger text-white'],
-        default   => ['label' => 'Aguardando Aprovação', 'icon' => 'bi-hourglass-split',   'cor' => '#d97706', 'bg' => '#fef3c7', 'badge' => 'bg-warning text-dark'],
+        'concluido' => ['label' => 'Aprovado',             'icon' => 'bi-check-circle-fill', 'cor' => '#16a34a', 'bg' => '#dcfce7', 'badge' => 'bg-success text-white'],
+        'cancelado' => ['label' => 'Reprovado',            'icon' => 'bi-x-circle-fill',     'cor' => '#dc2626', 'bg' => '#fee2e2', 'badge' => 'bg-danger text-white'],
+        default     => ['label' => 'Aguardando Aprovação', 'icon' => 'bi-hourglass-split',   'cor' => '#d97706', 'bg' => '#fef3c7', 'badge' => 'bg-warning text-dark'],
     };
 }
 
 $contadores = ['pendente' => 0, 'aprovado' => 0, 'reprovado' => 0];
 foreach ($documentos as $d) {
     $s = $d['status'];
-    if ($s === 'ativo') $contadores['aprovado']++;
-    elseif ($s === 'inativo') $contadores['reprovado']++;
+    if ($s === 'concluido') $contadores['aprovado']++;
+    elseif ($s === 'cancelado') $contadores['reprovado']++;
     else $contadores['pendente']++;
 }
 $total = count($documentos);
@@ -156,13 +160,14 @@ $total = count($documentos);
                     <th>ARQUIVO</th>
                     <th>TAREFA</th>
                     <th>PROJETO</th>
+                    <th>ENVIADO EM</th>
                     <th>STATUS</th>
                     <th class="text-center">AÇÃO</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($documentos)): ?>
-                    <tr><td colspan="5" class="text-center py-4 text-muted">Nenhum documento encontrado.</td></tr>
+                    <tr><td colspan="6" class="text-center py-4 text-muted">Nenhum documento encontrado.</td></tr>
                 <?php else: ?>
                     <?php foreach ($documentos as $doc):
                         $nome     = $doc['nome_arquivo'];
@@ -173,7 +178,7 @@ $total = count($documentos);
                         $proxyUrl = 'pages-aluno/servir-arquivo.php?id=' . $doc['id_producao'];
                         $buscaKey = strtolower($nome . ' ' . $doc['tarefa'] . ' ' . $doc['projeto']);
                         $st       = statusInfo($doc['status']);
-                        $stKey    = match($doc['status']) { 'ativo' => 'aprovado', 'inativo' => 'reprovado', default => 'pendente' };
+                        $stKey    = match($doc['status']) { 'concluido' => 'aprovado', 'cancelado' => 'reprovado', default => 'pendente' };
                     ?>
                     <tr data-busca="<?= htmlspecialchars($buscaKey) ?>"
                         data-tipo="<?= $isPdf ? 'pdf' : 'outro' ?>"
@@ -184,6 +189,7 @@ $total = count($documentos);
                         </td>
                         <td class="text-muted small"><?= htmlspecialchars($doc['tarefa']) ?></td>
                         <td class="text-muted small"><?= htmlspecialchars($doc['projeto']) ?></td>
+                        <td class="text-muted small"><?= !empty($doc['data_registro']) ? date('d/m/Y', strtotime($doc['data_registro'])) : '—' ?></td>
                         <td>
                             <span class="badge <?= $st['badge'] ?>" style="font-size:0.72rem;">
                                 <i class="bi <?= $st['icon'] ?> me-1"></i><?= $st['label'] ?>
@@ -212,6 +218,7 @@ $total = count($documentos);
         </table>
     </div>
 </div>
+
 
 <script>
 function filtrarDocumentos() {

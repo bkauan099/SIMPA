@@ -128,15 +128,15 @@ if ($_matricula) {
     try {
         $s = $pdo->prepare(
             "SELECT titulo, status FROM producoes
-             WHERE caminho LIKE :prefix AND status IN ('aprovado', 'reprovado')
+             WHERE caminho LIKE :prefix AND status IN ('concluido', 'cancelado')
              ORDER BY id_producao DESC LIMIT 10"
         );
         $s->execute([':prefix' => 'uploads/alunos/' . $_matricula . '/%']);
         foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
             $_notificacoes[] = [
-                'icone' => $r['status'] === 'aprovado' ? 'bi-check-circle-fill' : 'bi-x-circle-fill',
-                'cor'   => $r['status'] === 'aprovado' ? '#22c55e' : '#ef4444',
-                'texto' => 'Documento <strong>' . htmlspecialchars($r['titulo']) . '</strong> foi ' . ($r['status'] === 'aprovado' ? 'aprovado' : 'reprovado'),
+                'icone' => $r['status'] === 'concluido' ? 'bi-check-circle-fill' : 'bi-x-circle-fill',
+                'cor'   => $r['status'] === 'concluido' ? '#22c55e' : '#ef4444',
+                'texto' => 'Documento <strong>' . htmlspecialchars($r['titulo']) . '</strong> foi ' . ($r['status'] === 'concluido' ? 'aprovado' : 'reprovado'),
             ];
         }
     } catch (Exception $__e) {}
@@ -206,7 +206,7 @@ $_totalNotif = count($_notificacoes);
                 <button class="topbar-toggle" onclick="toggleSidebar()" aria-label="Menu">
                     <i class="bi bi-list fs-4"></i>
                 </button>
-                <img src="assets/img/uema-logo.png"      alt="UEMA"    class="logo-uema-top">
+                <img src="assets/img/logo-uema.png" alt="UEMA" class="logo-uema-top">
                 <div class="logo-sep"></div>
                 <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">
             </div>
@@ -582,6 +582,23 @@ function abrirDetalhesProjeto(tr) {
     });
 }
 
+// ── Helper: prazo passou considerando data + hora ─────────────
+function _prazoPassou(tr) {
+    const p = (tr.dataset.data || '').split('-');
+    if (p.length < 3) return false;
+    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+    const prazo = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]));
+    if (prazo < hoje) return true;
+    const hora = tr.dataset.hora;
+    if (hora) {
+        const partes = hora.split(':');
+        const prazoComHora = new Date(parseInt(p[0]), parseInt(p[1]) - 1, parseInt(p[2]),
+                                      parseInt(partes[0]), parseInt(partes[1]));
+        return new Date() > prazoComHora;
+    }
+    return false;
+}
+
 // ── Tarefas ───────────────────────────────────────────────────
 let _tarefaAtual = null;
 
@@ -602,14 +619,12 @@ function toggleConcluido(btn) {
     .then(data => {
         if (!data.ok) { btn.disabled = false; if (data.erro) alert(data.erro); return; }
         const concluido = data.concluido;
-        const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
-        const p = tr.dataset.data.split('-');
-        const prazo = new Date(p[0], p[1] - 1, p[2]);
+        const passou = _prazoPassou(tr);
 
         let statusKey, statusLabel, statusClass;
         if (concluido) {
             statusKey = 'concluido'; statusLabel = 'Concluído'; statusClass = 'bg-success text-white';
-        } else if (prazo < hoje) {
+        } else if (passou) {
             statusKey = 'nao_concluido'; statusLabel = 'Não Concluído'; statusClass = 'bg-danger text-white';
         } else {
             statusKey = 'pendente'; statusLabel = 'Pendente'; statusClass = 'bg-warning text-dark';
@@ -637,10 +652,7 @@ function toggleConcluido(btn) {
 function atualizarBotoesTarefa(tr) {
     const temArquivo  = getArquivos(tr).length > 0;
     const concluido   = tr.dataset.concluido === '1';
-    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
-    const p = tr.dataset.data.split('-');
-    const prazo = new Date(p[0], p[1] - 1, p[2]);
-    const prazoPastou = prazo < hoje;
+    const prazoPastou = _prazoPassou(tr);
     const td = tr.querySelector('td:last-child');
 
     const eyeBtn = temArquivo
@@ -648,9 +660,12 @@ function atualizarBotoesTarefa(tr) {
         : `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Nenhum arquivo anexado"><i class="bi bi-eye"></i></button>`;
 
     if (concluido && prazoPastou) {
-        td.innerHTML = `<button class="btn btn-sm btn-outline-success opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Concluído"><i class="bi bi-check-lg"></i></button>` + eyeBtn;
+        td.innerHTML = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Prazo encerrado, não é possível desfazer"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (concluido) {
         td.innerHTML = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleConcluido(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
+    } else if (prazoPastou) {
+        td.innerHTML = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" disabled title="Prazo encerrado"><i class="bi bi-lock-fill"></i></button>`
+            + `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" disabled title="Prazo encerrado"><i class="bi bi-paperclip"></i></button>`;
     } else if (temArquivo) {
         td.innerHTML = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();toggleConcluido(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
             + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Editar arquivo"><i class="bi bi-pencil"></i></button>`;
@@ -1189,16 +1204,14 @@ function toggleCronograma(btn) {
     })
     .then(r => r.json())
     .then(data => {
-        if (!data.ok) { btn.disabled = false; return; }
+        if (!data.ok) { btn.disabled = false; if (data.erro) alert(data.erro); return; }
         const concluido = data.concluido;
-        const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
-        const p = tr.dataset.data.split('-');
-        const prazo = new Date(p[0], p[1] - 1, p[2]);
+        const passou = _prazoPassou(tr);
 
         let statusKey, statusLabel, statusClass;
         if (concluido) {
             statusKey = 'concluido'; statusLabel = 'Concluído'; statusClass = 'bg-success text-white';
-        } else if (prazo < hoje) {
+        } else if (passou) {
             statusKey = 'nao_concluido'; statusLabel = 'Não Concluído'; statusClass = 'bg-danger text-white';
         } else {
             statusKey = 'proximo'; statusLabel = 'Pendente'; statusClass = 'bg-warning text-dark';
@@ -1227,10 +1240,7 @@ function atualizarBotoesCronograma(tr) {
     const temArquivo   = getArquivos(tr).length > 0;
     const concluido    = tr.dataset.concluido === '1';
     const temDescricao = tr.dataset.temDescricao === '1';
-    const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
-    const p = tr.dataset.data.split('-');
-    const prazo = new Date(p[0], p[1] - 1, p[2]);
-    const prazoPastou = prazo < hoje;
+    const prazoPastou  = _prazoPassou(tr);
     const td = tr.querySelector('td:last-child');
 
     const eyeBtn = temArquivo
@@ -1239,9 +1249,12 @@ function atualizarBotoesCronograma(tr) {
 
     let acoes = '';
     if (concluido && prazoPastou) {
-        acoes = `<button class="btn btn-sm btn-outline-success opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Concluído"><i class="bi bi-check-lg"></i></button>` + eyeBtn;
+        acoes = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Prazo encerrado, não é possível desfazer"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (concluido) {
         acoes = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleCronograma(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
+    } else if (prazoPastou) {
+        acoes = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" disabled title="Prazo encerrado"><i class="bi bi-lock-fill"></i></button>`
+              + `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" disabled title="Prazo encerrado"><i class="bi bi-paperclip"></i></button>`;
     } else if (temArquivo) {
         acoes = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();toggleCronograma(this)" title="Marcar como concluído"><i class="bi bi-check-lg"></i></button>`
               + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Editar arquivo"><i class="bi bi-pencil"></i></button>`;

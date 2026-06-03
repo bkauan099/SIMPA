@@ -133,6 +133,7 @@
                             data-descricao="<?= htmlspecialchars($descricao, ENT_QUOTES) ?>"
                             data-projeto="<?= htmlspecialchars($item['projeto'] ?? '—', ENT_QUOTES) ?>"
                             data-id-projeto="<?= htmlspecialchars($item['id_projeto_ref'] ?? '', ENT_QUOTES) ?>"
+                            data-hora="<?= htmlspecialchars($item['hora'] ? substr($item['hora'], 0, 5) : '', ENT_QUOTES) ?>"
                             >
                             <td class="fw-medium"><?= htmlspecialchars($item['titulo']) ?></td>
                             <td class="text-muted small"><?= htmlspecialchars($item['projeto'] ?? '—') ?></td>

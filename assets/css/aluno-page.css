@@ -29,7 +29,7 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 }
 .topbar-left  { display:flex; align-items:center; gap:14px; }
 .topbar-right { display:flex; align-items:center; gap:16px; }
-.logo-uema-top    { max-height:72px; width:auto; }
+.logo-uema-top    { max-height:58px; width:auto; }
 .logo-proexae-top { max-height:52px; width:auto; }
 .logo-sep { width:1px; height:32px; background:rgba(255,255,255,0.25); }
 

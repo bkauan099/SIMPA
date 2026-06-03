@@ -8,7 +8,9 @@ $email = trim($_POST['email'] ?? '');
 $senha = $_POST['senha'] ?? '';
 
 if (empty($email) || empty($senha)) {
-    header("Location: login-page.php?erro=1"); exit();
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['status' => 'erro', 'mensagem' => 'Preencha e-mail e senha.']);
+    exit();
 }
 
 /**
@@ -91,6 +93,8 @@ try {
     $stmt->execute([':email' => $email]);
     $u = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    header('Content-Type: application/json; charset=utf-8');
+
     // ── LOGIN VÁLIDO ──────────────────────────────────────────────────────────
     if ($u && $u['status'] === 'ativo' && password_verify($senha, $u['senha'])) {
 
@@ -104,11 +108,13 @@ try {
 
         $p = strtolower($u['perfil']);
         if (str_contains($p, 'admin'))
-            header("Location: adm-page.php");
+            $redirect = 'adm-page.php';
         elseif (str_contains($p, 'professor') || str_contains($p, 'orientador'))
-            header("Location: professor-page.php");
+            $redirect = 'professor-page.php';
         else
-            header("Location: aluno-page.php");
+            $redirect = 'aluno-page.php';
+
+        echo json_encode(['status' => 'ok', 'redirect' => $redirect]);
         exit();
     }
 
@@ -117,11 +123,12 @@ try {
     registrarAcesso($pdo, $idParaLog, $email, 'falha');
     Logger::registrar(Logger::LOGIN, Logger::LOGIN_FALHA, "Tentativa de login falha para e-mail: \"{$email}\"", ['id_usuario' => $idParaLog ?? 'desconhecido']);
 
-    header("Location: login-page.php?erro=1");
+    echo json_encode(['status' => 'erro', 'mensagem' => 'E-mail ou senha incorretos.']);
     exit();
 
 } catch (Exception $e) {
-    header("Location: login-page.php?erro=2");
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['status' => 'erro', 'mensagem' => 'Erro interno. Tente novamente.']);
     exit();
 }
 ?>

@@ -120,12 +120,16 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
             $desc  = trim($r['descricao'] ?? '');
 
             $prazo = new DateTime($r['data']);
+            $_passou = $prazo < $hoje;
+            if (!$_passou && !empty($r['hora'])) {
+                $_passou = (new DateTime()) > new DateTime($r['data'] . ' ' . substr($r['hora'], 0, 5));
+            }
             if (!empty($r['concluido'])) {
                 $statusLabel = 'Concluído';
                 $statusStyle = 'background:#dcfce7;color:#16a34a;';
                 $statusIco   = 'bi-check-circle';
                 $statusKey   = 'concluido';
-            } elseif ($prazo < $hoje) {
+            } elseif ($_passou) {
                 $statusLabel = 'Não Concluído';
                 $statusStyle = 'background:#fee2e2;color:#dc2626;';
                 $statusIco   = 'bi-x-circle';

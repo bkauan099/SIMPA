@@ -19,6 +19,43 @@ class Projeto {
         return $stats;
     }
 
+    public function obterEstatisticasProfessor($id_professor) {
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(DISTINCT p.id_projeto) AS ativos
+            FROM projetos p
+            JOIN participacao pa ON pa.id_projeto = p.id_projeto
+            WHERE pa.id_usuario = ? AND p.status = 'ativo'
+        ");
+        $stmt->execute([$id_professor]);
+        $ativos = (int)$stmt->fetchColumn();
+
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(DISTINCT pa2.id_usuario) AS alunos
+            FROM participacao pa2
+            JOIN usuarios u ON pa2.id_usuario = u.id_usuario
+            WHERE pa2.id_projeto IN (
+                SELECT id_projeto FROM participacao WHERE id_usuario = ?
+            ) AND CAST(u.perfil AS TEXT) ILIKE '%aluno%'
+        ");
+        $stmt->execute([$id_professor]);
+        $alunos = (int)$stmt->fetchColumn();
+
+        return ['ativos' => $ativos, 'alunos' => $alunos];
+    }
+
+    public function obterDadosGrafico($id_professor) {
+        $stmt = $this->pdo->prepare("
+            SELECT COALESCE(CAST(p.tipo AS TEXT), 'Sem tipo') AS nome, COUNT(*) AS total
+            FROM projetos p
+            JOIN participacao pa ON pa.id_projeto = p.id_projeto
+            WHERE pa.id_usuario = ? AND p.status = 'ativo'
+            GROUP BY p.tipo
+            ORDER BY total DESC
+        ");
+        $stmt->execute([$id_professor]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function listarProjetosAtivos() {
         $sql = "
             SELECT p.id_projeto, p.titulo, p.status,

@@ -66,7 +66,7 @@
 <main class="container">
     <form id="formLogin" action="processa_login.php" method="POST">
         <div class="uema">
-            <img src="assets/img/uema-logo.png" alt="UEMA" class="logo">
+            <img src="assets/img/Brasao_UEMA_horizontal.png" alt="UEMA" class="logo">
             <img src="assets/img/Proexae.png" alt="Proexae" class="logo">
         </div>
 
@@ -332,6 +332,24 @@ function ver(id){ const el=document.getElementById(id); el.type=el.type==='passw
 
 // Enter para avançar
 document.addEventListener('keydown',e=>{ if(e.key!=='Enter') return; if(stepAtual===1) step1(); if(stepAtual===3) step3(); });
+
+// Intercepta o submit do formulário de login
+document.getElementById('formLogin').addEventListener('submit', function(e){
+    e.preventDefault();
+    const btn = this.querySelector('button[type=submit]');
+    btn.disabled = true;
+    btn.textContent = 'Entrando...';
+    fetch('processa_login.php', {method:'POST', body: new FormData(this)})
+        .then(r => r.json())
+        .then(d => {
+            if(d.status === 'ok'){
+                window.location.href = d.redirect;
+            } else {
+                window.location.href = 'login-page.php?erro=1';
+            }
+        })
+        .catch(() => { window.location.href = 'login-page.php?erro=1'; });
+});
 </script>
 </body>
 </html>

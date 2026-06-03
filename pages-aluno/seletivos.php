@@ -18,23 +18,15 @@
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <select class="form-select" id="filtroTipo">
+            <select class="form-select" id="filtroTipo" onchange="filtrarSeletivos()">
                 <option value="">Tipo (Todos)</option>
+                <option value="ic">Ligas Acadêmicas</option>
                 <option value="esp">Projeto Especial</option>
-                <option value="liga">Ligas Acadêmicas</option>
-                <option value="jr">Empresa Jr</option>
-                <option value="atl">Atlética</option>
+                <option value="ext">Empresa Jr</option>
             </select>
         </div>
-        <div class="col-6 col-md-2">
-            <select class="form-select">
-                <option value="">Status</option>
-                <option>Aberto</option>
-                <option>Encerra em breve</option>
-            </select>
-        </div>
-        <div class="col-12 col-md-2">
-            <button class="btn btn-primary w-100">Filtrar</button>
+        <div class="col-12 col-md-2 text-muted small text-center" id="contadorSeletivos">
+            7 resultado(s)
         </div>
     </div>
 </div>
@@ -246,3 +238,26 @@
     </div>
 
 </div>
+
+<script>
+document.getElementById('filtroSeletivo').addEventListener('input', filtrarSeletivos);
+
+function filtrarSeletivos() {
+    const busca = document.getElementById('filtroSeletivo').value.toLowerCase().trim();
+    const tipo  = document.getElementById('filtroTipo').value;
+    const cards = document.querySelectorAll('#listaSeletivos .seletivo-card');
+    let visiveis = 0;
+
+    cards.forEach(card => {
+        const texto     = card.textContent.toLowerCase();
+        const bateBusca = !busca || texto.includes(busca);
+        const bateTipo  = !tipo  || card.classList.contains(tipo);
+        const ok = bateBusca && bateTipo;
+        card.style.display = ok ? '' : 'none';
+        if (ok) visiveis++;
+    });
+
+    const cnt = document.getElementById('contadorSeletivos');
+    if (cnt) cnt.textContent = visiveis + ' resultado(s)';
+}
+</script>

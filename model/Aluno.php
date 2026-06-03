@@ -102,7 +102,9 @@ class Aluno {
             FROM agenda_items ai
             LEFT JOIN projetos proj ON proj.id_projeto = ai.id_projeto
             WHERE ai.id_usuario = :id
-            ORDER BY ai.data ASC
+            ORDER BY
+                CASE WHEN ai.data >= CURRENT_DATE THEN 0 ELSE 1 END ASC,
+                ai.data ASC
             LIMIT 50
         ";
         $stmt = $this->pdo->prepare($sql);

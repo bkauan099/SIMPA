@@ -153,6 +153,7 @@
                             data-descricao="<?= htmlspecialchars($descricao, ENT_QUOTES) ?>"
                             data-projeto="<?= htmlspecialchars($item['projeto'] ?? '—', ENT_QUOTES) ?>"
                             data-id-projeto="<?= htmlspecialchars($item['id_projeto_ref'] ?? '', ENT_QUOTES) ?>"
+                            data-hora="<?= htmlspecialchars($item['hora'] ? substr($item['hora'], 0, 5) : '', ENT_QUOTES) ?>"
                             >
                             <td class="fw-bold"><?= date('d/m/Y', strtotime($item['data'])) ?></td>
                             <td><?= $item['hora'] ? substr($item['hora'], 0, 5) : '—' ?></td>
