@@ -33,6 +33,22 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .logo-proexae-top { max-height:52px; width:auto; }
 .logo-sep { width:1px; height:32px; background:rgba(255,255,255,0.25); }
 
+.topbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.topbar-toggle:hover { background: rgba(255,255,255,0.1); }
+
 /* ══ SIDEBAR ══ */
 #sidebar {
     width: var(--sidebar-min);
@@ -192,7 +208,27 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     padding:14px 10px; border-bottom-color:#f1f5f9;
     color:var(--texto-escuro); vertical-align:middle;
 }
-.table th { font-weight:600; color:var(--texto-mutado); font-size:0.8rem; text-transform:uppercase; }
+.table th {
+    font-weight: 600;
+    color: var(--texto-mutado);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    padding: 12px 10px !important;
+    background-color: #f8fafc;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+.table td {
+    text-align: center;
+    vertical-align: middle !important;
+}
+.table td:first-child,
+.table th:first-child {
+    text-align: left;
+}
 
 /* ══ STATUS / BADGES ══ */
 .status-pill     { padding:4px 12px; border-radius:6px; font-size:0.8rem; font-weight:600; }
@@ -219,13 +255,14 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     #sidebar.open .nav-label { display:inline; }
     #sidebar.open ul li a { justify-content:flex-start; padding:12px 20px; }
     #sidebar.open ul li a i { width:28px; }
+    .topbar-toggle { display:flex; }
+    .sidebar-toggle-wrap { display:none !important; }
     .navbar-custom { padding:0 14px; }
     .dashboard-container { padding:12px; }
-    .logo-uema-top    { max-height:52px; }
-    .logo-proexae-top { max-height:38px; }
+    .logo-uema-top    { max-height:36px; max-width:100px; }
+    .logo-proexae-top { max-height:28px; max-width:80px; }
     .col-lg-8, .col-lg-4 { flex:0 0 100% !important; max-width:100% !important; }
     .table-responsive { overflow-x:auto; }
-
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
@@ -235,8 +272,83 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 }
 
 @media (max-width: 480px) {
+    .navbar-custom { height:54px; padding:0 10px; }
+    .logo-sep { display:none; }
+    .logo-proexae-top { display:none; }
+    .logo-uema-top { max-height:32px; max-width:90px; }
+    .topbar-right { gap:10px; }
     .dashboard-container { padding:10px; }
     .content-card { padding:14px; }
     .stat-card { padding:12px; }
     .col-sm-6 { flex:0 0 100% !important; max-width:100% !important; }
+}
+
+/* ══ MODAL CUSTOMIZADO ══ */
+.modal-container {
+    display: none; /* Controlado pelo JS */
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 2000; /* Acima de tudo */
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    backdrop-filter: blur(2px);
+}
+
+.modal-content {
+    background: var(--branco);
+    width: 100%;
+    max-width: 650px;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    position: relative;
+    border: none;
+    animation: modalShow 0.3s ease-out;
+}
+
+@keyframes modalShow {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajustes nos inputs para não ficarem gigantes */
+.modal-content .form-control, 
+.modal-content .form-select {
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.modal-content .form-control:focus {
+    border-color: var(--azul-uema);
+    box-shadow: 0 0 0 3px rgba(15, 37, 87, 0.1);
+}
+
+.modal-content label {
+    color: var(--azul-uema);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.modal-content h4 {
+    color: var(--azul-uema);
+    font-size: 1.25rem;
+}
+
+/* Ajuste das linhas do formulário */
+.modal-content .row {
+    margin-top: 15px;
+}
+
+/* ══ RESPONSIVIDADE DO MODAL ══ */
+@media (max-width: 576px) {
+    .modal-content {
+        padding: 20px;
+        margin: 10px;
+    }
 }

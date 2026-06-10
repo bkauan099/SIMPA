@@ -128,15 +128,17 @@ if ($_matricula) {
     try {
         $s = $pdo->prepare(
             "SELECT titulo, status FROM producoes
-             WHERE caminho LIKE :prefix AND status IN ('concluido', 'cancelado')
+             WHERE caminho LIKE :prefix
+               AND status IN ('concluido', 'cancelado')
              ORDER BY id_producao DESC LIMIT 10"
         );
         $s->execute([':prefix' => 'uploads/alunos/' . $_matricula . '/%']);
         foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
+            $aprovado = $r['status'] === 'concluido';
             $_notificacoes[] = [
-                'icone' => $r['status'] === 'concluido' ? 'bi-check-circle-fill' : 'bi-x-circle-fill',
-                'cor'   => $r['status'] === 'concluido' ? '#22c55e' : '#ef4444',
-                'texto' => 'Documento <strong>' . htmlspecialchars($r['titulo']) . '</strong> foi ' . ($r['status'] === 'concluido' ? 'aprovado' : 'reprovado'),
+                'icone' => $aprovado ? 'bi-check-circle-fill' : 'bi-x-circle-fill',
+                'cor'   => $aprovado ? '#22c55e' : '#ef4444',
+                'texto' => 'Documento <strong>' . htmlspecialchars($r['titulo']) . '</strong> foi ' . ($aprovado ? 'aprovado' : 'reprovado'),
             ];
         }
     } catch (Exception $__e) {}
@@ -1424,6 +1426,118 @@ function showDay(el) {
 
     new bootstrap.Modal(document.getElementById('modalDia')).show();
 }
+</script>
+<script>
+(function () {
+    const INTERVALO   = 10000;
+    const STORAGE_KEY = 'notif_lidas_<?= (int)$id_usuario ?>';
+
+    // ── localStorage helpers ──────────────────────────────────────
+    function getLidas() {
+        try { return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')); }
+        catch(e) { return new Set(); }
+    }
+    function salvarLidas(set) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([...set].slice(-200)));
+    }
+
+    // ── Intercepta cliques em "Marcar como lida" para persistir ──
+    document.getElementById('listaNotif').addEventListener('click', function(e) {
+        const btn = e.target.closest('.tb-notif-toggle');
+        if (!btn) return;
+        const item  = btn.closest('.tb-notif-item');
+        const span  = item.querySelector('span');
+        if (!span) return;
+        const texto = span.innerHTML.trim();
+        const lidas = getLidas();
+        if (item.dataset.lida === '1') {
+            lidas.delete(texto);
+        } else {
+            lidas.add(texto);
+        }
+        salvarLidas(lidas);
+    });
+
+    // ── Intercepta "Marcar todas como lidas" ─────────────────────
+    document.getElementById('btnLerTodas').addEventListener('click', function() {
+        const lidas = getLidas();
+        document.querySelectorAll('#listaNotif .tb-notif-item span').forEach(function(s) {
+            lidas.add(s.innerHTML.trim());
+        });
+        salvarLidas(lidas);
+    });
+
+    // ── Renderiza lista preservando estado do localStorage ───────
+    function renderNotificacoes(lista) {
+        const listaEl = document.getElementById('listaNotif');
+        const badge   = document.getElementById('badgeNotif');
+        if (!listaEl || !badge) return;
+
+        const lidas = getLidas();
+
+        if (lista.length === 0) {
+            listaEl.innerHTML = `
+                <div class="tb-notif-vazia">
+                    <i class="bi bi-bell-slash" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                    Nenhuma notificação
+                </div>`;
+        } else {
+            listaEl.innerHTML = lista.map(function(n) {
+                const texto  = n.texto.trim();
+                const jaLida = lidas.has(texto) ? '1' : '0';
+                const btnTxt = jaLida === '1' ? 'Marcar como não lida' : 'Marcar como lida';
+                return `<div class="tb-notif-item" data-lida="${jaLida}">
+                    <div class="tb-notif-texto">
+                        <i class="bi ${n.icone}" style="color:${n.cor};margin-right:6px;flex-shrink:0;"></i>
+                        <span>${texto}</span>
+                    </div>
+                    <button class="tb-notif-toggle">${btnTxt}</button>
+                </div>`;
+            }).join('');
+        }
+
+        const naoLidos = listaEl.querySelectorAll('.tb-notif-item[data-lida="0"]').length;
+        badge.textContent = naoLidos;
+        badge.style.display = naoLidos > 0 ? '' : 'none';
+    }
+
+    // ── Aplica estado do localStorage no carregamento inicial ────
+    (function aplicarLidasIniciais() {
+        const lidas = getLidas();
+        if (lidas.size === 0) return;
+        let naoLidos = 0;
+        document.querySelectorAll('#listaNotif .tb-notif-item').forEach(function(item) {
+            const span = item.querySelector('span');
+            if (!span) return;
+            const texto = span.innerHTML.trim();
+            if (lidas.has(texto)) {
+                item.dataset.lida = '1';
+                const btn = item.querySelector('.tb-notif-toggle');
+                if (btn) btn.textContent = 'Marcar como não lida';
+            } else {
+                naoLidos++;
+            }
+        });
+        const badge = document.getElementById('badgeNotif');
+        if (badge) {
+            badge.textContent = naoLidos;
+            badge.style.display = naoLidos > 0 ? '' : 'none';
+        }
+    })();
+
+    // ── Polling ───────────────────────────────────────────────────
+    function buscarNotificacoes() {
+        fetch('pages-aluno/notificacoes.php', { cache: 'no-store' })
+            .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+            .then(function(lista) { renderNotificacoes(lista); })
+            .catch(function() {});
+    }
+
+    setTimeout(function tick() {
+        buscarNotificacoes();
+        setTimeout(tick, INTERVALO);
+    }, INTERVALO);
+})();
 </script>
 <script src="assets/js/topbar.js"></script>
 </body>

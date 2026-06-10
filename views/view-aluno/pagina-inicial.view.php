@@ -41,7 +41,7 @@ $diasMes   = (int) $hojeObj->format('t');
 $diaHoje   = (int) $hojeObj->format('j');
 ?>
 <div class="container-fluid mt-2">
-    <div class="row g-3" style="min-height:0;">
+    <div class="row g-3">
 
         <!-- ESQUERDA: Tarefas e Eventos -->
         <div class="col-lg-8 d-flex flex-column">
@@ -78,23 +78,29 @@ $diaHoje   = (int) $hojeObj->format('j');
                 }
                 ?>
 
-                <h6><i class="bi bi-list-check"></i> Tarefas</h6>
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <h6 class="mb-0"><i class="bi bi-list-check"></i> Tarefas</h6>
+                    <?php if (count($tarefas) > 2): ?>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-sm btn-outline-primary py-0 px-2" id="prev-t" onclick="carrossel('tbodyTarefas','item-carrossel-t','ind-t','prev-t','next-t',-1)" disabled><i class="bi bi-chevron-left"></i></button>
+                        <span id="ind-t" style="font-size:0.78rem;color:#64748b;min-width:36px;text-align:center;">1 / <?= ceil(count($tarefas)/2) ?></span>
+                        <button class="btn btn-sm btn-outline-primary py-0 px-2" id="next-t" onclick="carrossel('tbodyTarefas','item-carrossel-t','ind-t','prev-t','next-t',+1)"><i class="bi bi-chevron-right"></i></button>
+                    </div>
+                    <?php endif; ?>
+                </div>
                 <table class="table table-hover mb-0" style="table-layout:fixed;width:100%">
                     <colgroup><col style="width:55%"><col style="width:25%"><col style="width:20%"></colgroup>
                     <thead class="table-primary">
-                        <tr>
-                            <th>Título</th>
-                            <th>Data</th>
-                            <th>Status</th>
-                        </tr>
+                        <tr><th>Título</th><th>Data</th><th>Status</th></tr>
                     </thead>
-                    <tbody id="tbodyTarefas">
+                    <tbody id="tbodyTarefas" data-pagina="0">
                         <?php if (empty($tarefas)): ?>
                             <tr><td colspan="3" class="text-muted text-center">Nenhuma tarefa cadastrada.</td></tr>
                         <?php else: ?>
                             <?php foreach ($tarefas as $i => $t): ?>
-                                <tr<?= $i >= 3 ? ' class="linha-extra-t" style="display:none"' : '' ?>
-                                    style="cursor:pointer;" onclick="carregarPagina('tarefas')" title="Ver em Minhas Tarefas">
+                                <tr class="item-carrossel-t" data-idx="<?= $i ?>"
+                                    style="height:72px;<?= $i >= 2 ? 'display:none' : '' ?>;cursor:pointer;"
+                                    onclick="carregarPagina('tarefas')" title="Ver em Minhas Tarefas">
                                     <td>
                                         <div class="fw-medium"><?= htmlspecialchars($t['titulo']) ?></div>
                                         <?php if (!empty($t['projeto']) && $t['projeto'] !== '—'): ?>
@@ -111,33 +117,34 @@ $diaHoje   = (int) $hojeObj->format('j');
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
+                        <tr class="spacer-row" style="display:none;height:72px;pointer-events:none;">
+                            <td colspan="3"></td>
+                        </tr>
                     </tbody>
                 </table>
-                <?php if (count($tarefas) > 3): ?>
-                <div class="text-center mt-2">
-                    <button class="btn btn-sm btn-outline-primary" onclick="toggleMais('tbodyTarefas','linha-extra-t',this)">
-                        <i class="bi bi-chevron-down me-1"></i>Mostrar mais (<?= count($tarefas) - 3 ?>)
-                    </button>
+                <div class="d-flex justify-content-between align-items-center mt-4 mb-1">
+                    <h6 class="mb-0"><i class="bi bi-calendar-event"></i> Eventos</h6>
+                    <?php if (count($eventos) > 2): ?>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-sm btn-outline-success py-0 px-2" id="prev-e" onclick="carrossel('tbodyEventos','item-carrossel-e','ind-e','prev-e','next-e',-1)" disabled><i class="bi bi-chevron-left"></i></button>
+                        <span id="ind-e" style="font-size:0.78rem;color:#64748b;min-width:36px;text-align:center;">1 / <?= ceil(count($eventos)/2) ?></span>
+                        <button class="btn btn-sm btn-outline-success py-0 px-2" id="next-e" onclick="carrossel('tbodyEventos','item-carrossel-e','ind-e','prev-e','next-e',+1)"><i class="bi bi-chevron-right"></i></button>
+                    </div>
+                    <?php endif; ?>
                 </div>
-                <?php endif; ?>
-
-                <h6 class="mt-4"><i class="bi bi-calendar-event"></i> Eventos</h6>
                 <table class="table table-hover mb-0" style="table-layout:fixed;width:100%">
                     <colgroup><col style="width:55%"><col style="width:25%"><col style="width:20%"></colgroup>
                     <thead class="table-success">
-                        <tr>
-                            <th>Título</th>
-                            <th>Data</th>
-                            <th>Status</th>
-                        </tr>
+                        <tr><th>Título</th><th>Data</th><th>Status</th></tr>
                     </thead>
-                    <tbody id="tbodyEventos">
+                    <tbody id="tbodyEventos" data-pagina="0">
                         <?php if (empty($eventos)): ?>
                             <tr><td colspan="3" class="text-muted text-center">Nenhum evento cadastrado.</td></tr>
                         <?php else: ?>
                             <?php foreach ($eventos as $i => $e): ?>
-                                <tr<?= $i >= 3 ? ' class="linha-extra-e" style="display:none"' : '' ?>
-                                    style="cursor:pointer;" onclick="carregarPagina('cronograma')" title="Ver no Cronograma">
+                                <tr class="item-carrossel-e" data-idx="<?= $i ?>"
+                                    style="height:72px;<?= $i >= 2 ? 'display:none' : '' ?>;cursor:pointer;"
+                                    onclick="carregarPagina('cronograma')" title="Ver no Cronograma">
                                     <td>
                                         <div class="fw-medium"><?= htmlspecialchars($e['titulo']) ?></div>
                                         <?php if (!empty($e['projeto']) && $e['projeto'] !== '—'): ?>
@@ -154,24 +161,36 @@ $diaHoje   = (int) $hojeObj->format('j');
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
+                        <tr class="spacer-row" style="display:none;height:72px;pointer-events:none;">
+                            <td colspan="3"></td>
+                        </tr>
                     </tbody>
                 </table>
-                <?php if (count($eventos) > 3): ?>
-                <div class="text-center mt-2">
-                    <button class="btn btn-sm btn-outline-success" onclick="toggleMais('tbodyEventos','linha-extra-e',this)">
-                        <i class="bi bi-chevron-down me-1"></i>Mostrar mais (<?= count($eventos) - 3 ?>)
-                    </button>
-                </div>
-                <?php endif; ?>
 
                 <script>
-                function toggleMais(tbodyId, cls, btn) {
-                    const linhas = document.querySelectorAll('#' + tbodyId + ' .' + cls);
-                    const aberto = linhas[0]?.style.display !== 'none';
-                    linhas.forEach(l => l.style.display = aberto ? 'none' : '');
-                    btn.innerHTML = aberto
-                        ? '<i class="bi bi-chevron-down me-1"></i>Mostrar mais (' + linhas.length + ')'
-                        : '<i class="bi bi-chevron-up me-1"></i>Mostrar menos';
+                function carrossel(tbodyId, cls, indId, prevId, nextId, dir) {
+                    const tbody   = document.getElementById(tbodyId);
+                    const linhas  = Array.from(tbody.querySelectorAll('.' + cls));
+                    const total   = linhas.length;
+                    const paginas = Math.ceil(total / 2);
+                    let pag = parseInt(tbody.dataset.pagina || '0') + dir;
+                    pag = Math.max(0, Math.min(paginas - 1, pag));
+                    tbody.dataset.pagina = pag;
+
+                    let visiveis = 0;
+                    linhas.forEach(function(l, i) {
+                        const show = (i >= pag * 2 && i < pag * 2 + 2);
+                        l.style.display = show ? '' : 'none';
+                        if (show) visiveis++;
+                    });
+
+                    // Mostra linha espaçadora se a página tiver só 1 item
+                    const spacer = tbody.querySelector('.spacer-row');
+                    if (spacer) spacer.style.display = visiveis < 2 ? '' : 'none';
+
+                    document.getElementById(indId).textContent = (pag + 1) + ' / ' + paginas;
+                    document.getElementById(prevId).disabled = pag === 0;
+                    document.getElementById(nextId).disabled = pag === paginas - 1;
                 }
                 </script>
             </div>

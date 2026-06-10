@@ -144,8 +144,10 @@
                             <td>
                                 <?php if ($p['status'] === 'ativo'): ?>
                                     <span class="status-ativo">Ativo</span>
+                                <?php elseif ($p['status'] === 'concluido'): ?>
+                                    <span class="badge bg-success text-white"><i class="bi bi-check-circle-fill me-1"></i>Concluído</span>
                                 <?php else: ?>
-                                    <span class="badge bg-secondary text-white">Concluído</span>
+                                    <span class="badge bg-secondary text-white"><?= ucfirst($p['status']) ?></span>
                                 <?php endif; ?>
                             </td>
                         </tr>
