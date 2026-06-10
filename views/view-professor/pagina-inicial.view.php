@@ -24,39 +24,31 @@ function corTipo($tipo) {
 <!-- ===== CARDS TOPO ===== -->
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-folder-fill"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= (int)$estatisticas['ativos'] ?></h4>
-                <small class="text-muted">Projetos Ativos</small>
-            </div>
+        <div class="stat-card-modern sc-blue">
+            <div class="sc-watermark"><i class="bi bi-folder-fill"></i></div>
+            <div class="sc-label"><i class="bi bi-folder-fill"></i> Projetos Ativos</div>
+            <div class="sc-number"><?= (int)$estatisticas['ativos'] ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-people"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= (int)$estatisticas['alunos'] ?></h4>
-                <small class="text-muted">Alunos Orientados</small>
-            </div>
+        <div class="stat-card-modern sc-purple">
+            <div class="sc-watermark"><i class="bi bi-people"></i></div>
+            <div class="sc-label"><i class="bi bi-people"></i> Alunos Orientados</div>
+            <div class="sc-number"><?= (int)$estatisticas['alunos'] ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-file-earmark-check"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= (int)$estatisticas['docs_pendentes'] ?></h4>
-                <small class="text-muted">Docs Pendentes</small>
-            </div>
+        <div class="stat-card-modern sc-yellow">
+            <div class="sc-watermark"><i class="bi bi-file-earmark-check"></i></div>
+            <div class="sc-label"><i class="bi bi-file-earmark-check"></i> Docs Pendentes</div>
+            <div class="sc-number"><?= (int)$estatisticas['docs_pendentes'] ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-alarm"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= (int)$estatisticas['tarefas_vencendo'] ?></h4>
-                <small class="text-muted">Tarefas Vencendo</small>
-            </div>
+        <div class="stat-card-modern sc-red">
+            <div class="sc-watermark"><i class="bi bi-alarm"></i></div>
+            <div class="sc-label"><i class="bi bi-alarm"></i> Tarefas Vencendo</div>
+            <div class="sc-number"><?= (int)$estatisticas['tarefas_vencendo'] ?></div>
         </div>
     </div>
 </div>
@@ -66,7 +58,7 @@ function corTipo($tipo) {
 
     <!-- HOJE & AMANHÃ -->
     <div class="col-lg-4">
-        <div class="content-card h-100">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0"><i class="bi bi-calendar-check me-2 text-primary"></i>Hoje &amp; Amanhã</h5>
                 <a href="?page=cronograma" class="btn btn-sm btn-outline-primary">Ver agenda</a>
@@ -97,12 +89,12 @@ function corTipo($tipo) {
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
-        </div>
+        </div></div>
     </div>
 
     <!-- PROJETOS POR TIPO -->
     <div class="col-lg-4">
-        <div class="content-card h-100">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body">
             <h5 class="fw-bold mb-1"><i class="bi bi-pie-chart me-2 text-primary"></i>Projetos por Tipo</h5>
             <p class="text-muted mb-3" style="font-size:0.8rem;">Distribuição dos seus projetos ativos</p>
             <div id="graficoWrap" style="position:relative;">
@@ -113,12 +105,12 @@ function corTipo($tipo) {
                 </div>
             </div>
             <div id="legendaGrafico" class="d-flex flex-wrap gap-2 mt-3 justify-content-center" style="font-size:0.78rem;"></div>
-        </div>
+        </div></div>
     </div>
 
     <!-- ATENÇÃO NECESSÁRIA -->
     <div class="col-lg-4">
-        <div class="content-card h-100">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body">
             <h5 class="fw-bold mb-3"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Atenção Necessária</h5>
             <div class="d-flex flex-column gap-2">
                 <?php if (empty($atencaoNecessaria)): ?>
@@ -139,15 +131,15 @@ function corTipo($tipo) {
                             <small class="text-muted"><?= $qtd ?> tarefa<?= $qtd > 1 ? 's' : '' ?> atrasada<?= $qtd > 1 ? 's' : '' ?></small>
                         </div>
                         <?php if ($urgente): ?>
-                            <span class="badge bg-danger flex-shrink-0">Urgente</span>
+                            <span class="badge bg-danger-subtle text-danger fw-semibold flex-shrink-0">Urgente</span>
                         <?php else: ?>
-                            <span class="badge bg-warning text-dark flex-shrink-0">Atenção</span>
+                            <span class="badge bg-warning-subtle text-warning fw-semibold flex-shrink-0">Atenção</span>
                         <?php endif; ?>
                     </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
-        </div>
+        </div></div>
     </div>
 </div>
 
@@ -156,7 +148,7 @@ function corTipo($tipo) {
 
     <!-- ATIVIDADE RECENTE -->
     <div class="col-lg-7">
-        <div class="content-card h-100">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0"><i class="bi bi-activity me-2 text-primary"></i>Atividade Recente</h5>
             </div>
@@ -191,12 +183,12 @@ function corTipo($tipo) {
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
-        </div>
+        </div></div>
     </div>
 
     <!-- DOCUMENTOS PENDENTES -->
     <div class="col-lg-5">
-        <div class="content-card h-100">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0"><i class="bi bi-file-earmark-check me-2 text-primary"></i>Documentos Pendentes</h5>
                 <a href="?page=documentos" class="btn btn-sm btn-outline-primary">Ver todos</a>
@@ -226,7 +218,7 @@ function corTipo($tipo) {
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
-        </div>
+        </div></div>
     </div>
 </div>
 
@@ -293,7 +285,7 @@ function corTipo($tipo) {
     document.querySelectorAll('.btn-aprovar, .btn-reprovar').forEach(function(btn) {
         btn.addEventListener('click', function() {
             const id     = this.dataset.id;
-            const status = this.classList.contains('btn-aprovar') ? 'ativo' : 'inativo';
+            const status = this.classList.contains('btn-aprovar') ? 'concluido' : 'cancelado';
             const item   = document.querySelector('.doc-item[data-id="' + id + '"]');
 
             btn.disabled = true;

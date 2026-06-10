@@ -85,44 +85,37 @@ try {
 
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-people"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= $stats['total'] ?? 0 ?></h4>
-                <small class="text-muted">Alunos Orientados</small>
-            </div>
+        <div class="stat-card-modern sc-blue">
+            <div class="sc-watermark"><i class="bi bi-people"></i></div>
+            <div class="sc-label"><i class="bi bi-people"></i> Alunos Orientados</div>
+            <div class="sc-number"><?= $stats['total'] ?? 0 ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-person-check"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= $stats['ativos'] ?? 0 ?></h4>
-                <small class="text-muted">Participantes Ativos</small>
-            </div>
+        <div class="stat-card-modern sc-green">
+            <div class="sc-watermark"><i class="bi bi-person-check"></i></div>
+            <div class="sc-label"><i class="bi bi-person-check"></i> Ativos</div>
+            <div class="sc-number"><?= $stats['ativos'] ?? 0 ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-clock-history"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= number_format($stats['carga_total'] ?? 0, 0, ',', '.') ?>h</h4>
-                <small class="text-muted">Carga Horária Total</small>
-            </div>
+        <div class="stat-card-modern sc-orange">
+            <div class="sc-watermark"><i class="bi bi-clock-history"></i></div>
+            <div class="sc-label"><i class="bi bi-clock-history"></i> Carga Horária Total</div>
+            <div class="sc-number"><?= number_format($stats['carga_total'] ?? 0, 0, ',', '.') ?>h</div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-award"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold">-</h4>
-                <small class="text-muted">Certificados Gerados</small>
-            </div>
+        <div class="stat-card-modern sc-purple">
+            <div class="sc-watermark"><i class="bi bi-award"></i></div>
+            <div class="sc-label"><i class="bi bi-award"></i> Certificados</div>
+            <div class="sc-number">-</div>
         </div>
     </div>
 </div>
 
-<div class="content-card mb-3 p-3">
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body py-2">
     <div class="row g-2 align-items-center">
         <div class="col-12 col-md-5">
             <div class="input-group">
@@ -149,9 +142,11 @@ try {
             <button class="btn btn-outline-secondary w-100" onclick="limparFiltrosAlunos()">Limpar</button>
         </div>
     </div>
+    </div>
 </div>
 
-<div class="content-card">
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
     <div class="table-responsive">
         <table class="table table-hover align-middle">
             <thead class="table-light">
@@ -183,7 +178,9 @@ try {
                             <td>
                                 <?php
                                 $status = strtolower($aluno['status_usuario'] ?? 'inativo');
-                                $classe = ($status === 'ativo') ? 'status-ativo' : 'status-inativo';
+                                $classe = ($status === 'ativo')
+                                    ? 'badge bg-success-subtle text-success fw-semibold'
+                                    : 'badge bg-danger-subtle text-danger fw-semibold';
                                 ?>
                                 <span class="<?= $classe ?> status-txt"><?= ucfirst($status) ?></span>
                             </td>
@@ -198,6 +195,7 @@ try {
                 <?php endif; ?>
             </tbody>
         </table>
+    </div>
     </div>
 </div>
 

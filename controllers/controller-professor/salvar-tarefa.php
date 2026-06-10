@@ -16,7 +16,6 @@ $id_usuario    = intval($_POST['id_usuario'] ?? 0);
 $data          = trim($_POST['data']         ?? '');
 $hora          = trim($_POST['hora']         ?? '');
 $prioridade    = trim($_POST['prioridade']   ?? 'media');
-$status_tarefa = trim($_POST['status_tarefa'] ?? 'pendente');
 $descricao     = trim($_POST['descricao']    ?? '');
 
 if (empty($titulo)) {
@@ -35,47 +34,41 @@ $alunoValido  = ($id_usuario > 0) ? $id_usuario : null;
 try {
     if (!empty($id)) {
         $stmt = $pdo->prepare("UPDATE agenda_items SET
-            titulo        = :titulo,
-            id_projeto    = :id_projeto::int4,
-            id_usuario    = :id_usuario,
-            data          = :data,
-            hora          = :hora,
-            prioridade    = :prioridade,
-            status_tarefa = :status_tarefa,
-            descricao     = :descricao,
-            concluido     = :concluido
+            titulo     = :titulo,
+            id_projeto = :id_projeto::int4,
+            id_usuario = :id_usuario,
+            data       = :data,
+            hora       = :hora,
+            prioridade = :prioridade,
+            descricao  = :descricao
         WHERE id = :id");
 
         $stmt->execute([
-            ':titulo'        => $titulo,
-            ':id_projeto'    => $id_projeto,
-            ':id_usuario'    => $alunoValido,
-            ':data'          => $dataValida,
-            ':hora'          => $horaValida,
-            ':prioridade'    => $prioridade,
-            ':status_tarefa' => $status_tarefa,
-            ':descricao'     => $descricao,
-            ':concluido'     => ($status_tarefa === 'concluida') ? 'true' : 'false',
-            ':id'            => $id,
+            ':titulo'     => $titulo,
+            ':id_projeto' => $id_projeto,
+            ':id_usuario' => $alunoValido,
+            ':data'       => $dataValida,
+            ':hora'       => $horaValida,
+            ':prioridade' => $prioridade,
+            ':descricao'  => $descricao,
+            ':id'         => $id,
         ]);
 
         echo json_encode(['sucesso' => true, 'mensagem' => 'Tarefa atualizada com sucesso!']);
     } else {
         $stmt = $pdo->prepare("INSERT INTO agenda_items
-            (titulo, id_projeto, id_usuario, data, hora, prioridade, status_tarefa, descricao, concluido, tipo)
+            (titulo, id_projeto, id_usuario, data, hora, prioridade, descricao, tipo)
         VALUES
-            (:titulo, :id_projeto::int4, :id_usuario, :data, :hora, :prioridade, :status_tarefa, :descricao, :concluido, 'tarefa')");
+            (:titulo, :id_projeto::int4, :id_usuario, :data, :hora, :prioridade, :descricao, 'tarefa')");
 
         $stmt->execute([
-            ':titulo'        => $titulo,
-            ':id_projeto'    => $id_projeto,
-            ':id_usuario'    => $alunoValido,
-            ':data'          => $dataValida,
-            ':hora'          => $horaValida,
-            ':prioridade'    => $prioridade,
-            ':status_tarefa' => $status_tarefa,
-            ':descricao'     => $descricao,
-            ':concluido'     => ($status_tarefa === 'concluida') ? 'true' : 'false',
+            ':titulo'     => $titulo,
+            ':id_projeto' => $id_projeto,
+            ':id_usuario' => $alunoValido,
+            ':data'       => $dataValida,
+            ':hora'       => $horaValida,
+            ':prioridade' => $prioridade,
+            ':descricao'  => $descricao,
         ]);
 
         echo json_encode(['sucesso' => true, 'mensagem' => 'Tarefa cadastrada com sucesso!']);

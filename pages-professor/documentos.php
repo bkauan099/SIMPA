@@ -40,11 +40,11 @@ function getIconeArquivo($nome) {
 
 // aprovado → ativo | reprovado → inativo
 $status_class = [
-    'pendente'  => 'bg-warning text-dark',
-    'ativo'     => 'bg-success',
-    'inativo'   => 'bg-danger',
-    'concluido' => 'bg-primary',
-    'cancelado' => 'bg-secondary',
+    'pendente'  => 'bg-warning-subtle text-warning fw-semibold',
+    'ativo'     => 'bg-success-subtle text-success fw-semibold',
+    'inativo'   => 'bg-danger-subtle text-danger fw-semibold',
+    'concluido' => 'bg-success-subtle text-success fw-semibold',
+    'cancelado' => 'bg-danger-subtle text-danger fw-semibold',
 ];
 $status_label = [
     'pendente'  => 'Pendente',
@@ -59,14 +59,34 @@ $status_label = [
 <p class="text-muted mb-4">Revise e aprove os documentos enviados pelos seus alunos</p>
 
 <div class="row g-3 mb-4">
-    <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon-circle bg-light-blue"><i class="bi bi-files"></i></div>
-    <div><h4 class="mb-0 fw-bold"><?= $stats['total'] ?></h4><small class="text-muted">Total</small></div></div></div>
-    <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon-circle bg-light-orange"><i class="bi bi-clock-history"></i></div>
-    <div><h4 class="mb-0 fw-bold"><?= $stats['pendentes'] ?></h4><small class="text-muted">Aguard. Revisão</small></div></div></div>
-    <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon-circle bg-light-blue"><i class="bi bi-check2-circle"></i></div>
-    <div><h4 class="mb-0 fw-bold"><?= $stats['aprovados'] ?></h4><small class="text-muted">Aprovados</small></div></div></div>
-    <div class="col-sm-6 col-lg-3"><div class="stat-card"><div class="icon-circle bg-light-orange"><i class="bi bi-x-circle"></i></div>
-    <div><h4 class="mb-0 fw-bold"><?= $stats['reprovados'] ?></h4><small class="text-muted">Reprovados</small></div></div></div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card-modern sc-blue">
+            <div class="sc-watermark"><i class="bi bi-files"></i></div>
+            <div class="sc-label"><i class="bi bi-files"></i> Total</div>
+            <div class="sc-number"><?= $stats['total'] ?></div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card-modern sc-yellow">
+            <div class="sc-watermark"><i class="bi bi-clock-history"></i></div>
+            <div class="sc-label"><i class="bi bi-clock-history"></i> Aguard. Revisão</div>
+            <div class="sc-number"><?= $stats['pendentes'] ?></div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card-modern sc-green">
+            <div class="sc-watermark"><i class="bi bi-check2-circle"></i></div>
+            <div class="sc-label"><i class="bi bi-check2-circle"></i> Aprovados</div>
+            <div class="sc-number"><?= $stats['aprovados'] ?></div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="stat-card-modern sc-red">
+            <div class="sc-watermark"><i class="bi bi-x-circle"></i></div>
+            <div class="sc-label"><i class="bi bi-x-circle"></i> Reprovados</div>
+            <div class="sc-number"><?= $stats['reprovados'] ?></div>
+        </div>
+    </div>
 </div>
 
 <div class="row g-2 mb-3 px-3">
@@ -107,7 +127,8 @@ function limparFiltrosDocs() {
 }
 </script>
 
-<div class="content-card">
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
     <h5 class="fw-bold mb-3">Documentos dos Alunos</h5>
     <div class="table-responsive">
         <table class="table table-hover align-middle">
@@ -149,5 +170,6 @@ function limparFiltrosDocs() {
                 <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
     </div>
 </div>

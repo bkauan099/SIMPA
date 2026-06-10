@@ -1,21 +1,27 @@
 <?php
 $id_professor = $_SESSION['id_usuario'] ?? 0;
 
-// Migration: garante colunas necessárias na agenda_items
+// Migration: garante colunas necessárias
 try {
     $pdo->exec("ALTER TABLE agenda_items ADD COLUMN IF NOT EXISTS id_projeto INTEGER");
     $pdo->exec("ALTER TABLE agenda_items ADD COLUMN IF NOT EXISTS prioridade VARCHAR(10) DEFAULT 'media'");
-    $pdo->exec("ALTER TABLE agenda_items ADD COLUMN IF NOT EXISTS status_tarefa VARCHAR(20) DEFAULT 'pendente'");
 } catch (PDOException $e) {}
 
-// Stats
-$stats = ['total' => 0, 'pendentes' => 0, 'em_andamento' => 0, 'concluidas' => 0];
+
+// Stats derivadas de producoes.status
+$stats = ['total' => 0, 'pendentes' => 0, 'canceladas' => 0, 'concluidas' => 0];
 try {
     $stmt = $pdo->prepare("SELECT
         COUNT(DISTINCT a.id) AS total,
-        COUNT(DISTINCT CASE WHEN COALESCE(a.status_tarefa,'pendente') = 'pendente' THEN a.id END) AS pendentes,
-        COUNT(DISTINCT CASE WHEN a.status_tarefa = 'em_andamento' THEN a.id END) AS em_andamento,
-        COUNT(DISTINCT CASE WHEN a.status_tarefa = 'concluida' THEN a.id END) AS concluidas
+        COUNT(DISTINCT CASE WHEN COALESCE(
+            (SELECT pr.status FROM producoes pr WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto ORDER BY pr.id_producao DESC LIMIT 1),
+            'pendente') = 'pendente' THEN a.id END) AS pendentes,
+        COUNT(DISTINCT CASE WHEN (
+            SELECT pr.status FROM producoes pr WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto ORDER BY pr.id_producao DESC LIMIT 1
+            ) = 'cancelado' THEN a.id END) AS canceladas,
+        COUNT(DISTINCT CASE WHEN (
+            SELECT pr.status FROM producoes pr WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto ORDER BY pr.id_producao DESC LIMIT 1
+            ) = 'concluido' THEN a.id END) AS concluidas
     FROM agenda_items a
     JOIN participacao par ON a.id_projeto = par.id_projeto
     WHERE par.id_usuario = :id AND a.id_projeto IS NOT NULL");
@@ -42,7 +48,12 @@ try {
     $stmt = $pdo->prepare("SELECT DISTINCT ON (a.id)
         a.id, a.titulo, a.descricao, a.data,
         COALESCE(a.prioridade, 'media') AS prioridade,
-        COALESCE(a.status_tarefa, 'pendente') AS status_tarefa,
+        COALESCE(
+            (SELECT pr.status FROM producoes pr
+             WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+             ORDER BY pr.id_producao DESC LIMIT 1),
+            'pendente'
+        ) AS status_tarefa,
         a.id_usuario, a.id_projeto,
         u.nome AS nome_aluno,
         p.titulo AS nome_projeto,
@@ -60,8 +71,8 @@ try {
 
 $prioLabels  = ['alta' => 'Alta', 'media' => 'Média', 'baixa' => 'Baixa'];
 $prioClasses = ['alta' => 'bg-danger', 'media' => 'bg-warning text-dark', 'baixa' => 'bg-secondary'];
-$stLabels    = ['pendente' => 'Pendente', 'em_andamento' => 'Em Andamento', 'concluida' => 'Concluída', 'concluido' => 'Concluída'];
-$stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info text-dark', 'concluida' => 'bg-success text-white', 'concluido' => 'bg-success text-white'];
+$stLabels    = ['pendente' => 'Pendente', 'concluido' => 'Concluída', 'cancelado' => 'Cancelada', 'ativo' => 'Ativo', 'inativo' => 'Inativo'];
+$stClasses   = ['pendente' => 'bg-warning-subtle text-warning fw-semibold', 'concluido' => 'bg-success-subtle text-success fw-semibold', 'cancelado' => 'bg-danger-subtle text-danger fw-semibold', 'ativo' => 'bg-success-subtle text-success fw-semibold', 'inativo' => 'bg-danger-subtle text-danger fw-semibold'];
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -77,33 +88,37 @@ $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info
 <!-- Cards de Estatísticas -->
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-list-check"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statTotal"><?= intval($stats['total']) ?></h4><small class="text-muted">Total de Tarefas</small></div>
+        <div class="stat-card-modern sc-blue">
+            <div class="sc-watermark"><i class="bi bi-list-check"></i></div>
+            <div class="sc-label"><i class="bi bi-list-check"></i> Total de Tarefas</div>
+            <div class="sc-number" id="statTotal"><?= intval($stats['total']) ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-hourglass"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statPendentes"><?= intval($stats['pendentes']) ?></h4><small class="text-muted">Pendentes</small></div>
+        <div class="stat-card-modern sc-yellow">
+            <div class="sc-watermark"><i class="bi bi-hourglass"></i></div>
+            <div class="sc-label"><i class="bi bi-hourglass"></i> Pendentes</div>
+            <div class="sc-number" id="statPendentes"><?= intval($stats['pendentes']) ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-arrow-repeat"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statAndamento"><?= intval($stats['em_andamento']) ?></h4><small class="text-muted">Em Andamento</small></div>
+        <div class="stat-card-modern sc-red">
+            <div class="sc-watermark"><i class="bi bi-x-circle"></i></div>
+            <div class="sc-label"><i class="bi bi-x-circle"></i> Canceladas</div>
+            <div class="sc-number" id="statCanceladas"><?= intval($stats['canceladas']) ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-check2-circle"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="statConcluidas"><?= intval($stats['concluidas']) ?></h4><small class="text-muted">Concluídas</small></div>
+        <div class="stat-card-modern sc-green">
+            <div class="sc-watermark"><i class="bi bi-check2-circle"></i></div>
+            <div class="sc-label"><i class="bi bi-check2-circle"></i> Concluídas</div>
+            <div class="sc-number" id="statConcluidas"><?= intval($stats['concluidas']) ?></div>
         </div>
     </div>
 </div>
 
 <!-- Filtros -->
-<div class="content-card mb-3 p-3">
+<div class="card border-0 shadow-sm mb-3"><div class="card-body py-2">
     <div class="row g-2 align-items-center">
         <div class="col-12 col-md-5">
             <div class="input-group">
@@ -123,19 +138,20 @@ $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info
             <select id="filtroStatus" class="form-select">
                 <option value="">Todos os Status</option>
                 <option value="pendente">Pendente</option>
-                <option value="em_andamento">Em Andamento</option>
                 <option value="concluida">Concluída</option>
+                <option value="cancelada">Cancelada</option>
             </select>
         </div>
         <div class="col-12 col-md-2">
             <button class="btn btn-outline-secondary w-100" onclick="limparFiltros()">Limpar</button>
         </div>
     </div>
-</div>
+</div></div>
 
 <!-- Tabela de Tarefas -->
-<div class="content-card">
-    <h5 class="fw-bold mb-3">Lista de Tarefas</h5>
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+    <div class="px-4 pt-3 pb-2"><h5 class="fw-bold mb-0">Lista de Tarefas</h5></div>
     <div class="table-responsive">
         <table class="table table-hover align-middle">
             <thead class="table-light">
@@ -166,7 +182,7 @@ $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info
                             <button class='btn btn-sm btn-outline-primary' onclick=\"verTarefa('{$id}')\" title='Ver detalhes'><i class='bi bi-eye'></i></button>
                             {$dotHtml}
                         </div>";
-                        if ($status !== 'concluida') {
+                        if ($status !== 'concluido') {
                             $acoes .= " <button class='btn btn-sm btn-outline-secondary ms-1' onclick=\"editarTarefa('{$id}')\" title='Editar'><i class='bi bi-pencil'></i></button>";
                             $acoes .= " <button class='btn btn-sm btn-outline-danger ms-1' onclick=\"confirmarExcluirTarefa('{$id}')\" title='Excluir'><i class='bi bi-trash'></i></button>";
                         }
@@ -195,117 +211,136 @@ $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info
             </tbody>
         </table>
     </div>
+    </div>
 </div>
 
-<!-- ===== MODAIS ===== -->
+<!-- ===== MODAIS BOOTSTRAP ===== -->
 
 <!-- Modal Nova / Editar Tarefa -->
-<div id="modalTarefa" class="modal-simpa" style="display:none;">
-    <div class="modal-content-simpa" style="max-width:560px;width:95%;">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 id="modalTarefaTitulo" class="m-0 fw-bold" style="color:var(--azul-uema)">Nova Tarefa</h4>
-            <button type="button" class="btn-close" onclick="fecharModalTarefa()"></button>
+<div class="modal fade" id="modalTarefa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:560px;">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h4 id="modalTarefaTitulo" class="modal-title fw-bold" style="color:var(--azul-uema)">Nova Tarefa</h4>
+                <button type="button" class="btn-close" onclick="fecharModalTarefa()"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <form id="formTarefa" onsubmit="return false;">
+                    <input type="hidden" id="tarefaId">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Título <span class="text-danger">*</span></label>
+                        <input type="text" id="tarefaTituloInput" class="form-control" placeholder="Título da tarefa" required>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Projeto <span class="text-danger">*</span></label>
+                            <select id="tarefaProjeto" class="form-select" required onchange="carregarAlunosTarefa(this.value)">
+                                <option value="">Selecione um projeto...</option>
+                                <?php foreach ($projetos as $p): ?>
+                                    <option value="<?= $p['id_projeto'] ?>"><?= htmlspecialchars($p['titulo']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Aluno</label>
+                            <select id="tarefaAluno" class="form-select">
+                                <option value="">Selecione o projeto primeiro</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Prazo</label>
+                            <input type="date" id="tarefaPrazo" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Hora</label>
+                            <input type="time" id="tarefaHora" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Prioridade</label>
+                            <select id="tarefaPrioridade" class="form-select">
+                                <option value="alta">Alta</option>
+                                <option value="media" selected>Média</option>
+                                <option value="baixa">Baixa</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Descrição</label>
+                        <textarea id="tarefaDescricao" class="form-control" rows="3" placeholder="Detalhes da tarefa..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-light border" onclick="fecharModalTarefa()">Cancelar</button>
+                        <button type="button" id="btnSalvarTarefa" class="btn btn-primary" onclick="salvarTarefa()">Salvar</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <form id="formTarefa" onsubmit="return false;">
-            <input type="hidden" id="tarefaId">
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Título <span class="text-danger">*</span></label>
-                <input type="text" id="tarefaTituloInput" class="form-control" placeholder="Título da tarefa" required>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Projeto <span class="text-danger">*</span></label>
-                    <select id="tarefaProjeto" class="form-select" required onchange="carregarAlunosTarefa(this.value)">
-                        <option value="">Selecione um projeto...</option>
-                        <?php foreach ($projetos as $p): ?>
-                            <option value="<?= $p['id_projeto'] ?>"><?= htmlspecialchars($p['titulo']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Aluno</label>
-                    <select id="tarefaAluno" class="form-select">
-                        <option value="">Selecione o projeto primeiro</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Prazo</label>
-                    <input type="date" id="tarefaPrazo" class="form-control">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Hora</label>
-                    <input type="time" id="tarefaHora" class="form-control">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Prioridade</label>
-                    <select id="tarefaPrioridade" class="form-select">
-                        <option value="alta">Alta</option>
-                        <option value="media" selected>Média</option>
-                        <option value="baixa">Baixa</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Status</label>
-                <select id="tarefaStatusInput" class="form-select">
-                    <option value="pendente">Pendente</option>
-                    <option value="em_andamento">Em Andamento</option>
-                    <option value="concluida">Concluída</option>
-                </select>
-            </div>
-
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Descrição</label>
-                <textarea id="tarefaDescricao" class="form-control" rows="3" placeholder="Detalhes da tarefa..."></textarea>
-            </div>
-
-            <div class="d-flex justify-content-end gap-2">
-                <button type="button" class="btn btn-light border" onclick="fecharModalTarefa()">Cancelar</button>
-                <button type="button" id="btnSalvarTarefa" class="btn btn-primary" onclick="salvarTarefa()">Salvar</button>
-            </div>
-        </form>
     </div>
 </div>
 
 <!-- Modal Ver Detalhes -->
-<div id="modalVerTarefa" class="modal-simpa" style="display:none;">
-    <div class="modal-content-simpa" style="max-width:520px;width:95%;">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="m-0 fw-bold" style="color:var(--azul-uema)">Detalhes da Tarefa</h4>
-            <button type="button" class="btn-close" onclick="document.getElementById('modalVerTarefa').style.display='none'"></button>
-        </div>
-        <div id="conteudoDetalheTarefa"><div class="text-center py-4"><div class="spinner-border text-primary"></div></div></div>
-        <div class="d-flex justify-content-end mt-4">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('modalVerTarefa').style.display='none'">Fechar</button>
+<div class="modal fade" id="modalVerTarefa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog" style="max-width:560px;">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h4 class="modal-title fw-bold" style="color:var(--azul-uema)">Detalhes da Tarefa</h4>
+                <button type="button" class="btn-close" onclick="bsHide('modalVerTarefa')"></button>
+            </div>
+            <div class="modal-body pt-2">
+                <div id="conteudoDetalheTarefa"><div class="text-center py-4"><div class="spinner-border text-primary"></div></div></div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" onclick="bsHide('modalVerTarefa')">Fechar</button>
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Modal Confirmar Exclusão -->
-<div id="modalConfirmarExclusaoTarefa" class="modal-simpa" style="display:none;">
-    <div class="modal-content-simpa" style="max-width:400px;text-align:center;">
-        <div class="mb-4">
-            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:4rem;"></i>
-            <h4 class="fw-bold mt-3">Excluir Tarefa?</h4>
-            <p class="text-muted">Esta ação não pode ser desfeita.</p>
-        </div>
-        <input type="hidden" id="tarefaParaExcluir">
-        <div class="d-flex justify-content-center gap-3">
-            <button type="button" class="btn btn-light border px-4"
-                onclick="document.getElementById('modalConfirmarExclusaoTarefa').style.display='none'">Cancelar</button>
-            <button type="button" id="btnConfirmarExclusaoTarefaReal" class="btn btn-danger px-4"
-                onclick="executarExclusaoTarefa()">Excluir</button>
+<div class="modal fade" id="modalConfirmarExclusaoTarefa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
+        <div class="modal-content text-center p-4 border-0">
+            <div class="mb-4">
+                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:4rem;"></i>
+                <h4 class="fw-bold mt-3">Excluir Tarefa?</h4>
+                <p class="text-muted">Esta ação não pode ser desfeita.</p>
+            </div>
+            <input type="hidden" id="tarefaParaExcluir">
+            <div class="d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-light border px-4" onclick="bsHide('modalConfirmarExclusaoTarefa')">Cancelar</button>
+                <button type="button" id="btnConfirmarExclusaoTarefaReal" class="btn btn-danger px-4" onclick="executarExclusaoTarefa()">Excluir</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+// Flag: indica se houve mudança no banco enquanto o modal de detalhes estava aberto
+let _tarefaModalAlterado = false;
+
+// Ao fechar o modal "Ver Detalhes", recarrega a aba somente se algo foi alterado
+document.getElementById('modalVerTarefa')
+    .addEventListener('hidden.bs.modal', function () {
+        if (_tarefaModalAlterado) {
+            _tarefaModalAlterado = false;
+            // Recarrega a aba "tarefas" via AJAX nav (mesmo mecanismo do menu lateral)
+            const linkTarefas = document.querySelector('a[href*="page=tarefas"], a[data-page="tarefas"]');
+            if (linkTarefas) {
+                linkTarefas.click();
+            } else {
+                // fallback: recarrega a página inteira
+                window.location.reload();
+            }
+        }
+    });
+
 (function () {
     // ── Filtragem client-side ──────────────────────────────────────────────
     const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -362,12 +397,12 @@ window.abrirModalNovaTarefa = function () {
     document.getElementById('formTarefa').reset();
     document.getElementById('tarefaAluno').innerHTML = '<option value="">Selecione o projeto primeiro</option>';
     document.getElementById('modalTarefaTitulo').textContent = 'Nova Tarefa';
-    document.getElementById('modalTarefa').style.display = 'flex';
+    bsShow('modalTarefa');
 };
 
 window.fecharModalTarefa = function () {
-    document.getElementById('modalTarefa').style.display    = 'none';
-    document.getElementById('modalVerTarefa').style.display = 'none';
+    bsHide('modalTarefa');
+    bsHide('modalVerTarefa');
 };
 
 window.carregarAlunosTarefa = function (idProjeto, idAlunoSelecionado) {
@@ -405,7 +440,6 @@ window.salvarTarefa = function () {
     fd.append('data',          document.getElementById('tarefaPrazo').value);
     fd.append('hora',          document.getElementById('tarefaHora').value);
     fd.append('prioridade',    document.getElementById('tarefaPrioridade').value);
-    fd.append('status_tarefa', document.getElementById('tarefaStatusInput').value);
     fd.append('descricao',     document.getElementById('tarefaDescricao').value);
 
     fetch('controllers/controller-professor/salvar-tarefa.php', { method: 'POST', body: fd })
@@ -425,7 +459,7 @@ window.salvarTarefa = function () {
 window.verTarefa = function (id) {
     const conteudo = document.getElementById('conteudoDetalheTarefa');
     conteudo.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>';
-    document.getElementById('modalVerTarefa').style.display = 'flex';
+    bsShow('modalVerTarefa');
     fetch(`controllers/controller-professor/buscar-tarefas.php?modo=detalhe&id=${encodeURIComponent(id)}`)
         .then(r => r.text())
         .then(html => { conteudo.innerHTML = html; })
@@ -443,10 +477,9 @@ window.editarTarefa = function (id) {
             document.getElementById('tarefaPrazo').value       = t.data || '';
             document.getElementById('tarefaHora').value        = t.hora ? t.hora.substring(0,5) : '';
             document.getElementById('tarefaPrioridade').value  = t.prioridade || 'media';
-            document.getElementById('tarefaStatusInput').value = t.status_tarefa || 'pendente';
             document.getElementById('tarefaDescricao').value   = t.descricao || '';
             document.getElementById('modalTarefaTitulo').textContent = 'Editar Tarefa';
-            document.getElementById('modalTarefa').style.display = 'flex';
+            bsShow('modalTarefa');
             if (t.id_projeto) carregarAlunosTarefa(t.id_projeto, t.id_usuario);
         })
         .catch(() => alert('Erro ao buscar dados da tarefa.'));
@@ -454,7 +487,7 @@ window.editarTarefa = function (id) {
 
 window.confirmarExcluirTarefa = function (id) {
     document.getElementById('tarefaParaExcluir').value = id;
-    document.getElementById('modalConfirmarExclusaoTarefa').style.display = 'flex';
+    bsShow('modalConfirmarExclusaoTarefa');
 };
 
 window.avaliarDoc = function (idProducao, acao, btn) {
@@ -481,19 +514,21 @@ window.avaliarDoc = function (idProducao, acao, btn) {
                 btn.innerHTML = orig;
                 return;
             }
+            // Marca que houve alteração no banco — ao fechar o modal a aba será recarregada
+            _tarefaModalAlterado = true;
             // Atualiza o card do documento sem recarregar o modal
             const card = document.getElementById('doc-' + idProducao);
             if (!card) return;
             const novoStatus  = data.novo_status;
-            const statusLabel = { ativo: 'Aprovado', inativo: 'Reprovado', pendente: 'Pendente' };
-            const statusClass = { ativo: 'bg-success text-white', inativo: 'bg-danger text-white', pendente: 'bg-warning text-dark' };
+            const statusLabel = { concluido: 'Aprovado', cancelado: 'Reprovado', pendente: 'Pendente', ativo: 'Aprovado', inativo: 'Reprovado' };
+            const statusClass = { concluido: 'bg-success-subtle text-success fw-semibold', cancelado: 'bg-danger-subtle text-danger fw-semibold', pendente: 'bg-warning-subtle text-warning fw-semibold', ativo: 'bg-success-subtle text-success fw-semibold', inativo: 'bg-danger-subtle text-danger fw-semibold' };
             card.querySelector('.doc-status-badge').className = 'badge doc-status-badge ' + (statusClass[novoStatus] ?? 'bg-secondary');
             card.querySelector('.doc-status-badge').textContent = statusLabel[novoStatus] ?? novoStatus;
             // Reconstrói os botões de ação
             const acoes = card.querySelector('.doc-acoes');
             let btns = '';
-            if (novoStatus !== 'ativo')    btns += `<button class="btn btn-sm btn-success"         onclick="avaliarDoc(${idProducao},'aprovar',this)"  title="Aprovar"><i class="bi bi-check-lg"></i> Aprovar</button>`;
-            if (novoStatus !== 'inativo')  btns += `<button class="btn btn-sm btn-outline-danger ms-1" onclick="avaliarDoc(${idProducao},'reprovar',this)" title="Reprovar"><i class="bi bi-x-lg"></i> Reprovar</button>`;
+            if (novoStatus !== 'concluido') btns += `<button class="btn btn-sm btn-success"         onclick="avaliarDoc(${idProducao},'aprovar',this)"  title="Aprovar"><i class="bi bi-check-lg"></i> Aprovar</button>`;
+            if (novoStatus !== 'cancelado') btns += `<button class="btn btn-sm btn-outline-danger ms-1" onclick="avaliarDoc(${idProducao},'reprovar',this)" title="Reprovar"><i class="bi bi-x-lg"></i> Reprovar</button>`;
             acoes.innerHTML = btns;
         })
         .catch(err => { alert('Erro: ' + err.message); btn.disabled = false; btn.innerHTML = orig; });
@@ -515,7 +550,7 @@ window.executarExclusaoTarefa = function () {
         .then(r => r.json())
         .then(data => {
             if (data.sucesso) {
-                document.getElementById('modalConfirmarExclusaoTarefa').style.display = 'none';
+                bsHide('modalConfirmarExclusaoTarefa');
                 document.querySelector('a[href*="tarefas"]')?.click();
             } else {
                 alert('Erro: ' + data.mensagem);

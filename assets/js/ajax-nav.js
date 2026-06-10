@@ -33,9 +33,13 @@
         });
     }
 
+    var SPINNER_HTML = '<div class="text-center mt-5">'
+        + '<div class="spinner-border text-primary" role="status">'
+        + '<span class="visually-hidden">Carregando...</span></div></div>';
+
     function loadPage(page, pushState) {
         console.log('[AJAX-NAV] Carregando página:', page);
-        container.style.opacity = '0.4';
+        container.innerHTML = SPINNER_HTML;
         container.style.pointerEvents = 'none';
 
         fetch(window.location.pathname + '?page=' + encodeURIComponent(page) + '&ajax=1')
@@ -46,7 +50,6 @@
             .then(function (html) {
                 container.innerHTML = html;
                 reexecuteScripts(container);
-                container.style.opacity = '';
                 container.style.pointerEvents = '';
                 setActive(page);
                 if (pushState) {
@@ -58,7 +61,6 @@
             .catch(function (err) {
                 console.error('[AJAX-NAV] Erro:', err);
                 container.innerHTML = "<div class='alert alert-danger m-3'>Erro ao carregar a página.</div>";
-                container.style.opacity = '';
                 container.style.pointerEvents = '';
             });
     }

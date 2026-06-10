@@ -39,11 +39,15 @@ try {
 } catch (PDOException $e) {}
 
 try {
-    // Taxa de conclusão: tarefas concluídas / total
+    // Taxa de conclusão: tarefas concluídas / total (via producoes)
     $stmt = $pdo->prepare("
         SELECT
             COUNT(DISTINCT a.id) AS total,
-            COUNT(DISTINCT CASE WHEN a.status_tarefa = 'concluida' THEN a.id END) AS concluidas
+            COUNT(DISTINCT CASE WHEN
+                COALESCE((SELECT pr.status FROM producoes pr
+                          WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                          ORDER BY pr.id_producao DESC LIMIT 1), 'pendente') = 'concluido'
+                THEN a.id END) AS concluidas
         FROM agenda_items a
         JOIN participacao par ON a.id_projeto = par.id_projeto
         WHERE par.id_usuario = :id AND a.id_projeto IS NOT NULL
@@ -66,7 +70,11 @@ try {
             p.titulo AS nome_projeto,
             COALESCE(par.carga_horaria, 0) AS carga_horaria,
             COUNT(DISTINCT a.id) AS total_tarefas,
-            COUNT(DISTINCT CASE WHEN a.status_tarefa = 'concluida' THEN a.id END) AS tarefas_concluidas,
+            COUNT(DISTINCT CASE WHEN
+                COALESCE((SELECT pr.status FROM producoes pr
+                          WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                          ORDER BY pr.id_producao DESC LIMIT 1), 'pendente') = 'concluido'
+                THEN a.id END) AS tarefas_concluidas,
             0 AS total_docs,
             0 AS docs_aprovados
         FROM participacao par
@@ -111,33 +119,37 @@ try {
 
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-clock-history"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $stats_rel['carga_total'] ?>h</h4><small class="text-muted">Carga Total Registrada</small></div>
+        <div class="stat-card-modern sc-blue">
+            <div class="sc-watermark"><i class="bi bi-clock-history"></i></div>
+            <div class="sc-label"><i class="bi bi-clock-history"></i> Carga Total</div>
+            <div class="sc-number"><?= $stats_rel['carga_total'] ?>h</div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-graph-up"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $stats_rel['media_aluno'] ?>h</h4><small class="text-muted">Média por Aluno</small></div>
+        <div class="stat-card-modern sc-teal">
+            <div class="sc-watermark"><i class="bi bi-graph-up"></i></div>
+            <div class="sc-label"><i class="bi bi-graph-up"></i> Média por Aluno</div>
+            <div class="sc-number"><?= $stats_rel['media_aluno'] ?>h</div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-award"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $stats_rel['certificados'] ?></h4><small class="text-muted">Produções Registradas</small></div>
+        <div class="stat-card-modern sc-purple">
+            <div class="sc-watermark"><i class="bi bi-award"></i></div>
+            <div class="sc-label"><i class="bi bi-award"></i> Produções</div>
+            <div class="sc-number"><?= $stats_rel['certificados'] ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-check2-all"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $stats_rel['taxa_conclusao'] ?>%</h4><small class="text-muted">Taxa de Conclusão</small></div>
+        <div class="stat-card-modern sc-green">
+            <div class="sc-watermark"><i class="bi bi-check2-all"></i></div>
+            <div class="sc-label"><i class="bi bi-check2-all"></i> Taxa Conclusão</div>
+            <div class="sc-number"><?= $stats_rel['taxa_conclusao'] ?>%</div>
         </div>
     </div>
 </div>
 
 <div id="tab-progresso">
-    <div class="content-card mb-3 p-3">
+    <div class="card border-0 shadow-sm mb-3"><div class="card-body py-2">
         <div class="row g-2 align-items-center">
             <div class="col-12 col-md-5">
                 <div class="input-group">
@@ -157,9 +169,10 @@ try {
                 <button class="btn btn-outline-secondary w-100" onclick="limparFiltrosRelatorios()">Limpar</button>
             </div>
         </div>
-    </div>
+    </div></div>
 
-    <div class="content-card">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
         <h5 class="fw-bold mb-3">Progresso por Aluno</h5>
         <div class="table-responsive">
             <table class="table table-hover align-middle">
@@ -199,9 +212,9 @@ try {
                             // Cores
                             $barColor = $progresso >= 75 ? 'bg-success' : ($progresso >= 50 ? 'bg-info' : ($progresso >= 25 ? 'bg-warning' : 'bg-danger'));
 
-                            $tarBadge = $total_tar === 0 ? 'bg-secondary'
-                                : ($conc_tar === $total_tar ? 'bg-success'
-                                : ($conc_tar > $total_tar / 2 ? 'bg-info text-dark' : 'bg-warning text-dark'));
+                            $tarBadge = $total_tar === 0 ? 'bg-secondary-subtle text-secondary fw-semibold'
+                                : ($conc_tar === $total_tar ? 'bg-success-subtle text-success fw-semibold'
+                                : ($conc_tar > $total_tar / 2 ? 'bg-warning-subtle text-warning fw-semibold' : 'bg-danger-subtle text-danger fw-semibold'));
 
                             $docBadge = 'bg-secondary';
 
@@ -240,6 +253,7 @@ try {
                     <?php endif; ?>
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 </div>
