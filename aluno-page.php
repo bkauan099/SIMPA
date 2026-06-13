@@ -1354,13 +1354,28 @@ function showDay(el) {
     const INTERVALO   = 5000;
     const STORAGE_KEY = 'notif_lidas_<?= (int)$id_usuario ?>';
 
+    const QUINZE_DIAS_MS  = 15 * 24 * 60 * 60 * 1000;
+    const STORAGE_KEY_TS  = 'notif_lidas_ts_<?= (int)$id_usuario ?>';
+
     // ── localStorage helpers ──────────────────────────────────────
     function getLidas() {
-        try { return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')); }
-        catch(e) { return new Set(); }
+        try {
+            const agora = Date.now();
+            const textos = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+            const ts     = JSON.parse(localStorage.getItem(STORAGE_KEY_TS) || '{}');
+            // Remove entradas com mais de 15 dias
+            for (const txt of [...textos]) {
+                if (ts[txt] && (agora - ts[txt]) > QUINZE_DIAS_MS) textos.delete(txt);
+            }
+            return textos;
+        } catch(e) { return new Set(); }
     }
     function salvarLidas(set) {
+        const agora = Date.now();
+        const ts    = JSON.parse(localStorage.getItem(STORAGE_KEY_TS) || '{}');
+        for (const txt of set) { if (!ts[txt]) ts[txt] = agora; }
         localStorage.setItem(STORAGE_KEY, JSON.stringify([...set].slice(-200)));
+        localStorage.setItem(STORAGE_KEY_TS, JSON.stringify(ts));
     }
 
     // ── Intercepta cliques em "Marcar como lida" para persistir ──

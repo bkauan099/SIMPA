@@ -117,7 +117,6 @@ if ($_matricula_notif) {
             "SELECT titulo, status FROM producoes
              WHERE caminho LIKE :prefix
                AND status IN ('concluido', 'cancelado', 'refazer')
-               AND data_registro >= NOW() - INTERVAL '15 days'
              ORDER BY id_producao DESC LIMIT 10"
         );
         $s->execute([':prefix' => 'uploads/alunos/' . $_matricula_notif . '/%']);
