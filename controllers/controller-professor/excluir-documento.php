@@ -1,7 +1,14 @@
 <?php
+session_start();
 require_once '../../conexao/conexao.php';
 
 header('Content-Type: application/json');
+
+$id_professor = $_SESSION['id_usuario'] ?? null;
+if (!$id_professor) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Sessão expirada.']);
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_documento = $_POST['id_documento'] ?? null;
@@ -12,23 +19,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // MIGRADO: documentos_projeto → producoes
-        // id_documento → id_producao | caminho_arquivo → caminho
         $sqlBusca = "SELECT caminho FROM producoes WHERE id_producao = :id";
         $stmtBusca = $pdo->prepare($sqlBusca);
         $stmtBusca->execute([':id' => $id_documento]);
         $doc = $stmtBusca->fetch(PDO::FETCH_ASSOC);
 
         if ($doc) {
-            $caminhoFisico = "../../uploads/documentos/" . $doc['caminho'];
+            // caminho no banco já inclui "uploads/..." — usa diretamente a partir da raiz do projeto
+            $baseDir     = realpath(__DIR__ . '/../../uploads');
+            $caminhoFisico = realpath(__DIR__ . '/../../' . $doc['caminho']);
 
-            // Deletar o registro no Banco de Dados
             $sqlDelete = "DELETE FROM producoes WHERE id_producao = :id";
             $stmtDelete = $pdo->prepare($sqlDelete);
             $stmtDelete->execute([':id' => $id_documento]);
 
-            // Se deletou no banco, apaga o arquivo físico da pasta
-            if (file_exists($caminhoFisico)) {
+            if ($caminhoFisico && $baseDir && str_starts_with($caminhoFisico, $baseDir) && file_exists($caminhoFisico)) {
                 unlink($caminhoFisico);
             }
 

@@ -23,7 +23,7 @@ $stmt = $pdo->prepare("
     WHERE p.caminho LIKE :prefix
     ORDER BY p.data_registro DESC
 ");
-$stmt->execute([':prefix' => 'uploads/alunos/' . $_matriculaDoc . '/%']);
+$stmt->execute([':prefix' => 'uploads/producoes/aluno/' . $_matriculaDoc . '/%']);
 $documentos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $documentos = array_values(array_filter($documentos, function($d) {

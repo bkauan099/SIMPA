@@ -39,5 +39,5 @@ try {
     $novoConcluido = $aluno->toggleConcluido($id, $id_usuario);
     echo json_encode(['ok' => true, 'concluido' => $novoConcluido]);
 } catch (Exception $e) {
-    echo json_encode(['ok' => false, 'erro' => $e->getMessage()]);
+    echo json_encode(['ok' => false, 'erro' => htmlspecialchars($e->getMessage())]);
 }

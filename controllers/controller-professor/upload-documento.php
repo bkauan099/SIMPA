@@ -4,45 +4,54 @@ require_once '../../conexao/conexao.php';
 
 header('Content-Type: application/json');
 
+$id_professor = $_SESSION['id_usuario'] ?? null;
+if (!$id_professor) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Sessão expirada.']);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_projeto = $_POST['id_projeto'] ?? null;
-    $descricao = $_POST['descricao'] ?? '';
+    $descricao  = $_POST['descricao']  ?? '';
 
     if (!$id_projeto || !isset($_FILES['arquivo'])) {
         echo json_encode(['sucesso' => false, 'mensagem' => 'Dados incompletos.']);
         exit;
     }
 
-    $arquivo = $_FILES['arquivo'];
-    $nomeOriginal = $arquivo['name'];
-    $extensao = strtolower(pathinfo($nomeOriginal, PATHINFO_EXTENSION));
+    // Obter matrícula do professor para organizar a pasta
+    $stmtMat = $pdo->prepare("SELECT matricula FROM usuarios WHERE id_usuario = :id");
+    $stmtMat->execute([':id' => $id_professor]);
+    $matricula = $stmtMat->fetchColumn();
+    if (!$matricula) {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Professor não encontrado.']);
+        exit;
+    }
 
-    // Extensões permitidas
+    $arquivo      = $_FILES['arquivo'];
+    $nomeOriginal = $arquivo['name'];
+    $extensao     = strtolower(pathinfo($nomeOriginal, PATHINFO_EXTENSION));
+
     $permitidos = ['pdf', 'doc', 'docx', 'jpg', 'png'];
     if (!in_array($extensao, $permitidos)) {
         echo json_encode(['sucesso' => false, 'mensagem' => 'Tipo de arquivo não permitido.']);
         exit;
     }
 
-    // Caminho da raiz do projeto para o upload
-    $diretorioDestino = "../../uploads/documentos/";
+    $diretorioDestino = "../../uploads/producoes/professor/" . $matricula . "/";
 
-    // Garante que a pasta existe
     if (!is_dir($diretorioDestino)) {
-        mkdir($diretorioDestino, 0777, true);
+        mkdir($diretorioDestino, 0755, true);
     }
 
-    $nomeNoServidor = uniqid() . "." . $extensao;
-    $caminhoFinal = $diretorioDestino . $nomeNoServidor;
+    $nomeNoServidor   = bin2hex(random_bytes(16)) . "." . $extensao;
+    $caminhoFinal     = $diretorioDestino . $nomeNoServidor;
+    $caminhoParaBanco = "uploads/producoes/professor/" . $matricula . "/" . $nomeNoServidor;
 
     if (move_uploaded_file($arquivo['tmp_name'], $caminhoFinal)) {
         try {
             $titulo = !empty($_POST['titulo']) ? $_POST['titulo'] : $nomeOriginal;
-            $nomeOriginal = $arquivo['name'];
-            $caminhoParaBanco = "uploads/documentos/" . $nomeNoServidor;
 
-            // MIGRADO: documentos_projeto → producoes
-            // nome_original → tipo | caminho_arquivo → caminho | data_upload → data_registro
             $sql = "INSERT INTO producoes (id_projeto, tipo, caminho, titulo, status, data_registro)
                 VALUES (:id_projeto, :nome_orig, :caminho, :titulo, 'pendente', NOW())";
 
@@ -51,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':id_projeto' => $id_projeto,
                 ':nome_orig'  => $nomeOriginal,
                 ':caminho'    => $caminhoParaBanco,
-                ':titulo'     => $titulo
+                ':titulo'     => $titulo,
             ]);
 
             echo json_encode(['sucesso' => true]);
@@ -59,5 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (file_exists($caminhoFinal)) unlink($caminhoFinal);
             echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
         }
+    } else {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Falha ao salvar o arquivo.']);
     }
 }

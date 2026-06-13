@@ -5,17 +5,26 @@ if (!$id_usuario) { http_response_code(403); exit; }
 
 require_once __DIR__ . '/../conexao/conexao.php';
 
-$id_certificado = $_GET['id'] ?? '';
-if (!$id_certificado) { http_response_code(400); exit; }
+$id_producao = (int)($_GET['id'] ?? 0);
+if (!$id_producao) { http_response_code(400); exit; }
+
+// Matrícula do aluno — prova de ownership pelo caminho
+$stmt = $pdo->prepare("SELECT matricula FROM usuarios WHERE id_usuario = :uid");
+$stmt->execute([':uid' => $id_usuario]);
+$matricula = $stmt->fetchColumn();
+
+if (!$matricula) { http_response_code(403); exit; }
+
+$prefixo = 'uploads/certificados/aluno/' . $matricula . '/%';
 
 $stmt = $pdo->prepare("
-    SELECT caminho, nome_arquivo
-    FROM certificados
-    WHERE id_certificado = :id
-      AND id_usuario = :uid
+    SELECT caminho, tipo AS nome_arquivo
+    FROM producoes
+    WHERE id_producao = :id
+      AND caminho LIKE :prefix
     LIMIT 1
 ");
-$stmt->execute([':id' => $id_certificado, ':uid' => $id_usuario]);
+$stmt->execute([':id' => $id_producao, ':prefix' => $prefixo]);
 $arquivo = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$arquivo) { http_response_code(403); exit; }

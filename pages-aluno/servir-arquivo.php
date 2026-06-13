@@ -18,7 +18,7 @@ if (!$matricula) { http_response_code(403); exit; }
 // O caminho de qualquer arquivo enviado por este aluno começa com este prefixo.
 // Verificar pelo prefixo impede que um aluno acesse arquivos de outro aluno
 // mesmo que ambos participem do mesmo projeto.
-$prefixo = 'uploads/alunos/' . $matricula . '/';
+$prefixo = 'uploads/producoes/aluno/' . $matricula . '/';
 
 $stmt = $pdo->prepare("
     SELECT caminho, tipo

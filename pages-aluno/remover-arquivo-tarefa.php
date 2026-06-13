@@ -26,7 +26,7 @@ if (!$matricula) {
 // O caminho de qualquer arquivo enviado por este aluno começa com este prefixo.
 // Verificar pelo prefixo garante que um colega de projeto não pode remover
 // um arquivo que não foi enviado por ele.
-$prefixo = 'uploads/alunos/' . $matricula . '/';
+$prefixo = 'uploads/producoes/aluno/' . $matricula . '/';
 
 $stmt = $pdo->prepare(
     "SELECT caminho FROM producoes
@@ -42,8 +42,11 @@ if (!$item) {
     exit;
 }
 
-$fullPath = __DIR__ . '/../' . $item['caminho'];
-if (file_exists($fullPath)) unlink($fullPath);
+$baseDir  = realpath(__DIR__ . '/../uploads');
+$fullPath = realpath(__DIR__ . '/../' . $item['caminho']);
+if ($fullPath && $baseDir && str_starts_with($fullPath, $baseDir) && file_exists($fullPath)) {
+    unlink($fullPath);
+}
 
 $stmt = $pdo->prepare("DELETE FROM producoes WHERE id_producao = :id");
 $ok = $stmt->execute([':id' => $id_producao]);

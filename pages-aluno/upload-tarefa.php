@@ -31,8 +31,8 @@ $id_projeto = $stmt->fetchColumn() ?: null;
 
 // Fallback: id_projeto enviado pelo front-end
 if (!$id_projeto) {
-    $id_projeto_post = trim($_POST['id_projeto'] ?? '');
-    if ($id_projeto_post) {
+    $id_projeto_post = (int)($_POST['id_projeto'] ?? 0);
+    if ($id_projeto_post > 0) {
         $stmt = $pdo->prepare("SELECT id_projeto FROM participacao WHERE id_usuario = :id AND id_projeto = :proj AND status = 'ativo'");
         $stmt->execute([':id' => $id_usuario, ':proj' => $id_projeto_post]);
         $id_projeto = $stmt->fetchColumn() ?: null;
@@ -48,16 +48,21 @@ if (empty($_FILES['arquivo']['name']) || $_FILES['arquivo']['error'] !== UPLOAD_
 if ($_FILES['arquivo']['size'] > 15 * 1024 * 1024) {
     echo json_encode(['ok' => false, 'erro' => 'Arquivo muito grande (máx. 15 MB).']); exit;
 }
+$ext_permitidas = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'jpg', 'jpeg', 'png', 'zip', 'txt'];
+$ext_upload = strtolower(pathinfo($_FILES['arquivo']['name'], PATHINFO_EXTENSION));
+if (!in_array($ext_upload, $ext_permitidas, true)) {
+    echo json_encode(['ok' => false, 'erro' => 'Tipo de arquivo não permitido. Use: PDF, Word, Excel, PowerPoint, imagem ou ZIP.']); exit;
+}
 
 // Pasta organizada por matrícula
-$pasta = __DIR__ . '/../uploads/alunos/' . $matricula . '/';
+$pasta = __DIR__ . '/../uploads/producoes/aluno/' . $matricula . '/';
 if (!is_dir($pasta)) mkdir($pasta, 0755, true);
 
 $nomeOriginal = basename($_FILES['arquivo']['name']);
 $ext          = strtolower(pathinfo($nomeOriginal, PATHINFO_EXTENSION));
 $codigo      = bin2hex(random_bytes(16));
 $nomeArquivo = $codigo . ($ext ? '.' . $ext : '');
-$caminhoRel   = 'uploads/alunos/' . $matricula . '/' . $nomeArquivo;
+$caminhoRel   = 'uploads/producoes/aluno/' . $matricula . '/' . $nomeArquivo;
 
 if (!move_uploaded_file($_FILES['arquivo']['tmp_name'], $pasta . $nomeArquivo)) {
     echo json_encode(['ok' => false, 'erro' => 'Falha ao salvar o arquivo.']); exit;

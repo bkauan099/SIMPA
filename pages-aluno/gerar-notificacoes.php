@@ -119,7 +119,7 @@ if ($_matricula_notif) {
                AND status IN ('concluido', 'cancelado', 'refazer')
              ORDER BY id_producao DESC LIMIT 10"
         );
-        $s->execute([':prefix' => 'uploads/alunos/' . $_matricula_notif . '/%']);
+        $s->execute([':prefix' => 'uploads/producoes/aluno/' . $_matricula_notif . '/%']);
         foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
             $titulo = htmlspecialchars($r['titulo']);
             if ($r['status'] === 'concluido') {

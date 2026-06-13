@@ -16,6 +16,7 @@ $id_usuario    = intval($_POST['id_usuario'] ?? 0);
 $data          = trim($_POST['data']         ?? '');
 $hora          = trim($_POST['hora']         ?? '');
 $prioridade    = trim($_POST['prioridade']   ?? 'media');
+if (!in_array($prioridade, ['alta', 'media', 'baixa'], true)) $prioridade = 'media';
 $descricao     = trim($_POST['descricao']    ?? '');
 
 if (empty($titulo)) {
