@@ -24,39 +24,31 @@ function corTipo($tipo) {
 <!-- ===== CARDS TOPO ===== -->
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-folder-fill"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= (int)$estatisticas['ativos'] ?></h4>
-                <small class="text-muted">Projetos Ativos</small>
-            </div>
+        <div class="stat-card-modern sc-blue">
+            <div class="sc-watermark"><i class="bi bi-folder-fill"></i></div>
+            <div class="sc-label"><i class="bi bi-folder-fill"></i> Projetos Ativos</div>
+            <div class="sc-number"><?= (int)$estatisticas['ativos'] ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-people"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= (int)$estatisticas['alunos'] ?></h4>
-                <small class="text-muted">Alunos Orientados</small>
-            </div>
+        <div class="stat-card-modern sc-purple">
+            <div class="sc-watermark"><i class="bi bi-people"></i></div>
+            <div class="sc-label"><i class="bi bi-people"></i> Alunos Orientados</div>
+            <div class="sc-number"><?= (int)$estatisticas['alunos'] ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-file-earmark-check"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= (int)$estatisticas['docs_pendentes'] ?></h4>
-                <small class="text-muted">Docs Pendentes</small>
-            </div>
+        <div class="stat-card-modern sc-orange">
+            <div class="sc-watermark"><i class="bi bi-file-earmark-check"></i></div>
+            <div class="sc-label"><i class="bi bi-file-earmark-check"></i> Docs Pendentes</div>
+            <div class="sc-number"><?= (int)$estatisticas['docs_pendentes'] ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-alarm"></i></div>
-            <div>
-                <h4 class="mb-0 fw-bold"><?= (int)$estatisticas['tarefas_vencendo'] ?></h4>
-                <small class="text-muted">Tarefas Vencendo</small>
-            </div>
+        <div class="stat-card-modern sc-red">
+            <div class="sc-watermark"><i class="bi bi-alarm"></i></div>
+            <div class="sc-label"><i class="bi bi-alarm"></i> Tarefas Vencendo</div>
+            <div class="sc-number"><?= (int)$estatisticas['tarefas_vencendo'] ?></div>
         </div>
     </div>
 </div>
@@ -231,7 +223,6 @@ function corTipo($tipo) {
 </div>
 
 <!-- ===== SCRIPTS ===== -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 (function() {
     // Data de hoje

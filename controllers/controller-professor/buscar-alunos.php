@@ -60,7 +60,7 @@ if (isset($_GET['id_projeto']) && $_GET['id_projeto'] !== 'null' && is_numeric($
             // --- LÓGICA DINÂMICA DE STATUS ---
             // Verifica se o status no BD é 'ativo'. Caso contrário, define como Inativo.
             $statusUsuario = (isset($p['status']) && strtolower($p['status']) === 'ativo') ? 'Ativo' : 'Inativo';
-            $classeBadge = ($statusUsuario === 'Ativo') ? 'bg-success' : 'bg-danger';
+            $classeBadge = ($statusUsuario === 'Ativo') ? 'bg-success-subtle text-success fw-semibold' : 'bg-danger-subtle text-danger fw-semibold';
             // ---------------------------------
 
             echo "<tr>

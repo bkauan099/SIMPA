@@ -9,10 +9,11 @@ require_once '../../model/Projeto.php';
 function formatarDataParaBanco($data)
 {
     if (empty($data)) return null;
+    // Formato ISO yyyy-mm-dd (input type="date" nativo)
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $data)) return $data;
+    // Formato dd/mm/yyyy (flatpickr legado)
     $partes = explode('/', $data);
-    if (count($partes) == 3) {
-        return "{$partes[2]}-{$partes[1]}-{$partes[0]}";
-    }
+    if (count($partes) == 3) return "{$partes[2]}-{$partes[1]}-{$partes[0]}";
     return null;
 }
 

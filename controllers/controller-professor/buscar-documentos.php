@@ -7,11 +7,11 @@ $status_filtro = isset($_GET['status']) ? trim($_GET['status']) : '';
 
 // aprovado → ativo | reprovado → inativo
 $status_class = [
-    'pendente'  => 'bg-warning text-dark',
-    'ativo'     => 'bg-success',
-    'inativo'   => 'bg-danger',
-    'concluido' => 'bg-primary',
-    'cancelado' => 'bg-secondary',
+    'pendente'  => 'bg-warning-subtle text-warning fw-semibold',
+    'ativo'     => 'bg-success-subtle text-success fw-semibold',
+    'inativo'   => 'bg-danger-subtle text-danger fw-semibold',
+    'concluido' => 'bg-success-subtle text-success fw-semibold',
+    'cancelado' => 'bg-danger-subtle text-danger fw-semibold',
 ];
 $status_label = [
     'pendente'  => 'Pendente',
@@ -63,7 +63,7 @@ try {
                     <td><span class='badge {$badgeClass}' style='font-size: 0.7rem;'>{$badgeLabel}</span></td>
                     <td class='text-center'>
                         <div class='btn-group'>
-                            <a href='{$doc['caminho']}' target='_blank' class='btn btn-sm btn-outline-primary' title='Visualizar'>
+                            <a href='controllers/controller-professor/servir-doc-tarefa.php?id={$doc['id_producao']}' target='_blank' class='btn btn-sm btn-outline-primary' title='Visualizar'>
                                 <i class='bi bi-eye'></i>
                             </a>
                             <button type='button' class='btn btn-sm btn-outline-danger ms-1'
@@ -81,7 +81,7 @@ try {
                     <td><span class='badge {$badgeClass}'>{$badgeLabel}</span></td>
                     <td class='text-center'>
                         <div class='btn-group'>
-                            <a href='{$doc['caminho']}' target='_blank' class='btn btn-sm btn-outline-primary'><i class='bi bi-eye'></i></a>
+                            <a href='controllers/controller-professor/servir-doc-tarefa.php?id={$doc['id_producao']}' target='_blank' class='btn btn-sm btn-outline-primary'><i class='bi bi-eye'></i></a>
                         </div>
                     </td>
                 </tr>";

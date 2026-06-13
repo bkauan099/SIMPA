@@ -36,27 +36,29 @@ if ($modo === 'detalhe' || $modo === 'detalhe_json') {
 
         $prioLabels  = ['alta' => 'Alta', 'media' => 'Média', 'baixa' => 'Baixa'];
         $prioClasses = ['alta' => 'bg-danger', 'media' => 'bg-warning text-dark', 'baixa' => 'bg-secondary'];
-        $stLabels    = ['pendente' => 'Pendente', 'em_andamento' => 'Em Andamento', 'concluida' => 'Concluída', 'concluido' => 'Concluída'];
-        $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info text-dark', 'concluida' => 'bg-success text-white', 'concluido' => 'bg-success text-white'];
+        $stLabels    = ['pendente' => 'Pendente', 'concluido' => 'Concluída', 'cancelado' => 'Cancelada', 'ativo' => 'Ativo', 'inativo' => 'Inativo'];
+        $stClasses   = ['pendente' => 'bg-warning-subtle text-warning fw-semibold', 'concluido' => 'bg-success-subtle text-success fw-semibold', 'cancelado' => 'bg-danger-subtle text-danger fw-semibold', 'ativo' => 'bg-success-subtle text-success fw-semibold', 'inativo' => 'bg-danger-subtle text-danger fw-semibold'];
 
         $prio   = $tarefa['prioridade']    ?? 'media';
-        $status = $tarefa['status_tarefa'] ?? 'pendente';
+        // Status derivado da producao mais recente vinculada por id_agenda_item
+        $stmtSt = $pdo->prepare("SELECT status FROM producoes WHERE titulo = :titulo AND id_projeto = :id_projeto ORDER BY id_producao DESC LIMIT 1");
+        $stmtSt->execute([':titulo' => $tarefa['titulo'], ':id_projeto' => $tarefa['id_projeto']]);
+        $statusRow = $stmtSt->fetch(PDO::FETCH_ASSOC);
+        $status = $statusRow['status'] ?? 'pendente';
 
-        // Busca documentos enviados pelo aluno para esta tarefa
+        // Busca documentos enviados pelo aluno para esta tarefa (vinculados por id_agenda_item)
         $docs = [];
-        if (!empty($tarefa['titulo']) && !empty($tarefa['id_projeto'])) {
-            $stmtDocs = $pdo->prepare("
-                SELECT id_producao, tipo, caminho, status
-                FROM producoes
-                WHERE titulo = :titulo AND id_projeto = :id_projeto
-                ORDER BY id_producao ASC
-            ");
-            $stmtDocs->execute([':titulo' => $tarefa['titulo'], ':id_projeto' => $tarefa['id_projeto']]);
-            $docs = $stmtDocs->fetchAll(PDO::FETCH_ASSOC);
-        }
+        $stmtDocs = $pdo->prepare("
+            SELECT id_producao, tipo, caminho, status
+            FROM producoes
+            WHERE titulo = :titulo AND id_projeto = :id_projeto
+            ORDER BY id_producao ASC
+        ");
+        $stmtDocs->execute([':titulo' => $tarefa['titulo'], ':id_projeto' => $tarefa['id_projeto']]);
+        $docs = $stmtDocs->fetchAll(PDO::FETCH_ASSOC);
 
-        $docStatusLabel = ['pendente' => 'Pendente', 'ativo' => 'Aprovado', 'inativo' => 'Reprovado'];
-        $docStatusClass = ['pendente' => 'bg-warning text-dark', 'ativo' => 'bg-success text-white', 'inativo' => 'bg-danger text-white'];
+        $docStatusLabel = ['pendente' => 'Pendente', 'concluido' => 'Aprovado', 'cancelado' => 'Reprovado', 'ativo' => 'Aprovado', 'inativo' => 'Reprovado'];
+        $docStatusClass = ['pendente' => 'bg-warning-subtle text-warning fw-semibold', 'concluido' => 'bg-success-subtle text-success fw-semibold', 'cancelado' => 'bg-danger-subtle text-danger fw-semibold', 'ativo' => 'bg-success-subtle text-success fw-semibold', 'inativo' => 'bg-danger-subtle text-danger fw-semibold'];
 
         // Coluna esquerda: detalhes da tarefa
         $colDetalhes = "<dl class='row mb-0'>
@@ -93,12 +95,12 @@ if ($modo === 'detalhe' || $modo === 'detalhe_json') {
                 $idProd  = intval($doc['id_producao']);
 
                 $btnAprovar = $btnReprovar = '';
-                if ($ds !== 'ativo') {
+                if ($ds !== 'concluido') {
                     $btnAprovar = "<button class='btn btn-sm btn-success' onclick=\"avaliarDoc({$idProd},'aprovar',this)\" title='Aprovar'>
                         <i class='bi bi-check-lg'></i> Aprovar
                     </button>";
                 }
-                if ($ds !== 'inativo') {
+                if ($ds !== 'cancelado') {
                     $btnReprovar = "<button class='btn btn-sm btn-outline-danger ms-1' onclick=\"avaliarDoc({$idProd},'reprovar',this)\" title='Reprovar'>
                         <i class='bi bi-x-lg'></i> Reprovar
                     </button>";
@@ -143,7 +145,12 @@ try {
     $sql = "SELECT DISTINCT ON (a.id)
         a.id, a.titulo, a.descricao, a.data,
         COALESCE(a.prioridade, 'media') AS prioridade,
-        COALESCE(a.status_tarefa, 'pendente') AS status_tarefa,
+        COALESCE(
+            (SELECT pr.status FROM producoes pr
+             WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+             ORDER BY pr.id_producao DESC LIMIT 1),
+            'pendente'
+        ) AS status_tarefa,
         a.id_usuario, a.id_projeto,
         u.nome AS nome_aluno,
         p.titulo AS nome_projeto,
@@ -169,7 +176,11 @@ try {
         $params[':id_projeto'] = $filtro_projeto;
     }
     if ($filtro_status !== '') {
-        $sql .= " AND COALESCE(a.status_tarefa, 'pendente') = :status";
+        $sql .= " AND COALESCE(
+            (SELECT pr.status FROM producoes pr
+             WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+             ORDER BY pr.id_producao DESC LIMIT 1),
+            'pendente') = :status";
         $params[':status'] = $filtro_status;
     }
 
@@ -187,8 +198,8 @@ try {
     } else {
         $prioLabels  = ['alta' => 'Alta', 'media' => 'Média', 'baixa' => 'Baixa'];
         $prioClasses = ['alta' => 'bg-danger', 'media' => 'bg-warning text-dark', 'baixa' => 'bg-secondary'];
-        $stLabels    = ['pendente' => 'Pendente', 'em_andamento' => 'Em Andamento', 'concluida' => 'Concluída', 'concluido' => 'Concluída'];
-        $stClasses   = ['pendente' => 'bg-warning text-dark', 'em_andamento' => 'bg-info text-dark', 'concluida' => 'bg-success text-white', 'concluido' => 'bg-success text-white'];
+        $stLabels    = ['pendente' => 'Pendente', 'concluido' => 'Concluída', 'cancelado' => 'Cancelada', 'ativo' => 'Ativo', 'inativo' => 'Inativo'];
+        $stClasses   = ['pendente' => 'bg-warning-subtle text-warning fw-semibold', 'concluido' => 'bg-success-subtle text-success fw-semibold', 'cancelado' => 'bg-danger-subtle text-danger fw-semibold', 'ativo' => 'bg-success-subtle text-success fw-semibold', 'inativo' => 'bg-danger-subtle text-danger fw-semibold'];
 
         foreach ($tarefas as $t) {
             $prio       = $t['prioridade']    ?? 'media';
@@ -209,7 +220,7 @@ try {
                 <button class='btn btn-sm btn-outline-primary' onclick=\"verTarefa('{$id}')\" title='Ver detalhes'><i class='bi bi-eye'></i></button>
                 {$dotHtml}
             </div>";
-            if ($status !== 'concluida') {
+            if ($status !== 'concluido') {
                 $acoes .= " <button class='btn btn-sm btn-outline-secondary ms-1' onclick=\"editarTarefa('{$id}')\" title='Editar'>
                     <i class='bi bi-pencil'></i></button>";
                 $acoes .= " <button class='btn btn-sm btn-outline-danger ms-1' onclick=\"confirmarExcluirTarefa('{$id}')\" title='Excluir'>

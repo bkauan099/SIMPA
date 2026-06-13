@@ -22,11 +22,15 @@ try {
                 THEN a.id END) AS prazos,
             COUNT(DISTINCT CASE
                 WHEN a.tipo = 'Reunião'
-                 AND (a.concluido IS NULL OR a.concluido = false)
+                 AND COALESCE((SELECT pr.status FROM producoes pr
+                               WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                               ORDER BY pr.id_producao DESC LIMIT 1), 'pendente') NOT IN ('concluido','cancelado')
                 THEN a.id END) AS reunioes,
             COUNT(DISTINCT CASE
                 WHEN a.tipo = 'Entrega'
-                 AND (a.concluido IS NULL OR a.concluido = false)
+                 AND COALESCE((SELECT pr.status FROM producoes pr
+                               WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                               ORDER BY pr.id_producao DESC LIMIT 1), 'pendente') NOT IN ('concluido','cancelado')
                 THEN a.id END) AS entregas
         FROM agenda_items a
         JOIN participacao par ON a.id_projeto = par.id_projeto
@@ -49,8 +53,9 @@ try {
             COALESCE(a.tipo, 'tarefa') AS tipo,
             a.data,
             COALESCE(CAST(a.hora AS TEXT), '00:00') AS hora,
-            COALESCE(a.concluido, false) AS concluido,
-            COALESCE(a.status_tarefa, 'pendente') AS status_tarefa,
+            COALESCE((SELECT pr.status FROM producoes pr
+                      WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                      ORDER BY pr.id_producao DESC LIMIT 1), 'pendente') AS status_tarefa,
             COALESCE(u.nome, 'Todos') AS nome_aluno,
             COALESCE(p.titulo, '') AS nome_projeto
         FROM agenda_items a
@@ -72,10 +77,12 @@ try {
         $date = new DateTime($r['data']);
         $hora = substr($r['hora'], 0, 5);
 
-        if ($r['concluido'] || $r['status_tarefa'] === 'concluida') {
+        if ($r['status_tarefa'] === 'concluido') {
             $status = 'Concluído';
-        } elseif ($r['status_tarefa'] === 'em_andamento') {
-            $status = 'Em Andamento';
+        } elseif ($r['status_tarefa'] === 'cancelado') {
+            $status = 'Cancelado';
+        } elseif ($r['status_tarefa'] === 'inativo') {
+            $status = 'Reprovado';
         } elseif ($date < $today) {
             $status = 'Urgente';
         } else {
@@ -112,27 +119,31 @@ try {
 
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-calendar-event"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="totalEventos"><?= intval($stats_cron['total_mes']) ?></h4><small class="text-muted">Eventos este mês</small></div>
+        <div class="stat-card-modern sc-blue">
+            <div class="sc-watermark"><i class="bi bi-calendar-event"></i></div>
+            <div class="sc-label"><i class="bi bi-calendar-event"></i> Eventos este mês</div>
+            <div class="sc-number" id="totalEventos"><?= intval($stats_cron['total_mes']) ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-alarm"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= intval($stats_cron['prazos']) ?></h4><small class="text-muted">Prazos próximos</small></div>
+        <div class="stat-card-modern sc-red">
+            <div class="sc-watermark"><i class="bi bi-alarm"></i></div>
+            <div class="sc-label"><i class="bi bi-alarm"></i> Prazos próximos</div>
+            <div class="sc-number"><?= intval($stats_cron['prazos']) ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-people"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= intval($stats_cron['reunioes']) ?></h4><small class="text-muted">Reuniões agendadas</small></div>
+        <div class="stat-card-modern sc-teal">
+            <div class="sc-watermark"><i class="bi bi-people"></i></div>
+            <div class="sc-label"><i class="bi bi-people"></i> Reuniões agendadas</div>
+            <div class="sc-number"><?= intval($stats_cron['reunioes']) ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-check2-square"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= intval($stats_cron['entregas']) ?></h4><small class="text-muted">Entregas pendentes</small></div>
+        <div class="stat-card-modern sc-orange">
+            <div class="sc-watermark"><i class="bi bi-check2-square"></i></div>
+            <div class="sc-label"><i class="bi bi-check2-square"></i> Entregas pendentes</div>
+            <div class="sc-number"><?= intval($stats_cron['entregas']) ?></div>
         </div>
     </div>
 </div>
@@ -141,7 +152,7 @@ try {
 
     <!-- CALENDÁRIO -->
     <div class="col-lg-5">
-        <div class="content-card h-100">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <button class="btn btn-sm btn-outline-secondary" id="btnPrev"><i class="bi bi-chevron-left"></i></button>
                 <h6 class="fw-bold mb-0" id="calMesAno"></h6>
@@ -166,12 +177,12 @@ try {
                 <span><span class="dot-cal" style="background:#10b981;"></span> Evento</span>
                 <span><span class="dot-cal" style="background:#f59e0b;"></span> Prazo</span>
             </div>
-        </div>
+        </div></div>
     </div>
 
     <!-- ATIVIDADES DO MÊS -->
     <div class="col-lg-7">
-        <div class="content-card h-100">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="fw-bold mb-0" id="tituloLista">Atividades do Mês</h5>
                 <div class="d-flex gap-1 flex-wrap">
@@ -183,7 +194,7 @@ try {
                 </div>
             </div>
             <div id="listaAtividades" style="max-height:420px;overflow-y:auto;"></div>
-        </div>
+        </div></div>
     </div>
 </div>
 
@@ -263,10 +274,12 @@ try {
         'Prazo':   'bg-warning text-dark',
     };
     const badgeStatus = {
-        'Pendente':     'bg-warning text-dark',
-        'Em Andamento': 'bg-info text-dark',
-        'Concluído':    'bg-success',
-        'Urgente':      'bg-danger',
+        'Pendente':     'bg-warning-subtle text-warning fw-semibold',
+        'Em Andamento': 'bg-warning-subtle text-warning fw-semibold',
+        'Concluído':    'bg-success-subtle text-success fw-semibold',
+        'Urgente':      'bg-danger-subtle text-danger fw-semibold',
+        'Cancelado':    'bg-danger-subtle text-danger fw-semibold',
+        'Reprovado':    'bg-danger-subtle text-danger fw-semibold',
     };
 
     const style = document.createElement('style');

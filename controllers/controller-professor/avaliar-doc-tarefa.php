@@ -25,7 +25,7 @@ if (!$id_producao || !in_array($acao, ['aprovar', 'reprovar'])) {
     exit;
 }
 
-$novoStatus = ($acao === 'aprovar') ? 'ativo' : 'inativo';
+$novoStatus = ($acao === 'aprovar') ? 'concluido' : 'cancelado';
 
 try {
     $stmt = $pdo->prepare("

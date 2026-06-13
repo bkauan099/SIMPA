@@ -38,8 +38,11 @@ class DashboardController {
                 JOIN participacao pa ON a.id_projeto = pa.id_projeto
                 WHERE pa.id_usuario = ?
                   AND a.id_projeto IS NOT NULL
-                  AND COALESCE(a.status_tarefa, 'pendente') != 'concluida'
-                  AND COALESCE(a.concluido, false) = false
+                  AND COALESCE(
+                      (SELECT pr.status FROM producoes pr
+                       WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                       ORDER BY pr.id_producao DESC LIMIT 1),
+                      'pendente') != 'concluido'
                   AND a.data <= CURRENT_DATE
             ");
             $stmtTarefas->execute([$id_professor]);
@@ -77,8 +80,11 @@ class DashboardController {
                 JOIN usuarios u ON a.id_usuario = u.id_usuario
                 WHERE pa.id_usuario = ?
                   AND a.id_projeto IS NOT NULL
-                  AND COALESCE(a.status_tarefa, 'pendente') != 'concluida'
-                  AND COALESCE(a.concluido, false) = false
+                  AND COALESCE(
+                      (SELECT pr.status FROM producoes pr
+                       WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                       ORDER BY pr.id_producao DESC LIMIT 1),
+                      'pendente') != 'concluido'
                   AND a.data < CURRENT_DATE
                 GROUP BY u.id_usuario, u.nome
                 ORDER BY total_atrasadas DESC

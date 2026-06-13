@@ -10,12 +10,12 @@ RewriteEngine On
 # Redirecionar raiz para login se não autenticado
 RewriteRule ^$ login-page.php [L]
 
-# Bloquear acesso direto a .env, logs, lib, model, controllers, views
+# Bloquear acesso direto a .env, logs, lib, model, views, conexao
+# (controllers NÃO é bloqueado aqui pois é chamado via fetch/AJAX pelo front-end)
 RewriteRule ^\.env$              - [F,L]
 RewriteRule ^logs/               - [F,L]
 RewriteRule ^lib/                - [F,L]
 RewriteRule ^model/              - [F,L]
-RewriteRule ^controllers/        - [F,L]
 RewriteRule ^views/              - [F,L]
 RewriteRule ^conexao/            - [F,L]
 
