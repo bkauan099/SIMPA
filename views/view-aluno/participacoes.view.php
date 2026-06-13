@@ -129,6 +129,11 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
                 $statusStyle = 'background:#dcfce7;color:#16a34a;';
                 $statusIco   = 'bi-check-circle';
                 $statusKey   = 'concluido';
+            } elseif (!empty($r['doc_cancelado'])) {
+                $statusLabel = 'Documento Reprovado';
+                $statusStyle = 'background:#fee2e2;color:#dc2626;';
+                $statusIco   = 'bi-x-circle-fill';
+                $statusKey   = 'nao_concluido';
             } elseif ($_passou) {
                 $statusLabel = 'Não Concluído';
                 $statusStyle = 'background:#fee2e2;color:#dc2626;';

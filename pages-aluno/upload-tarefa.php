@@ -63,6 +63,13 @@ if (!move_uploaded_file($_FILES['arquivo']['tmp_name'], $pasta . $nomeArquivo)) 
     echo json_encode(['ok' => false, 'erro' => 'Falha ao salvar o arquivo.']); exit;
 }
 
+// Se existia documento 'refazer' para esta tarefa, marcar como inativo
+$stmt = $pdo->prepare(
+    "UPDATE producoes SET status = 'inativo'
+     WHERE id_projeto = :id_projeto AND titulo = :titulo AND status = 'refazer'"
+);
+$stmt->execute([':id_projeto' => $id_projeto, ':titulo' => $titulo]);
+
 // Salvar em producoes — titulo = nome da tarefa, tipo = nome original do arquivo
 $stmt = $pdo->prepare(
     "INSERT INTO producoes (id_projeto, titulo, tipo, caminho, status)

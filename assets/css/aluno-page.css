@@ -400,6 +400,17 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 /* ══ NOTIFICAÇÕES ══ */
 .tb-dropdown-notif { width: 300px; }
 
+#listaNotif {
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+#listaNotif::-webkit-scrollbar { width: 5px; }
+#listaNotif::-webkit-scrollbar-track { background: transparent; }
+#listaNotif::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+#listaNotif::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
 .tb-drop-header {
     display: flex;
     align-items: center;

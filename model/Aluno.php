@@ -140,7 +140,13 @@ class Aluno {
     }
 
     public function obterEstatisticasTarefas($id_usuario) {
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND tipo = 'tarefa' AND (concluido = false OR concluido IS NULL) AND data >= CURRENT_DATE");
+        // Pendentes: não concluídas dentro do prazo
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) FROM agenda_items ai
+            WHERE ai.id_usuario = :id AND ai.tipo = 'tarefa'
+              AND (ai.concluido = false OR ai.concluido IS NULL)
+              AND ai.data >= CURRENT_DATE
+        ");
         $stmt->execute([':id' => $id_usuario]);
         $pendentes = $stmt->fetchColumn();
 
@@ -148,14 +154,41 @@ class Aluno {
         $stmt->execute([':id' => $id_usuario]);
         $naoConcluidos = $stmt->fetchColumn();
 
-        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM agenda_items WHERE id_usuario = :id AND tipo = 'tarefa' AND concluido = true AND data >= CURRENT_DATE - INTERVAL '7 days'");
+        // Concluídas: concluido=true E doc mais recente NÃO é refazer
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) FROM agenda_items ai
+            WHERE ai.id_usuario = :id AND ai.tipo = 'tarefa'
+              AND ai.concluido = true
+              AND ai.data >= CURRENT_DATE - INTERVAL '7 days'
+              AND COALESCE((
+                  SELECT p.status = 'refazer'
+                  FROM producoes p
+                  WHERE p.id_projeto = ai.id_projeto AND p.titulo = ai.titulo AND p.status != 'inativo'
+                  ORDER BY p.id_producao DESC LIMIT 1
+              ), false) = false
+        ");
         $stmt->execute([':id' => $id_usuario]);
         $concluidos = $stmt->fetchColumn();
+
+        // Corrigir: doc mais recente é refazer
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) FROM agenda_items ai
+            WHERE ai.id_usuario = :id AND ai.tipo = 'tarefa'
+              AND COALESCE((
+                  SELECT p.status = 'refazer'
+                  FROM producoes p
+                  WHERE p.id_projeto = ai.id_projeto AND p.titulo = ai.titulo AND p.status != 'inativo'
+                  ORDER BY p.id_producao DESC LIMIT 1
+              ), false) = true
+        ");
+        $stmt->execute([':id' => $id_usuario]);
+        $corrigir = $stmt->fetchColumn();
 
         return [
             'pendentes'      => $pendentes,
             'nao_concluidos' => $naoConcluidos,
             'concluidos'     => $concluidos,
+            'corrigir'       => $corrigir,
         ];
     }
 
@@ -172,7 +205,20 @@ class Aluno {
         $stmt->execute([':id' => $id_usuario]);
         $concluidos = $stmt->fetchColumn();
 
-        return ['proximos' => $proximos, 'nao_concluidos' => $naoConcluidos, 'concluidos' => $concluidos];
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) FROM agenda_items ai
+            WHERE ai.id_usuario = :id
+              AND COALESCE((
+                  SELECT p.status = 'refazer'
+                  FROM producoes p
+                  WHERE p.id_projeto = ai.id_projeto AND p.titulo = ai.titulo AND p.status != 'inativo'
+                  ORDER BY p.id_producao DESC LIMIT 1
+              ), false) = true
+        ");
+        $stmt->execute([':id' => $id_usuario]);
+        $corrigir = $stmt->fetchColumn();
+
+        return ['proximos' => $proximos, 'nao_concluidos' => $naoConcluidos, 'concluidos' => $concluidos, 'corrigir' => $corrigir];
     }
 
     public function listarCronograma($id_usuario) {
@@ -181,7 +227,8 @@ class Aluno {
                 ai.id, ai.titulo, ai.descricao, ai.tipo, ai.data, ai.hora, ai.concluido,
                 COALESCE(proj.titulo, '—') AS projeto,
                 COALESCE(ai.id_projeto::text, '') AS id_projeto_ref,
-                lp.arquivos
+                lp.arquivos,
+                lp.tem_refazer
             FROM agenda_items ai
             LEFT JOIN projetos proj ON proj.id_projeto = ai.id_projeto
             LEFT JOIN LATERAL (
@@ -190,7 +237,15 @@ class Aluno {
                              ORDER BY p.id_producao ASC)
                     FILTER (WHERE p.id_producao IS NOT NULL),
                     '[]'::json
-                ) AS arquivos
+                ) AS arquivos,
+                COALESCE((
+                    SELECT p2.status = 'refazer'
+                    FROM producoes p2
+                    WHERE p2.id_projeto = ai.id_projeto
+                      AND p2.titulo = ai.titulo
+                      AND p2.status != 'inativo'
+                    ORDER BY p2.id_producao DESC LIMIT 1
+                ), false) AS tem_refazer
                 FROM producoes p
                 WHERE p.id_projeto = ai.id_projeto
                   AND p.titulo = ai.titulo
@@ -222,7 +277,8 @@ class Aluno {
                 ai.id, ai.titulo, ai.descricao, ai.tipo, ai.data, ai.hora, ai.concluido,
                 COALESCE(proj.titulo, '—') AS projeto,
                 COALESCE(ai.id_projeto::text, '') AS id_projeto_ref,
-                lp.arquivos
+                lp.arquivos,
+                lp.tem_refazer
             FROM agenda_items ai
             LEFT JOIN projetos proj ON proj.id_projeto = ai.id_projeto
             LEFT JOIN LATERAL (
@@ -231,7 +287,15 @@ class Aluno {
                              ORDER BY p.id_producao ASC)
                     FILTER (WHERE p.id_producao IS NOT NULL),
                     '[]'::json
-                ) AS arquivos
+                ) AS arquivos,
+                COALESCE((
+                    SELECT p2.status = 'refazer'
+                    FROM producoes p2
+                    WHERE p2.id_projeto = ai.id_projeto
+                      AND p2.titulo = ai.titulo
+                      AND p2.status != 'inativo'
+                    ORDER BY p2.id_producao DESC LIMIT 1
+                ), false) AS tem_refazer
                 FROM producoes p
                 WHERE p.id_projeto = ai.id_projeto
                   AND p.titulo = ai.titulo
@@ -252,9 +316,16 @@ class Aluno {
             SELECT
                 ai.id, ai.titulo, ai.descricao, ai.tipo,
                 ai.data, ai.hora, ai.concluido, ai.created_at,
-                COALESCE(proj.titulo, '—') AS projeto
+                COALESCE(proj.titulo, '—') AS projeto,
+                COALESCE(doc_st.tem_cancelado, false) AS doc_cancelado
             FROM agenda_items ai
             LEFT JOIN projetos proj ON proj.id_projeto = ai.id_projeto
+            LEFT JOIN LATERAL (
+                SELECT bool_or(p.status = 'cancelado') AS tem_cancelado
+                FROM producoes p
+                WHERE p.id_projeto = ai.id_projeto
+                  AND p.titulo = ai.titulo
+            ) doc_st ON true
             WHERE ai.id_usuario = :id
             ORDER BY ai.data DESC, ai.created_at DESC
         ";

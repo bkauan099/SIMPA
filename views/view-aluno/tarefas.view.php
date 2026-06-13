@@ -6,19 +6,7 @@
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-sm-4">
-        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #16a34a;position:relative;overflow:hidden;">
-            <div style="position:absolute;inset:0;background:#16a34a;opacity:0.04;pointer-events:none;"></div>
-            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#16a34a;opacity:0.1;line-height:1;pointer-events:none;">
-                <i class="bi bi-check-circle-fill"></i>
-            </div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#16a34a;color:#fff;opacity:0.85;margin-bottom:10px;">
-                <i class="bi bi-check-circle-fill"></i> Concluídas
-            </div>
-            <div class="fw-bold lh-1" id="statConcluidos" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['concluidos'] ?></div>
-        </div>
-    </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #f59e0b;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#f59e0b;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#f59e0b;opacity:0.1;line-height:1;pointer-events:none;">
@@ -30,7 +18,19 @@
             <div class="fw-bold lh-1" id="statPendentes" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['pendentes'] ?></div>
         </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ea580c;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#ea580c;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ea580c;opacity:0.1;line-height:1;pointer-events:none;">
+                <i class="bi bi-arrow-repeat"></i>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#ea580c;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-arrow-repeat"></i> Corrigir
+            </div>
+            <div class="fw-bold lh-1" id="statCorrigir" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['corrigir'] ?></div>
+        </div>
+    </div>
+    <div class="col-sm-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ef4444;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#ef4444;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ef4444;opacity:0.1;line-height:1;pointer-events:none;">
@@ -40,6 +40,18 @@
                 <i class="bi bi-x-circle-fill"></i> Não Concluídas
             </div>
             <div class="fw-bold lh-1" id="statNaoConcluidos" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['nao_concluidos'] ?></div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #16a34a;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#16a34a;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#16a34a;opacity:0.1;line-height:1;pointer-events:none;">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#16a34a;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-check-circle-fill"></i> Concluídas
+            </div>
+            <div class="fw-bold lh-1" id="statConcluidos" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['concluidos'] ?></div>
         </div>
     </div>
 </div>
@@ -58,6 +70,7 @@
                 <option value="pendente">Pendente</option>
                 <option value="nao_concluido">Não Concluído</option>
                 <option value="concluido">Concluído</option>
+                <option value="corrigir">Corrigir</option>
             </select>
         </div>
         <div class="col-12 col-md-2 text-muted small text-center text-md-start" id="contadorItens">
@@ -119,6 +132,15 @@
                                 $statusLabel = 'Não Concluído';
                                 $statusClass = 'bg-danger text-white';
                             }
+                            // Documento precisa de correção: sobrescreve para Corrigir
+                            $statusStyle = '';
+                            $docRefazer = !empty($item['tem_refazer']);
+                            if ($docRefazer) {
+                                $statusKey   = 'corrigir';
+                                $statusLabel = 'Corrigir';
+                                $statusClass = 'text-white';
+                                $statusStyle = 'background:#ea580c;';
+                            }
                         ?>
                         <tr style="cursor:pointer;"
                             onclick="abrirDetalheTarefa(this)"
@@ -128,7 +150,8 @@
                             data-id="<?= htmlspecialchars($item['id']) ?>"
                             data-data="<?= htmlspecialchars($item['data']) ?>"
                             data-titulo="<?= htmlspecialchars($item['titulo'], ENT_QUOTES) ?>"
-                            data-concluido="<?= $item['concluido'] ? '1' : '0' ?>"
+                            data-concluido="<?= ($item['concluido'] && !$docRefazer) ? '1' : '0' ?>"
+                            data-doc-refazer="<?= $docRefazer ? '1' : '0' ?>"
                             data-arquivos="<?= htmlspecialchars($arquivosJson, ENT_QUOTES) ?>"
                             data-descricao="<?= htmlspecialchars($descricao, ENT_QUOTES) ?>"
                             data-projeto="<?= htmlspecialchars($item['projeto'] ?? '—', ENT_QUOTES) ?>"
@@ -139,9 +162,20 @@
                             <td class="text-muted small"><?= htmlspecialchars($item['projeto'] ?? '—') ?></td>
                             <td><?= date('d/m/Y', strtotime($item['data'])) ?></td>
                             <td><?= $item['hora'] ? substr($item['hora'], 0, 5) : '—' ?></td>
-                            <td><span class="badge badge-status <?= $statusClass ?>"><?= $statusLabel ?></span></td>
+                            <td><span class="badge badge-status <?= $statusClass ?>" style="<?= $statusStyle ?>"><?= $statusLabel ?></span></td>
                             <td class="text-center">
-                                <?php if ($item['concluido'] && $prazoPassou): ?>
+                                <?php if ($docRefazer): ?>
+                                    <button class="btn btn-sm btn-outline-success"
+                                            onclick="event.stopPropagation(); reenviarCorrecao(this)"
+                                            title="Reenviar documento">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning ms-1"
+                                            onclick="event.stopPropagation(); abrirModalEnvio(this.closest('tr'))"
+                                            title="Enviar novo arquivo">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                <?php elseif ($item['concluido'] && $prazoPassou): ?>
                                     <button class="btn btn-sm btn-outline-secondary opacity-50"
                                             onclick="event.stopPropagation()"
                                             style="cursor:default;" title="Prazo encerrado, não é possível desfazer">

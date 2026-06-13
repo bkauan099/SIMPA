@@ -52,17 +52,19 @@ function iconeArquivo(string $ext): string {
 
 function statusInfo(string $s): array {
     return match($s) {
-        'concluido' => ['label' => 'Aprovado',             'icon' => 'bi-check-circle-fill', 'cor' => '#16a34a', 'bg' => '#dcfce7', 'badge' => 'bg-success text-white'],
-        'cancelado' => ['label' => 'Reprovado',            'icon' => 'bi-x-circle-fill',     'cor' => '#dc2626', 'bg' => '#fee2e2', 'badge' => 'bg-danger text-white'],
-        default     => ['label' => 'Aguardando Aprovação', 'icon' => 'bi-hourglass-split',   'cor' => '#d97706', 'bg' => '#fef3c7', 'badge' => 'bg-warning text-dark'],
+        'concluido' => ['label' => 'Aprovado',              'icon' => 'bi-check-circle-fill', 'cor' => '#16a34a', 'bg' => '#dcfce7', 'badge' => 'bg-success text-white',  'badge_style' => ''],
+        'cancelado' => ['label' => 'Reprovado',             'icon' => 'bi-x-circle-fill',     'cor' => '#dc2626', 'bg' => '#fee2e2', 'badge' => 'text-white',             'badge_style' => 'background:#dc2626;'],
+        'refazer'   => ['label' => 'Corrigir',               'icon' => 'bi-arrow-repeat',      'cor' => '#ea580c', 'bg' => '#fff7ed', 'badge' => 'text-white',             'badge_style' => 'background:#ea580c;'],
+        default     => ['label' => 'Aguardando Aprovação',  'icon' => 'bi-hourglass-split',   'cor' => '#d97706', 'bg' => '#fef3c7', 'badge' => 'bg-warning text-dark',   'badge_style' => ''],
     };
 }
 
-$contadores = ['pendente' => 0, 'aprovado' => 0, 'reprovado' => 0];
+$contadores = ['pendente' => 0, 'aprovado' => 0, 'reprovado' => 0, 'corrigir' => 0];
 foreach ($documentos as $d) {
     $s = $d['status'];
     if ($s === 'concluido') $contadores['aprovado']++;
     elseif ($s === 'cancelado') $contadores['reprovado']++;
+    elseif ($s === 'refazer') $contadores['corrigir']++;
     else $contadores['pendente']++;
 }
 $total = count($documentos);
@@ -77,17 +79,7 @@ $total = count($documentos);
 
 <!-- Cartões de status -->
 <div class="row g-3 mb-4">
-    <div class="col-6 col-sm-3">
-        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #3b82f6;position:relative;overflow:hidden;">
-            <div style="position:absolute;inset:0;background:#3b82f6;opacity:0.04;pointer-events:none;"></div>
-            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#3b82f6;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-files"></i></div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#3b82f6;color:#fff;opacity:0.85;margin-bottom:10px;">
-                <i class="bi bi-files"></i> Total
-            </div>
-            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $total ?></div>
-        </div>
-    </div>
-    <div class="col-6 col-sm-3">
+    <div class="col-6 col-sm-4 col-lg">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #f59e0b;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#f59e0b;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#f59e0b;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-hourglass-split"></i></div>
@@ -97,17 +89,17 @@ $total = count($documentos);
             <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $contadores['pendente'] ?></div>
         </div>
     </div>
-    <div class="col-6 col-sm-3">
-        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #16a34a;position:relative;overflow:hidden;">
-            <div style="position:absolute;inset:0;background:#16a34a;opacity:0.04;pointer-events:none;"></div>
-            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#16a34a;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-check-circle-fill"></i></div>
-            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#16a34a;color:#fff;opacity:0.85;margin-bottom:10px;">
-                <i class="bi bi-check-circle-fill"></i> Aprovados
+    <div class="col-6 col-sm-4 col-lg">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ea580c;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#ea580c;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ea580c;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-arrow-repeat"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#ea580c;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-arrow-repeat"></i> Corrigir
             </div>
-            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $contadores['aprovado'] ?></div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $contadores['corrigir'] ?></div>
         </div>
     </div>
-    <div class="col-6 col-sm-3">
+    <div class="col-6 col-sm-4 col-lg">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ef4444;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#ef4444;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ef4444;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-x-circle-fill"></i></div>
@@ -115,6 +107,16 @@ $total = count($documentos);
                 <i class="bi bi-x-circle-fill"></i> Reprovados
             </div>
             <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $contadores['reprovado'] ?></div>
+        </div>
+    </div>
+    <div class="col-6 col-sm-4 col-lg">
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #16a34a;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#16a34a;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#16a34a;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-check-circle-fill"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#16a34a;color:#fff;opacity:0.85;margin-bottom:10px;">
+                <i class="bi bi-check-circle-fill"></i> Aprovados
+            </div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $contadores['aprovado'] ?></div>
         </div>
     </div>
 </div>
@@ -142,6 +144,7 @@ $total = count($documentos);
                 <option value="pendente">Aguardando</option>
                 <option value="aprovado">Aprovado</option>
                 <option value="reprovado">Reprovado</option>
+                <option value="corrigir">Corrigir</option>
             </select>
         </div>
         <div class="col-12 col-md-2 text-muted small text-center" id="contadorDocs">
@@ -178,7 +181,7 @@ $total = count($documentos);
                         $proxyUrl = 'pages-aluno/servir-arquivo.php?id=' . $doc['id_producao'];
                         $buscaKey = strtolower($nome . ' ' . $doc['tarefa'] . ' ' . $doc['projeto']);
                         $st       = statusInfo($doc['status']);
-                        $stKey    = match($doc['status']) { 'concluido' => 'aprovado', 'cancelado' => 'reprovado', default => 'pendente' };
+                        $stKey    = match($doc['status']) { 'concluido' => 'aprovado', 'cancelado' => 'reprovado', 'refazer' => 'corrigir', default => 'pendente' };
                     ?>
                     <tr data-busca="<?= htmlspecialchars($buscaKey) ?>"
                         data-tipo="<?= $isPdf ? 'pdf' : 'outro' ?>"
@@ -191,7 +194,7 @@ $total = count($documentos);
                         <td class="text-muted small"><?= htmlspecialchars($doc['projeto']) ?></td>
                         <td class="text-muted small"><?= !empty($doc['data_registro']) ? date('d/m/Y', strtotime($doc['data_registro'])) : '—' ?></td>
                         <td>
-                            <span class="badge <?= $st['badge'] ?>" style="font-size:0.72rem;">
+                            <span class="badge <?= $st['badge'] ?>" style="font-size:0.72rem;<?= $st['badge_style'] ?>">
                                 <i class="bi <?= $st['icon'] ?> me-1"></i><?= $st['label'] ?>
                             </span>
                         </td>

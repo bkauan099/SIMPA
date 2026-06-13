@@ -14,137 +14,9 @@ $nomeUsuario  = $stmt->fetchColumn() ?: 'Usuário';
 $primeiroNome = explode(' ', $nomeUsuario)[0];
 
 /* ── Notificações reais ─────────────────────────────────────── */
-$_stmtMat = $pdo->prepare("SELECT matricula FROM usuarios WHERE id_usuario = :id");
-$_stmtMat->execute([':id' => $id_usuario]);
-$_matricula = $_stmtMat->fetchColumn();
-
-$_notificacoes = [];
-
-// Tarefas recém-cadastradas (últimas 24h)
-try {
-    $s = $pdo->prepare(
-        "SELECT titulo, data FROM agenda_items
-         WHERE id_usuario = :id AND tipo = 'tarefa'
-           AND created_at >= NOW() - INTERVAL '24 hours'
-         ORDER BY created_at DESC LIMIT 10"
-    );
-    $s->execute([':id' => $id_usuario]);
-    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
-        $dt = new DateTime($r['data']);
-        $_notificacoes[] = [
-            'icone' => 'bi-plus-circle-fill',
-            'cor'   => '#ef4444',
-            'texto' => 'Nova tarefa: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (prazo: ' . $dt->format('d/m/Y') . ')',
-        ];
-    }
-} catch (Exception $__e) {}
-
-// Tarefas em atraso
-try {
-    $s = $pdo->prepare(
-        "SELECT titulo, data FROM agenda_items
-         WHERE id_usuario = :id AND tipo = 'tarefa'
-           AND (concluido = false OR concluido IS NULL)
-           AND data < CURRENT_DATE
-           AND data >= CURRENT_DATE - INTERVAL '7 days'
-         ORDER BY data ASC LIMIT 10"
-    );
-    $s->execute([':id' => $id_usuario]);
-    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
-        $dt = new DateTime($r['data']);
-        $_notificacoes[] = [
-            'icone' => 'bi-exclamation-triangle-fill',
-            'cor'   => '#ef4444',
-            'texto' => 'Tarefa em atraso: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (venceu em ' . $dt->format('d/m/Y') . ')',
-        ];
-    }
-} catch (Exception $__e) {}
-
-// Tarefas que vencem hoje
-try {
-    $s = $pdo->prepare(
-        "SELECT titulo FROM agenda_items
-         WHERE id_usuario = :id AND tipo = 'tarefa'
-           AND (concluido = false OR concluido IS NULL)
-           AND data = CURRENT_DATE
-         ORDER BY titulo ASC LIMIT 10"
-    );
-    $s->execute([':id' => $id_usuario]);
-    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
-        $_notificacoes[] = [
-            'icone' => 'bi-alarm-fill',
-            'cor'   => '#f97316',
-            'texto' => 'Prazo hoje: <strong>' . htmlspecialchars($r['titulo']) . '</strong> — entregue antes da meia-noite!',
-        ];
-    }
-} catch (Exception $__e) {}
-
-// Tarefas próximas (até 7 dias, exceto hoje)
-try {
-    $s = $pdo->prepare(
-        "SELECT titulo, data FROM agenda_items
-         WHERE id_usuario = :id AND tipo = 'tarefa'
-           AND (concluido = false OR concluido IS NULL)
-           AND data > CURRENT_DATE
-           AND data <= CURRENT_DATE + INTERVAL '7 days'
-         ORDER BY data ASC LIMIT 10"
-    );
-    $s->execute([':id' => $id_usuario]);
-    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
-        $dt = new DateTime($r['data']);
-        $_notificacoes[] = [
-            'icone' => 'bi-calendar-check',
-            'cor'   => '#f59e0b',
-            'texto' => 'Tarefa próxima: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (vence em ' . $dt->format('d/m/Y') . ')',
-        ];
-    }
-} catch (Exception $__e) {}
-
-// Eventos da semana
-try {
-    $s = $pdo->prepare(
-        "SELECT titulo, data FROM agenda_items
-         WHERE id_usuario = :id AND tipo = 'evento'
-           AND (concluido = false OR concluido IS NULL)
-           AND data >= CURRENT_DATE
-           AND data <= CURRENT_DATE + INTERVAL '7 days'
-         ORDER BY data ASC LIMIT 10"
-    );
-    $s->execute([':id' => $id_usuario]);
-    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
-        $dt = new DateTime($r['data']);
-        $hoje = (new DateTime())->format('Y-m-d');
-        $label = $r['data'] === $hoje ? 'hoje' : 'em ' . $dt->format('d/m/Y');
-        $_notificacoes[] = [
-            'icone' => 'bi-calendar-event-fill',
-            'cor'   => '#3b82f6',
-            'texto' => 'Evento esta semana: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (' . $label . ')',
-        ];
-    }
-} catch (Exception $__e) {}
-
-// Documentos aprovados ou reprovados
-if ($_matricula) {
-    try {
-        $s = $pdo->prepare(
-            "SELECT titulo, status FROM producoes
-             WHERE caminho LIKE :prefix
-               AND status IN ('concluido', 'cancelado')
-             ORDER BY id_producao DESC LIMIT 10"
-        );
-        $s->execute([':prefix' => 'uploads/alunos/' . $_matricula . '/%']);
-        foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
-            $aprovado = $r['status'] === 'concluido';
-            $_notificacoes[] = [
-                'icone' => $aprovado ? 'bi-check-circle-fill' : 'bi-x-circle-fill',
-                'cor'   => $aprovado ? '#22c55e' : '#ef4444',
-                'texto' => 'Documento <strong>' . htmlspecialchars($r['titulo']) . '</strong> foi ' . ($aprovado ? 'aprovado' : 'reprovado'),
-            ];
-        }
-    } catch (Exception $__e) {}
-}
-
-$_totalNotif = count($_notificacoes);
+require __DIR__ . '/pages-aluno/gerar-notificacoes.php';
+$_notificacoes = $notificacoes;
+$_totalNotif   = count($_notificacoes);
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -297,7 +169,7 @@ $_totalNotif = count($_notificacoes);
 <div id="modalEnvioTarefa" style="display:none;position:fixed;inset:0;z-index:1070;background:rgba(0,0,0,0.45);align-items:center;justify-content:center;">
     <div style="background:#fff;border-radius:16px;padding:24px;width:90%;max-width:460px;box-shadow:0 8px 32px rgba(0,0,0,0.18);">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold mb-0"><i class="bi bi-paperclip me-2" style="color:#3b82f6;"></i>Enviar Atividade</h6>
+            <h6 class="fw-bold mb-0" id="tituloModalEnvio"><i class="bi bi-paperclip me-2" style="color:#3b82f6;"></i>Enviar Atividade</h6>
             <button class="btn-close" onclick="fecharModalEnvio()"></button>
         </div>
         <div id="listaArquivosExistentes" style="display:none;" class="mb-3">
@@ -608,6 +480,7 @@ function toggleConcluido(btn) {
     const tr = btn.closest('tr');
     const id = tr.dataset.id;
     btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
 
     fetch('pages-aluno/toggle-concluido.php', {
         method: 'POST',
@@ -620,26 +493,31 @@ function toggleConcluido(btn) {
     })
     .then(data => {
         if (!data.ok) { btn.disabled = false; if (data.erro) alert(data.erro); return; }
-        const concluido = data.concluido;
-        const passou = _prazoPassou(tr);
+        const concluido  = data.concluido;
+        const passou     = _prazoPassou(tr);
+        const docRefazer = tr.dataset.docRefazer === '1';
 
-        let statusKey, statusLabel, statusClass;
-        if (concluido) {
+        let statusKey, statusLabel, statusClass, statusStyle = '';
+        if (concluido && !docRefazer) {
             statusKey = 'concluido'; statusLabel = 'Concluído'; statusClass = 'bg-success text-white';
         } else if (passou) {
             statusKey = 'nao_concluido'; statusLabel = 'Não Concluído'; statusClass = 'bg-danger text-white';
+        } else if (docRefazer) {
+            statusKey = 'corrigir'; statusLabel = 'Corrigir'; statusClass = 'text-white'; statusStyle = 'background:#ea580c;';
         } else {
             statusKey = 'pendente'; statusLabel = 'Pendente'; statusClass = 'bg-warning text-dark';
         }
 
         const ant = tr.dataset.status;
         tr.dataset.status = statusKey;
-        tr.dataset.concluido = concluido ? '1' : '0';
+        tr.dataset.concluido = (concluido && !docRefazer) ? '1' : '0';
 
-        tr.querySelector('.badge-status').className = 'badge badge-status ' + statusClass;
-        tr.querySelector('.badge-status').textContent = statusLabel;
+        const badgeTarefa = tr.querySelector('.badge-status');
+        badgeTarefa.className = 'badge badge-status ' + statusClass;
+        badgeTarefa.textContent = statusLabel;
+        badgeTarefa.style.cssText = statusStyle;
 
-        const statIds = { pendente: 'statPendentes', nao_concluido: 'statNaoConcluidos', concluido: 'statConcluidos' };
+        const statIds = { pendente: 'statPendentes', nao_concluido: 'statNaoConcluidos', concluido: 'statConcluidos', corrigir: 'statCorrigir' };
         const elAnt = document.getElementById(statIds[ant]);
         const elNov = document.getElementById(statIds[statusKey]);
         if (elAnt) elAnt.textContent = Math.max(0, parseInt(elAnt.textContent) - 1);
@@ -654,6 +532,7 @@ function toggleConcluido(btn) {
 function atualizarBotoesTarefa(tr) {
     const temArquivo  = getArquivos(tr).length > 0;
     const concluido   = tr.dataset.concluido === '1';
+    const docRefazer  = tr.dataset.docRefazer === '1';
     const prazoPastou = _prazoPassou(tr);
     const td = tr.querySelector('td:last-child');
 
@@ -661,7 +540,10 @@ function atualizarBotoesTarefa(tr) {
         ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Ver arquivo"><i class="bi bi-eye"></i></button>`
         : `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Nenhum arquivo anexado"><i class="bi bi-eye"></i></button>`;
 
-    if (concluido && prazoPastou) {
+    if (docRefazer) {
+        td.innerHTML = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();reenviarCorrecao(this)" title="Reenviar documento"><i class="bi bi-check-lg"></i></button>`
+            + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Enviar novo arquivo"><i class="bi bi-pencil"></i></button>`;
+    } else if (concluido && prazoPastou) {
         td.innerHTML = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Prazo encerrado, não é possível desfazer"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (concluido) {
         td.innerHTML = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleConcluido(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
@@ -866,11 +748,14 @@ function setArquivos(tr, arr) { tr.dataset.arquivos = JSON.stringify(arr); }
 // ── Modais de upload ──────────────────────────────────────────
 function abrirModalEnvio(tr) {
     _tarefaAtual = tr;
+    const isCorrigir = tr.dataset.docRefazer === '1';
     document.getElementById('inputArquivo').value = '';
     document.getElementById('listaArquivosNovos').style.display = 'none';
     document.getElementById('itensArquivosNovos').innerHTML = '';
     document.getElementById('btnEnviarArquivo').disabled = false;
+    document.getElementById('tituloModalEnvio').innerHTML = '<i class="bi bi-paperclip me-2" style="color:#3b82f6;"></i>Enviar Atividade';
     document.getElementById('btnEnviarArquivo').innerHTML = '<i class="bi bi-floppy me-1"></i>Salvar Rascunho';
+    document.getElementById('btnEnviarArquivo').className = 'btn btn-primary';
     _renderizarArquivosExistentes(getArquivos(tr), false);
     document.getElementById('modalEnvioTarefa').style.display = 'flex';
     document.body.style.overflow = 'hidden';
@@ -878,6 +763,32 @@ function abrirModalEnvio(tr) {
 function fecharModalEnvio() {
     document.getElementById('modalEnvioTarefa').style.display = 'none';
     document.body.style.overflow = '';
+}
+function reenviarCorrecao(btn) {
+    const tr = btn.closest('tr');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+    const fd = new URLSearchParams();
+    fd.append('id_projeto', tr.dataset.idProjeto || '');
+    fd.append('titulo', tr.dataset.titulo || '');
+    fetch('pages-aluno/reenviar-correcao.php', { method: 'POST', body: fd })
+        .then(r => r.json())
+        .then(data => {
+            if (!data.ok) { btn.disabled = false; alert(data.erro || 'Erro ao reenviar'); return; }
+            tr.dataset.docRefazer = '0';
+            tr.dataset.status = 'concluido';
+            const badge = tr.querySelector('.badge-status');
+            badge.className = 'badge badge-status bg-success text-white';
+            badge.textContent = 'Concluído';
+            badge.style.cssText = '';
+            const sc = document.getElementById('statCorrigir');
+            const sk = document.getElementById('statConcluidos');
+            if (sc) sc.textContent = Math.max(0, parseInt(sc.textContent) - 1);
+            if (sk) sk.textContent = parseInt(sk.textContent) + 1;
+            if (tr.closest('#tabelaTarefas')) atualizarBotoesTarefa(tr);
+            else atualizarBotoesCronograma(tr);
+        })
+        .catch(() => { btn.disabled = false; alert('Erro de rede'); });
 }
 function _renderizarArquivosExistentes(arquivos, somenteLeitura) {
     const container = document.getElementById('listaArquivosExistentes');
@@ -958,6 +869,8 @@ async function enviarArquivoTarefa() {
         } catch(e) { erros.push(file.name + ': erro de rede'); }
     }
     setArquivos(_tarefaAtual, arquivos);
+    // Novo arquivo enviado: limpa o flag de refazer
+    if (arquivos.length > 0) _tarefaAtual.dataset.docRefazer = '0';
     if (_tarefaAtual.closest('#tabelaTarefas')) atualizarBotoesTarefa(_tarefaAtual);
     else atualizarBotoesCronograma(_tarefaAtual);
     btn.disabled = false;
@@ -1198,6 +1111,7 @@ function toggleCronograma(btn) {
     const tr = btn.closest('tr');
     const id = tr.dataset.id;
     btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
 
     fetch('pages-aluno/toggle-concluido.php', {
         method: 'POST',
@@ -1207,27 +1121,31 @@ function toggleCronograma(btn) {
     .then(r => r.json())
     .then(data => {
         if (!data.ok) { btn.disabled = false; if (data.erro) alert(data.erro); return; }
-        const concluido = data.concluido;
-        const passou = _prazoPassou(tr);
+        const concluido  = data.concluido;
+        const passou     = _prazoPassou(tr);
+        const docRefazer = tr.dataset.docRefazer === '1';
 
-        let statusKey, statusLabel, statusClass;
-        if (concluido) {
+        let statusKey, statusLabel, statusClass, statusStyle = '';
+        if (concluido && !docRefazer) {
             statusKey = 'concluido'; statusLabel = 'Concluído'; statusClass = 'bg-success text-white';
         } else if (passou) {
             statusKey = 'nao_concluido'; statusLabel = 'Não Concluído'; statusClass = 'bg-danger text-white';
+        } else if (docRefazer) {
+            statusKey = 'corrigir'; statusLabel = 'Corrigir'; statusClass = 'text-white'; statusStyle = 'background:#ea580c;';
         } else {
             statusKey = 'proximo'; statusLabel = 'Pendente'; statusClass = 'bg-warning text-dark';
         }
 
         const ant = tr.dataset.status;
-        tr.dataset.status   = statusKey;
-        tr.dataset.concluido = concluido ? '1' : '0';
+        tr.dataset.status    = statusKey;
+        tr.dataset.concluido = (concluido && !docRefazer) ? '1' : '0';
 
         const badge = tr.querySelector('.badge-status');
         badge.className = 'badge badge-status ' + statusClass;
         badge.textContent = statusLabel;
+        badge.style.cssText = statusStyle;
 
-        const statIds = { proximo: 'statProximos', nao_concluido: 'statNaoConcluidos', concluido: 'statConcluidos' };
+        const statIds = { proximo: 'statProximos', nao_concluido: 'statNaoConcluidos', concluido: 'statConcluidos', corrigir: 'statCorrigir' };
         const elAnt = document.getElementById(statIds[ant]);
         const elNov = document.getElementById(statIds[statusKey]);
         if (elAnt) elAnt.textContent = Math.max(0, parseInt(elAnt.textContent) - 1);
@@ -1241,6 +1159,7 @@ function toggleCronograma(btn) {
 function atualizarBotoesCronograma(tr) {
     const temArquivo   = getArquivos(tr).length > 0;
     const concluido    = tr.dataset.concluido === '1';
+    const docRefazer   = tr.dataset.docRefazer === '1';
     const temDescricao = tr.dataset.temDescricao === '1';
     const prazoPastou  = _prazoPassou(tr);
     const td = tr.querySelector('td:last-child');
@@ -1250,7 +1169,10 @@ function atualizarBotoesCronograma(tr) {
         : `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Nenhum arquivo anexado"><i class="bi bi-eye"></i></button>`;
 
     let acoes = '';
-    if (concluido && prazoPastou) {
+    if (docRefazer) {
+        acoes = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();reenviarCorrecao(this)" title="Reenviar documento"><i class="bi bi-check-lg"></i></button>`
+              + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Enviar novo arquivo"><i class="bi bi-pencil"></i></button>`;
+    } else if (concluido && prazoPastou) {
         acoes = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Prazo encerrado, não é possível desfazer"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (concluido) {
         acoes = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleCronograma(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
@@ -1429,7 +1351,7 @@ function showDay(el) {
 </script>
 <script>
 (function () {
-    const INTERVALO   = 10000;
+    const INTERVALO   = 5000;
     const STORAGE_KEY = 'notif_lidas_<?= (int)$id_usuario ?>';
 
     // ── localStorage helpers ──────────────────────────────────────
@@ -1533,10 +1455,8 @@ function showDay(el) {
             .catch(function() {});
     }
 
-    setTimeout(function tick() {
-        buscarNotificacoes();
-        setTimeout(tick, INTERVALO);
-    }, INTERVALO);
+    buscarNotificacoes();
+    setInterval(buscarNotificacoes, INTERVALO);
 })();
 </script>
 <script src="assets/js/topbar.js"></script>
