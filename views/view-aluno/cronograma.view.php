@@ -183,8 +183,9 @@
                             $statusClass = 'bg-danger text-white';
                         }
                         // Documento precisa de correção: sobrescreve para Corrigir
-                        $statusStyle = '';
-                        $docRefazer = !empty($item['tem_refazer']);
+                        $statusStyle   = '';
+                        $docRefazer    = !empty($item['tem_refazer']);
+                        $profProcessou = !empty($item['prof_processou']);
                         if ($docRefazer) {
                             $statusKey   = 'corrigir';
                             $statusLabel = 'Corrigir';
@@ -203,6 +204,7 @@
                             data-titulo="<?= htmlspecialchars($item['titulo'], ENT_QUOTES) ?>"
                             data-concluido="<?= ($item['concluido'] && !$docRefazer) ? '1' : '0' ?>"
                             data-doc-refazer="<?= $docRefazer ? '1' : '0' ?>"
+                            data-prof-processou="<?= $profProcessou ? '1' : '0' ?>"
                             data-arquivos="<?= htmlspecialchars($arquivosJson, ENT_QUOTES) ?>"
                             data-descricao="<?= htmlspecialchars($descricao, ENT_QUOTES) ?>"
                             data-projeto="<?= htmlspecialchars($item['projeto'] ?? '—', ENT_QUOTES) ?>"
@@ -237,6 +239,24 @@
                                     <button class="btn btn-sm btn-outline-secondary opacity-50"
                                             onclick="event.stopPropagation()"
                                             style="cursor:default;" title="Prazo encerrado, não é possível desfazer">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </button>
+                                    <?php if ($temArquivo): ?>
+                                    <button class="btn btn-sm btn-outline-primary ms-1"
+                                            onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Ver arquivo">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <?php else: ?>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1 opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            style="cursor:default;" title="Nenhum arquivo anexado">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <?php endif; ?>
+                                <?php elseif ($item['concluido'] && $profProcessou): ?>
+                                    <button class="btn btn-sm btn-outline-secondary opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            style="cursor:default;" title="Avaliado pelo professor, não é possível desfazer">
                                         <i class="bi bi-arrow-counterclockwise"></i>
                                     </button>
                                     <?php if ($temArquivo): ?>

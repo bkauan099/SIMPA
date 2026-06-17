@@ -17,90 +17,10 @@ try {
     $tipos = [];
 }
 
-/* ── Notificações do professor ─────────────────────────────── */
-$_id_prof = $_SESSION['id_usuario'] ?? 0;
-$_notifProf = [];
-
-if ($_id_prof) {
-    // 1. Documentos pendentes enviados por alunos
-    try {
-        $s = $pdo->prepare(
-            "SELECT pr.titulo AS doc_titulo, u.nome AS aluno_nome, p.titulo AS proj_titulo
-             FROM producoes pr
-             LEFT JOIN projetos p ON pr.id_projeto = p.id_projeto
-             LEFT JOIN participacao par ON p.id_projeto = par.id_projeto AND par.id_usuario != :id_prof
-             LEFT JOIN usuarios u ON par.id_usuario = u.id_usuario
-             WHERE pr.status = 'pendente'
-               AND p.id_projeto IN (
-                   SELECT id_projeto FROM participacao WHERE id_usuario = :id_prof2
-               )
-             ORDER BY pr.id_producao DESC LIMIT 15"
-        );
-        $s->execute([':id_prof' => $_id_prof, ':id_prof2' => $_id_prof]);
-        foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
-            $quem = !empty($r['aluno_nome']) ? htmlspecialchars($r['aluno_nome']) : 'Um aluno';
-            $_notifProf[] = [
-                'icone' => 'bi-file-earmark-arrow-up-fill',
-                'cor'   => '#3b82f6',
-                'texto' => $quem . ' enviou um documento: <strong>' . htmlspecialchars($r['doc_titulo']) . '</strong>',
-            ];
-        }
-    } catch (Exception $__e) {}
-
-    // 2. Tarefas com prazo vencendo hoje
-    try {
-        $s = $pdo->prepare(
-            "SELECT a.titulo, u.nome AS aluno_nome
-             FROM agenda_items a
-             LEFT JOIN usuarios u ON a.id_usuario = u.id_usuario
-             JOIN participacao par ON a.id_projeto = par.id_projeto
-             WHERE par.id_usuario = :id_prof
-               AND a.id_projeto IS NOT NULL
-               AND a.data = CURRENT_DATE
-               AND (a.concluido = false OR a.concluido IS NULL)
-             ORDER BY a.titulo ASC LIMIT 10"
-        );
-        $s->execute([':id_prof' => $_id_prof]);
-        foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
-            $quem = !empty($r['aluno_nome']) ? ' (' . htmlspecialchars($r['aluno_nome']) . ')' : '';
-            $_notifProf[] = [
-                'icone' => 'bi-alarm-fill',
-                'cor'   => '#f97316',
-                'texto' => 'Prazo hoje: <strong>' . htmlspecialchars($r['titulo']) . '</strong>' . $quem,
-            ];
-        }
-    } catch (Exception $__e) {}
-
-    // 3. Tarefas em atraso (últimos 7 dias)
-    try {
-        $s = $pdo->prepare(
-            "SELECT a.titulo, a.data, u.nome AS aluno_nome
-             FROM agenda_items a
-             LEFT JOIN usuarios u ON a.id_usuario = u.id_usuario
-             JOIN participacao par ON a.id_projeto = par.id_projeto
-             WHERE par.id_usuario = :id_prof
-               AND a.id_projeto IS NOT NULL
-               AND a.data < CURRENT_DATE
-               AND a.data >= CURRENT_DATE - INTERVAL '7 days'
-               AND (a.concluido = false OR a.concluido IS NULL)
-             ORDER BY a.data ASC LIMIT 10"
-        );
-        $s->execute([':id_prof' => $_id_prof]);
-        foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $r) {
-            $dt   = new DateTime($r['data']);
-            $quem = !empty($r['aluno_nome']) ? ' — ' . htmlspecialchars($r['aluno_nome']) : '';
-            $_notifProf[] = [
-                'icone' => 'bi-exclamation-triangle-fill',
-                'cor'   => '#ef4444',
-                'texto' => 'Tarefa em atraso: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (venceu em ' . $dt->format('d/m/Y') . ')' . $quem,
-            ];
-        }
-    } catch (Exception $__e) {}
-}
-$_totalNotifProf = count($_notifProf);
+/* ── Notificações carregadas via JS assíncrono ── */
 
 if (!empty($_GET['ajax'])) {
-    $allowed_pages = ['pagina-inicial', 'meus-projetos', 'alunos', 'tarefas', 'cronograma', 'documentos', 'relatorios'];
+    $allowed_pages = ['pagina-inicial', 'meus-projetos', 'alunos', 'tarefas', 'cronograma', 'documentos', 'relatorios', 'certificados'];
     if (in_array($page, $allowed_pages)) {
         include "pages-professor/{$page}.php";
     } else {
@@ -132,7 +52,6 @@ if (!empty($_GET['ajax'])) {
         .sidebar-pre-expanded #sidebar ul li a i { width: 28px; margin-right: 4px; }
         .sidebar-pre-expanded #sidebar .sidebar-brand { opacity: 1; transform: translateX(0); }
 
-        /* Search results dropdown */
         #resultados_busca {
             display: none; position: absolute; top: 100%; left: 0; width: 100%;
             max-height: 200px; overflow-y: auto; background-color: white !important;
@@ -168,6 +87,7 @@ if (!empty($_GET['ajax'])) {
                 <li><a href="?page=cronograma" class="<?= $page == 'cronograma' ? 'active' : '' ?>"><i class="bi bi-calendar-event"></i><span class="nav-label">Cronograma</span></a></li>
                 <li><a href="?page=documentos" class="<?= $page == 'documentos' ? 'active' : '' ?>"><i class="bi bi-file-earmark-text"></i><span class="nav-label">Documentos</span></a></li>
                 <li><a href="?page=relatorios" class="<?= $page == 'relatorios' ? 'active' : '' ?>"><i class="bi bi-bar-chart-line"></i><span class="nav-label">Relatórios</span></a></li>
+                <li><a href="?page=certificados" class="<?= $page == 'certificados' ? 'active' : '' ?>"><i class="bi bi-award"></i><span class="nav-label">Certificados</span></a></li>
                 <li class="sidebar-sair"><a href="logout.php"><i class="bi bi-box-arrow-left"></i><span class="nav-label">Sair</span></a></li>
             </ul>
         </nav>
@@ -175,8 +95,8 @@ if (!empty($_GET['ajax'])) {
         <div id="content">
             <header class="navbar-custom">
                 <div class="topbar-left">
-                    <button class="topbar-toggle" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
-                    <img src="assets/img/uema-logo.png" alt="UEMA" class="logo-uema-top">
+                    <button class="topbar-toggle" onclick="toggleSidebar()" aria-label="Menu"><i class="bi bi-list fs-4"></i></button>
+                    <img src="assets/img/logo-uema.png" alt="UEMA" class="logo-uema-top">
                     <div class="logo-sep"></div>
                     <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">
                 </div>
@@ -185,7 +105,7 @@ if (!empty($_GET['ajax'])) {
                     <div class="tb-dropdown-wrap" id="wrapNotif">
                         <button class="tb-icon-btn" id="btnNotif" aria-label="Notificações">
                             <i class="bi bi-bell fs-5"></i>
-                            <span class="tb-badge" id="badgeNotif"<?= $_totalNotifProf === 0 ? ' style="display:none"' : '' ?>><?= $_totalNotifProf ?></span>
+                            <span class="tb-badge" id="badgeNotif" style="display:none">0</span>
                         </button>
                         <div class="tb-dropdown tb-dropdown-notif" id="dropNotif">
                             <div class="tb-drop-header">
@@ -193,27 +113,31 @@ if (!empty($_GET['ajax'])) {
                                 <button class="tb-btn-lerall" id="btnLerTodas">Marcar todas como lidas</button>
                             </div>
                             <div id="listaNotif">
-                                <?php if (empty($_notifProf)): ?>
                                 <div class="tb-notif-vazia">
-                                    <i class="bi bi-bell-slash" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
-                                    Nenhuma notificação
+                                    <i class="bi bi-arrow-repeat" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                                    Carregando...
                                 </div>
-                                <?php else: foreach ($_notifProf as $_n): ?>
-                                <div class="tb-notif-item" data-lida="0">
-                                    <div class="tb-notif-texto">
-                                        <i class="bi <?= $_n['icone'] ?>" style="color:<?= $_n['cor'] ?>;margin-right:6px;flex-shrink:0;"></i>
-                                        <span><?= $_n['texto'] ?></span>
-                                    </div>
-                                    <button class="tb-notif-toggle">Marcar como lida</button>
-                                </div>
-                                <?php endforeach; endif; ?>
                             </div>
                         </div>
                     </div>
                     <!-- PERFIL -->
-                    <div class="d-flex align-items-center gap-2" style="cursor:pointer">
-                        <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['nome'] ?? 'Professor') ?>&background=random" class="rounded-circle" width="34">
-                        <span class="fw-medium d-none d-sm-inline"><?= htmlspecialchars($_SESSION['nome'] ?? 'Professor') ?> <i class="bi bi-chevron-down small"></i></span>
+                    <div class="tb-dropdown-wrap" id="wrapPerfil">
+                        <button class="tb-icon-btn" id="btnPerfil" aria-label="Perfil">
+                            <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['nome'] ?? 'Professor') ?>&background=0F2557&color=fff"
+                                 class="rounded-circle" width="32" alt="Avatar">
+                            <span class="fw-medium d-none d-sm-inline" style="font-size:0.88rem;">
+                                <?= htmlspecialchars(explode(' ', $_SESSION['nome'] ?? 'Professor')[0]) ?> <i class="bi bi-chevron-down" style="font-size:0.7rem;"></i>
+                            </span>
+                        </button>
+                        <div class="tb-dropdown tb-dropdown-perfil" id="dropPerfil">
+                            <button class="tb-drop-item" onclick="abrirModalPerfil()">
+                                <i class="bi bi-person me-2"></i>Meu Perfil
+                            </button>
+                            <div class="tb-drop-divider"></div>
+                            <a href="logout.php" class="tb-drop-item tb-drop-sair">
+                                <i class="bi bi-box-arrow-right me-2"></i>Sair
+                            </a>
+                        </div>
                     </div>
                 </div>
             </header>
@@ -230,7 +154,7 @@ if (!empty($_GET['ajax'])) {
                 <?php endif; ?>
 
                 <?php
-                $allowed_pages = ['pagina-inicial', 'meus-projetos', 'alunos', 'tarefas', 'cronograma', 'documentos', 'relatorios'];
+                $allowed_pages = ['pagina-inicial', 'meus-projetos', 'alunos', 'tarefas', 'cronograma', 'documentos', 'relatorios', 'certificados'];
                 if (in_array($page, $allowed_pages)) {
                     include "pages-professor/{$page}.php";
                 } else {
@@ -880,7 +804,6 @@ if (!empty($_GET['ajax'])) {
             });
         });
 
-
         function selecionarAluno(nome, id) {
             // Contexto: modalAlunos (página meus-projetos)
             const inpA = document.getElementById('busca_aluno');
@@ -1049,53 +972,155 @@ if (!empty($_GET['ajax'])) {
             }
         }
 
-        // ── NOTIFICAÇÕES ────────────────────────────────────────────────────────
+        // ── NOTIFICAÇÕES (polling assíncrono) ───────────────────────────────────
         (function () {
+            const INTERVALO      = 5000;
+            const STORAGE_KEY    = 'notif_lidas_prof_<?= (int)($_SESSION['id_usuario'] ?? 0) ?>';
+            const STORAGE_KEY_TS = 'notif_lidas_prof_ts_<?= (int)($_SESSION['id_usuario'] ?? 0) ?>';
+            const QUINZE_DIAS_MS = 15 * 24 * 60 * 60 * 1000;
+
             const btnNotif    = document.getElementById('btnNotif');
             const dropNotif   = document.getElementById('dropNotif');
             const badgeNotif  = document.getElementById('badgeNotif');
             const btnLerTodas = document.getElementById('btnLerTodas');
             const listaNotif  = document.getElementById('listaNotif');
 
-            function atualizarBadge() {
-                const n = listaNotif.querySelectorAll('.tb-notif-item[data-lida="0"]').length;
-                badgeNotif.textContent = n;
-                badgeNotif.style.display = n > 0 ? '' : 'none';
+            function getLidas() {
+                try {
+                    const agora  = Date.now();
+                    const textos = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+                    const ts     = JSON.parse(localStorage.getItem(STORAGE_KEY_TS) || '{}');
+                    for (const txt of [...textos]) {
+                        if (ts[txt] && (agora - ts[txt]) > QUINZE_DIAS_MS) textos.delete(txt);
+                    }
+                    return textos;
+                } catch(e) { return new Set(); }
+            }
+            function salvarLidas(set) {
+                const agora = Date.now();
+                const ts    = JSON.parse(localStorage.getItem(STORAGE_KEY_TS) || '{}');
+                for (const txt of set) { if (!ts[txt]) ts[txt] = agora; }
+                localStorage.setItem(STORAGE_KEY, JSON.stringify([...set].slice(-200)));
+                localStorage.setItem(STORAGE_KEY_TS, JSON.stringify(ts));
             }
 
-            function fecharDropNotif() {
-                dropNotif.classList.remove('aberto');
+            function renderNotificacoes(lista) {
+                const lidas = getLidas();
+                if (lista.length === 0) {
+                    listaNotif.innerHTML = `
+                        <div class="tb-notif-vazia">
+                            <i class="bi bi-bell-slash" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                            Nenhuma notificação
+                        </div>`;
+                } else {
+                    listaNotif.innerHTML = lista.map(function(n) {
+                        const texto  = n.texto.trim();
+                        const jaLida = lidas.has(texto) ? '1' : '0';
+                        const btnTxt = jaLida === '1' ? 'Marcar como não lida' : 'Marcar como lida';
+                        return `<div class="tb-notif-item" data-lida="${jaLida}">
+                            <div class="tb-notif-texto">
+                                <i class="bi ${n.icone}" style="color:${n.cor};margin-right:6px;flex-shrink:0;"></i>
+                                <span>${texto}</span>
+                            </div>
+                            <button class="tb-notif-toggle">${btnTxt}</button>
+                        </div>`;
+                    }).join('');
+                }
+                const naoLidos = listaNotif.querySelectorAll('.tb-notif-item[data-lida="0"]').length;
+                badgeNotif.textContent   = naoLidos;
+                badgeNotif.style.display = naoLidos > 0 ? '' : 'none';
             }
 
-            btnNotif.addEventListener('click', function (e) {
+            btnNotif.addEventListener('click', function(e) {
                 e.stopPropagation();
                 dropNotif.classList.toggle('aberto');
             });
+            document.addEventListener('click', function() { dropNotif.classList.remove('aberto'); });
+            dropNotif.addEventListener('click', function(e) { e.stopPropagation(); });
 
-            document.addEventListener('click', fecharDropNotif);
-            dropNotif.addEventListener('click', function (e) { e.stopPropagation(); });
-
-            listaNotif.addEventListener('click', function (e) {
+            listaNotif.addEventListener('click', function(e) {
                 const btn = e.target.closest('.tb-notif-toggle');
                 if (!btn) return;
-                const item = btn.closest('.tb-notif-item');
-                const lida = item.dataset.lida === '1';
-                item.dataset.lida = lida ? '0' : '1';
-                btn.textContent   = lida ? 'Marcar como lida' : 'Marcar como não lida';
-                atualizarBadge();
-            });
-
-            btnLerTodas.addEventListener('click', function () {
-                listaNotif.querySelectorAll('.tb-notif-item').forEach(function (item) {
+                const item  = btn.closest('.tb-notif-item');
+                const span  = item.querySelector('span');
+                if (!span) return;
+                const texto = span.innerHTML.trim();
+                const lidas = getLidas();
+                if (item.dataset.lida === '1') {
+                    lidas.delete(texto);
+                    item.dataset.lida = '0';
+                    btn.textContent   = 'Marcar como lida';
+                } else {
+                    lidas.add(texto);
                     item.dataset.lida = '1';
-                    item.querySelector('.tb-notif-toggle').textContent = 'Marcar como não lida';
-                });
-                atualizarBadge();
+                    btn.textContent   = 'Marcar como não lida';
+                }
+                salvarLidas(lidas);
+                const naoLidos = listaNotif.querySelectorAll('.tb-notif-item[data-lida="0"]').length;
+                badgeNotif.textContent   = naoLidos;
+                badgeNotif.style.display = naoLidos > 0 ? '' : 'none';
             });
 
-            atualizarBadge();
+            btnLerTodas.addEventListener('click', function() {
+                const lidas = getLidas();
+                listaNotif.querySelectorAll('.tb-notif-item span').forEach(function(s) {
+                    lidas.add(s.innerHTML.trim());
+                });
+                salvarLidas(lidas);
+                listaNotif.querySelectorAll('.tb-notif-item').forEach(function(item) {
+                    item.dataset.lida = '1';
+                    const btn = item.querySelector('.tb-notif-toggle');
+                    if (btn) btn.textContent = 'Marcar como não lida';
+                });
+                badgeNotif.textContent   = '0';
+                badgeNotif.style.display = 'none';
+            });
+
+            function buscarNotificacoes() {
+                fetch('pages-professor/notificacoes.php', { cache: 'no-store' })
+                    .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+                    .then(function(lista) { renderNotificacoes(lista); })
+                    .catch(function() {});
+            }
+
+            buscarNotificacoes();
+            setInterval(buscarNotificacoes, INTERVALO);
         })();
+
+        // ── DROPDOWN PERFIL ─────────────────────────────────────────────────────
+        (function () {
+            const btnPerfil  = document.getElementById('btnPerfil');
+            const dropPerfil = document.getElementById('dropPerfil');
+            const dropNotif  = document.getElementById('dropNotif');
+
+            function fecharTodos() {
+                dropPerfil.classList.remove('aberto');
+                dropNotif.classList.remove('aberto');
+            }
+
+            btnPerfil.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const estaAberto = dropPerfil.classList.contains('aberto');
+                fecharTodos();
+                if (!estaAberto) dropPerfil.classList.add('aberto');
+            });
+
+            document.addEventListener('click', fecharTodos);
+            dropPerfil.addEventListener('click', function(e) { e.stopPropagation(); });
+        })();
+
+        window.abrirModalPerfil = function() {
+            document.getElementById('dropPerfil').classList.remove('aberto');
+            const m = document.getElementById('modalPerfil');
+            if (m) { m.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+        };
+        window.fecharModalPerfil = function() {
+            const m = document.getElementById('modalPerfil');
+            if (m) { m.style.display = 'none'; document.body.style.overflow = ''; }
+        };
     </script>
+
+    <?php include 'pages-professor/perfil.php'; ?>
 
 </body>
 </html>

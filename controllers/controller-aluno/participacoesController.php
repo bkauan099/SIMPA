@@ -20,7 +20,7 @@ class ParticipacaoAlunoController {
 
             require __DIR__ . '/../../views/view-aluno/participacoes.view.php';
         } catch (Exception $e) {
-            echo "<div class='alert alert-danger'>Erro: " . $e->getMessage() . "</div>";
+            echo "<div class='alert alert-danger'>Erro: " . htmlspecialchars($e->getMessage()) . "</div>";
         }
     }
 }

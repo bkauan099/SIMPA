@@ -85,29 +85,18 @@ function iconeArquivoCert(string $ext): string {
         <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.38);border-radius:20px;padding:4px 13px;font-size:0.67rem;font-weight:700;color:#fbbf24;letter-spacing:0.5px;margin-bottom:13px;">
             <i class="bi bi-patch-check-fill"></i> CONQUISTAS ACADÊMICAS
         </div>
-        <h2 style="color:#fff;font-weight:900;margin:0 0 6px;font-size:1.75rem;letter-spacing:-0.3px;line-height:1.1;">
-            Meus Certificados
-        </h2>
-        <p style="color:rgba(255,255,255,0.58);margin:0 0 18px;font-size:0.82rem;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+            <h2 style="color:#fff;font-weight:900;margin:0;font-size:1.75rem;letter-spacing:-0.3px;line-height:1.1;">
+                Meus Certificados
+            </h2>
+            <span style="background:rgba(251,191,36,0.18);border:1px solid rgba(251,191,36,0.4);border-radius:20px;padding:3px 11px;font-size:0.78rem;font-weight:800;color:#fbbf24;">
+                <?= $total ?> <?= $total === 1 ? 'certificado' : 'certificados' ?>
+            </span>
+        </div>
+        <p style="color:rgba(255,255,255,0.58);margin:0 0 16px;font-size:0.82rem;">
             Documentos emitidos pelo seu professor após avaliação
         </p>
-        <div style="width:44px;height:3px;border-radius:2px;background:linear-gradient(90deg,#fbbf24,rgba(251,191,36,0.15));margin-bottom:15px;"></div>
-
-        <!-- Cards de resumo -->
-        <div style="display:flex;gap:16px;flex-wrap:wrap;">
-            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 18px;min-width:110px;">
-                <div style="color:rgba(255,255,255,0.55);font-size:0.65rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">Total</div>
-                <div style="color:#fff;font-size:1.4rem;font-weight:800;line-height:1.2;"><?= $total ?></div>
-            </div>
-            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 18px;min-width:110px;">
-                <div style="color:rgba(255,255,255,0.55);font-size:0.65rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">Projetos</div>
-                <div style="color:#fff;font-size:1.4rem;font-weight:800;line-height:1.2;"><?= $projetos ?></div>
-            </div>
-            <div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 18px;min-width:110px;">
-                <div style="color:rgba(255,255,255,0.55);font-size:0.65rem;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;">Recentes</div>
-                <div style="color:#fbbf24;font-size:1.4rem;font-weight:800;line-height:1.2;"><?= $recentes ?></div>
-            </div>
-        </div>
+        <div style="width:44px;height:3px;border-radius:2px;background:linear-gradient(90deg,#fbbf24,rgba(251,191,36,0.15));"></div>
     </div>
 </div>
 

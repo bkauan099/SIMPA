@@ -2,7 +2,8 @@
 session_start();
 
 $id_usuario = $_SESSION['id_usuario'] ?? null;
-if (!$id_usuario) {
+$perfil     = strtolower($_SESSION['perfil'] ?? '');
+if (!$id_usuario || !str_contains($perfil, 'aluno')) {
     header('Location: login-page.php');
     exit;
 }
@@ -530,10 +531,11 @@ function toggleConcluido(btn) {
 }
 
 function atualizarBotoesTarefa(tr) {
-    const temArquivo  = getArquivos(tr).length > 0;
-    const concluido   = tr.dataset.concluido === '1';
-    const docRefazer  = tr.dataset.docRefazer === '1';
-    const prazoPastou = _prazoPassou(tr);
+    const temArquivo   = getArquivos(tr).length > 0;
+    const concluido    = tr.dataset.concluido === '1';
+    const docRefazer   = tr.dataset.docRefazer === '1';
+    const profProcessou = tr.dataset.profProcessou === '1';
+    const prazoPastou  = _prazoPassou(tr);
     const td = tr.querySelector('td:last-child');
 
     const eyeBtn = temArquivo
@@ -545,6 +547,8 @@ function atualizarBotoesTarefa(tr) {
             + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Enviar novo arquivo"><i class="bi bi-pencil"></i></button>`;
     } else if (concluido && prazoPastou) {
         td.innerHTML = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Prazo encerrado, não é possível desfazer"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
+    } else if (concluido && profProcessou) {
+        td.innerHTML = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Avaliado pelo professor, não é possível desfazer"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (concluido) {
         td.innerHTML = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleConcluido(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (prazoPastou) {
@@ -800,9 +804,9 @@ function _renderizarArquivosExistentes(arquivos, somenteLeitura) {
             `<button class="btn btn-sm btn-link text-danger p-0" onclick="_removerArquivoExistente(${a.id})" title="Remover"><i class="bi bi-x-lg"></i></button>`;
         return `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f8fafc;border:1px solid #e2e8f0;">
             <i class="bi bi-file-earmark text-primary"></i>
-            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${a.nome}</span>
+            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${_escHtml(a.nome)}</span>
             <button class="btn btn-sm btn-link text-primary p-0"
-                    data-caminho="${a.caminho}" data-nome="${a.nome}"
+                    data-caminho="${a.caminho}" data-nome="${_escHtml(a.nome)}"
                     onclick="abrirModalVisualizar(this.dataset.caminho,this.dataset.nome)" title="Visualizar"><i class="bi bi-eye"></i></button>
             ${btnRemove}
         </div>`;
@@ -834,7 +838,7 @@ function selecionarArquivo(input) {
     document.getElementById('itensArquivosNovos').innerHTML = files.map(f =>
         `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f0f9ff;border:1px solid #bae6fd;">
             <i class="bi bi-file-earmark text-info"></i>
-            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${f.name}</span>
+            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;">${_escHtml(f.name)}</span>
         </div>`
     ).join('');
     container.style.display = '';
@@ -890,14 +894,14 @@ function abrirModalEdicao(tr) {
     document.getElementById('itensArquivosEdit').innerHTML = arquivos.map(a => {
         return `<div class="d-flex align-items-center gap-2 p-2 rounded mb-1" style="background:#f8fafc;border:1px solid #e2e8f0;">
             <i class="bi bi-file-earmark text-primary fs-5"></i>
-            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;font-weight:500;">${a.nome}</span>
+            <span class="flex-grow-1 text-truncate" style="font-size:0.85rem;font-weight:500;">${_escHtml(a.nome)}</span>
             <button class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
                     style="width:28px;height:28px;"
-                    data-caminho="${a.caminho}" data-nome="${a.nome}"
+                    data-caminho="${a.caminho}" data-nome="${_escHtml(a.nome)}"
                     onclick="abrirModalVisualizar(this.dataset.caminho,this.dataset.nome)" title="Visualizar">
                 <i class="bi bi-eye" style="font-size:0.75rem;"></i>
             </button>
-            <a href="${a.caminho}" download="${a.nome}"
+            <a href="${a.caminho}" download="${_escHtml(a.nome)}"
                class="btn btn-sm btn-outline-secondary rounded-circle p-0 d-flex align-items-center justify-content-center flex-shrink-0"
                style="width:28px;height:28px;" title="Baixar">
                 <i class="bi bi-download" style="font-size:0.75rem;"></i>
@@ -1157,11 +1161,12 @@ function toggleCronograma(btn) {
 }
 
 function atualizarBotoesCronograma(tr) {
-    const temArquivo   = getArquivos(tr).length > 0;
-    const concluido    = tr.dataset.concluido === '1';
-    const docRefazer   = tr.dataset.docRefazer === '1';
-    const temDescricao = tr.dataset.temDescricao === '1';
-    const prazoPastou  = _prazoPassou(tr);
+    const temArquivo    = getArquivos(tr).length > 0;
+    const concluido     = tr.dataset.concluido === '1';
+    const docRefazer    = tr.dataset.docRefazer === '1';
+    const profProcessou = tr.dataset.profProcessou === '1';
+    const temDescricao  = tr.dataset.temDescricao === '1';
+    const prazoPastou   = _prazoPassou(tr);
     const td = tr.querySelector('td:last-child');
 
     const eyeBtn = temArquivo
@@ -1174,6 +1179,8 @@ function atualizarBotoesCronograma(tr) {
               + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Enviar novo arquivo"><i class="bi bi-pencil"></i></button>`;
     } else if (concluido && prazoPastou) {
         acoes = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Prazo encerrado, não é possível desfazer"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
+    } else if (concluido && profProcessou) {
+        acoes = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Avaliado pelo professor, não é possível desfazer"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (concluido) {
         acoes = `<button class="btn btn-sm btn-outline-warning" onclick="event.stopPropagation();toggleCronograma(this)" title="Desfazer conclusão"><i class="bi bi-arrow-counterclockwise"></i></button>` + eyeBtn;
     } else if (prazoPastou) {
@@ -1334,7 +1341,7 @@ function showDay(el) {
                  onmouseenter="this.style.opacity='.82'" onmouseleave="this.style.opacity='1'">
                 <div style="min-width:0;flex:1;">
                     <div style="font-size:0.87rem;font-weight:600;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                        ${item.ico} ${item.titulo}
+                        ${item.ico} ${_escHtml(item.titulo)}
                     </div>
                     ${item.hora ? `<div style="font-size:0.75rem;color:#64748b;margin-top:2px;">🕐 ${item.hora}</div>` : ''}
                 </div>

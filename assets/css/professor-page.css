@@ -350,6 +350,29 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 }
 
 .tb-dropdown-notif { width: 310px; max-height: 420px; overflow-y: auto; }
+.tb-dropdown-perfil { width: 190px; padding: 6px 0; }
+
+.tb-drop-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 0.88rem;
+    color: #1e293b;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.12s;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+.tb-drop-item:hover { background: #f8fafc; color: #1e293b; }
+.tb-drop-sair { color: #ef4444; }
+.tb-drop-sair:hover { background: #fff1f2; color: #ef4444; }
+
+.tb-drop-divider { height: 1px; background: #f1f5f9; margin: 4px 0; }
 
 .tb-drop-header {
     display: flex; align-items: center; justify-content: space-between;

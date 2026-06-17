@@ -228,7 +228,8 @@ class Aluno {
                 COALESCE(proj.titulo, '—') AS projeto,
                 COALESCE(ai.id_projeto::text, '') AS id_projeto_ref,
                 lp.arquivos,
-                lp.tem_refazer
+                lp.tem_refazer,
+                lp.prof_processou
             FROM agenda_items ai
             LEFT JOIN projetos proj ON proj.id_projeto = ai.id_projeto
             LEFT JOIN LATERAL (
@@ -245,7 +246,15 @@ class Aluno {
                       AND p2.titulo = ai.titulo
                       AND p2.status != 'inativo'
                     ORDER BY p2.id_producao DESC LIMIT 1
-                ), false) AS tem_refazer
+                ), false) AS tem_refazer,
+                COALESCE((
+                    SELECT p3.status IN ('concluido', 'cancelado')
+                    FROM producoes p3
+                    WHERE p3.id_projeto = ai.id_projeto
+                      AND p3.titulo = ai.titulo
+                      AND p3.status != 'inativo'
+                    ORDER BY p3.id_producao DESC LIMIT 1
+                ), false) AS prof_processou
                 FROM producoes p
                 WHERE p.id_projeto = ai.id_projeto
                   AND p.titulo = ai.titulo
@@ -278,7 +287,8 @@ class Aluno {
                 COALESCE(proj.titulo, '—') AS projeto,
                 COALESCE(ai.id_projeto::text, '') AS id_projeto_ref,
                 lp.arquivos,
-                lp.tem_refazer
+                lp.tem_refazer,
+                lp.prof_processou
             FROM agenda_items ai
             LEFT JOIN projetos proj ON proj.id_projeto = ai.id_projeto
             LEFT JOIN LATERAL (
@@ -295,7 +305,15 @@ class Aluno {
                       AND p2.titulo = ai.titulo
                       AND p2.status != 'inativo'
                     ORDER BY p2.id_producao DESC LIMIT 1
-                ), false) AS tem_refazer
+                ), false) AS tem_refazer,
+                COALESCE((
+                    SELECT p3.status IN ('concluido', 'cancelado')
+                    FROM producoes p3
+                    WHERE p3.id_projeto = ai.id_projeto
+                      AND p3.titulo = ai.titulo
+                      AND p3.status != 'inativo'
+                    ORDER BY p3.id_producao DESC LIMIT 1
+                ), false) AS prof_processou
                 FROM producoes p
                 WHERE p.id_projeto = ai.id_projeto
                   AND p.titulo = ai.titulo
