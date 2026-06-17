@@ -1,88 +1,429 @@
+<?php
+$id_professor = $_SESSION['id_usuario'] ?? 0;
+
+// Garante colunas necessárias
+try {
+    $pdo->exec("ALTER TABLE agenda_items ADD COLUMN IF NOT EXISTS id_projeto INTEGER");
+} catch (PDOException $e) {}
+
+// Stats para os cards
+$stats_cron = ['total_mes' => 0, 'prazos' => 0, 'reunioes' => 0, 'entregas' => 0];
+try {
+    $stmt = $pdo->prepare("
+        SELECT
+            COUNT(DISTINCT CASE
+                WHEN EXTRACT(MONTH FROM a.data) = EXTRACT(MONTH FROM CURRENT_DATE)
+                 AND EXTRACT(YEAR  FROM a.data) = EXTRACT(YEAR  FROM CURRENT_DATE)
+                THEN a.id END) AS total_mes,
+            COUNT(DISTINCT CASE
+                WHEN a.tipo = 'Prazo'
+                 AND a.data >= CURRENT_DATE
+                 AND a.data <= CURRENT_DATE + INTERVAL '7 days'
+                THEN a.id END) AS prazos,
+            COUNT(DISTINCT CASE
+                WHEN a.tipo = 'Reunião'
+                 AND COALESCE((SELECT pr.status FROM producoes pr
+                               WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                               ORDER BY pr.id_producao DESC LIMIT 1), 'pendente') NOT IN ('concluido','cancelado')
+                THEN a.id END) AS reunioes,
+            COUNT(DISTINCT CASE
+                WHEN a.tipo = 'Entrega'
+                 AND COALESCE((SELECT pr.status FROM producoes pr
+                               WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                               ORDER BY pr.id_producao DESC LIMIT 1), 'pendente') NOT IN ('concluido','cancelado')
+                THEN a.id END) AS entregas
+        FROM agenda_items a
+        JOIN participacao par ON a.id_projeto = par.id_projeto
+        WHERE par.id_usuario = :id
+          AND a.id_projeto IS NOT NULL
+          AND a.data IS NOT NULL
+    ");
+    $stmt->execute([':id' => $id_professor]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($row) $stats_cron = $row;
+} catch (PDOException $e) {}
+
+// Busca todos os eventos do professor para o calendário
+$eventos_js = '[]';
+try {
+    $stmt = $pdo->prepare("
+        SELECT DISTINCT ON (a.id)
+            a.id,
+            a.titulo,
+            COALESCE(a.tipo, 'tarefa') AS tipo,
+            a.data,
+            COALESCE(CAST(a.hora AS TEXT), '00:00') AS hora,
+            COALESCE((SELECT pr.status FROM producoes pr
+                      WHERE pr.titulo = a.titulo AND pr.id_projeto = a.id_projeto
+                      ORDER BY pr.id_producao DESC LIMIT 1), 'pendente') AS status_tarefa,
+            COALESCE(u.nome, 'Todos') AS nome_aluno,
+            COALESCE(p.titulo, '') AS nome_projeto
+        FROM agenda_items a
+        JOIN participacao par ON a.id_projeto = par.id_projeto
+        LEFT JOIN usuarios u ON a.id_usuario = u.id_usuario
+        LEFT JOIN projetos p ON a.id_projeto = p.id_projeto
+        WHERE par.id_usuario = :id
+          AND a.id_projeto IS NOT NULL
+          AND a.data IS NOT NULL
+        ORDER BY a.id, a.data ASC
+    ");
+    $stmt->execute([':id' => $id_professor]);
+    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $today = new DateTime();
+    $today->setTime(0, 0, 0);
+    $events = [];
+    foreach ($rows as $r) {
+        $date = new DateTime($r['data']);
+        $hora = substr($r['hora'], 0, 5);
+
+        if ($r['status_tarefa'] === 'concluido') {
+            $status = 'Concluído';
+        } elseif ($r['status_tarefa'] === 'cancelado') {
+            $status = 'Cancelado';
+        } elseif ($r['status_tarefa'] === 'inativo') {
+            $status = 'Reprovado';
+        } elseif ($date < $today) {
+            $status = 'Urgente';
+        } else {
+            $status = 'Pendente';
+        }
+
+        // Normaliza tipo para exibição
+        $tipo = $r['tipo'] === 'tarefa' ? 'Tarefa' : $r['tipo'];
+
+        $events[] = [
+            'dia'     => (int)$date->format('j'),
+            'mes'     => (int)$date->format('n') - 1,
+            'ano'     => (int)$date->format('Y'),
+            'hora'    => $hora,
+            'titulo'  => $r['titulo'],
+            'aluno'   => $r['nome_aluno'],
+            'projeto' => $r['nome_projeto'],
+            'tipo'    => $tipo,
+            'status'  => $status,
+        ];
+    }
+    $eventos_js = json_encode($events, JSON_UNESCAPED_UNICODE);
+} catch (PDOException $e) {
+    $eventos_js = '[]';
+}
+?>
+
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
         <h3 class="fw-bold mb-1">Cronograma</h3>
         <p class="text-muted mb-0">Agenda de atividades, entregas e reuniões dos projetos</p>
     </div>
-    <div class="d-flex gap-2">
-        <button class="btn btn-outline-secondary"><i class="bi bi-chevron-left"></i></button>
-        <span class="btn btn-light fw-medium disabled">Novembro 2023</span>
-        <button class="btn btn-outline-secondary"><i class="bi bi-chevron-right"></i></button>
-    </div>
 </div>
 
 <div class="row g-3 mb-4">
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-calendar-event"></i></div>
-            <div><h4 class="mb-0 fw-bold">6</h4><small class="text-muted">Eventos este mês</small></div>
+        <div class="stat-card-modern sc-blue">
+            <div class="sc-watermark"><i class="bi bi-calendar-event"></i></div>
+            <div class="sc-label"><i class="bi bi-calendar-event"></i> Eventos este mês</div>
+            <div class="sc-number" id="totalEventos"><?= intval($stats_cron['total_mes']) ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-alarm"></i></div>
-            <div><h4 class="mb-0 fw-bold">4</h4><small class="text-muted">Prazos próximos</small></div>
+        <div class="stat-card-modern sc-red">
+            <div class="sc-watermark"><i class="bi bi-alarm"></i></div>
+            <div class="sc-label"><i class="bi bi-alarm"></i> Prazos próximos</div>
+            <div class="sc-number"><?= intval($stats_cron['prazos']) ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-people"></i></div>
-            <div><h4 class="mb-0 fw-bold">2</h4><small class="text-muted">Reuniões agendadas</small></div>
+        <div class="stat-card-modern sc-teal">
+            <div class="sc-watermark"><i class="bi bi-people"></i></div>
+            <div class="sc-label"><i class="bi bi-people"></i> Reuniões agendadas</div>
+            <div class="sc-number"><?= intval($stats_cron['reunioes']) ?></div>
         </div>
     </div>
     <div class="col-sm-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-check2-square"></i></div>
-            <div><h4 class="mb-0 fw-bold">7</h4><small class="text-muted">Entregas pendentes</small></div>
+        <div class="stat-card-modern sc-orange">
+            <div class="sc-watermark"><i class="bi bi-check2-square"></i></div>
+            <div class="sc-label"><i class="bi bi-check2-square"></i> Entregas pendentes</div>
+            <div class="sc-number"><?= intval($stats_cron['entregas']) ?></div>
         </div>
     </div>
 </div>
 
-<div class="content-card">
-    <h5 class="fw-bold mb-3">Próximas Atividades</h5>
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-                <tr class="text-muted small">
-                    <th>DATA</th><th>HORA</th><th>ATIVIDADE</th><th>ALUNO</th><th>PROJETO</th><th>TIPO</th><th>STATUS</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="table-warning">
-                    <td class="fw-bold">20/11/2023</td><td>10:00</td>
-                    <td class="fw-medium">Revisão do Artigo</td>
-                    <td>João</td><td>SIMPA UEMA</td>
-                    <td><span class="badge bg-warning text-dark">Entrega</span></td>
-                    <td><span class="badge bg-warning text-dark">Pendente</span></td>
-                </tr>
-                <tr class="table-warning">
-                    <td class="fw-bold">22/11/2023</td><td>14:00</td>
-                    <td class="fw-medium">Entrega Relatório</td>
-                    <td>Augusto</td><td>Inovação Tec.</td>
-                    <td><span class="badge bg-warning text-dark">Entrega</span></td>
-                    <td><span class="badge bg-info text-dark">Em Andamento</span></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">24/11/2023</td><td>09:00</td>
-                    <td class="fw-medium">Reunião de Orientação</td>
-                    <td>Todos</td><td>Projeto Social</td>
-                    <td><span class="badge bg-primary">Reunião</span></td>
-                    <td><span class="badge bg-warning text-dark">Pendente</span></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">25/11/2023</td><td>10:00</td>
-                    <td class="fw-medium">Apresentação Final</td>
-                    <td>Todos</td><td>PROEXAE</td>
-                    <td><span class="badge bg-success">Evento</span></td>
-                    <td><span class="badge bg-warning text-dark">Pendente</span></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">30/11/2023</td><td>15:00</td>
-                    <td class="fw-medium">Reunião de Acompanhamento</td>
-                    <td>Aian</td><td>Inovação Tec.</td>
-                    <td><span class="badge bg-primary">Reunião</span></td>
-                    <td><span class="badge bg-warning text-dark">Pendente</span></td>
-                </tr>
-            </tbody>
-        </table>
+<div class="row g-3">
+
+    <!-- CALENDÁRIO -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <button class="btn btn-sm btn-outline-secondary" id="btnPrev"><i class="bi bi-chevron-left"></i></button>
+                <h6 class="fw-bold mb-0" id="calMesAno"></h6>
+                <button class="btn btn-sm btn-outline-secondary" id="btnNext"><i class="bi bi-chevron-right"></i></button>
+            </div>
+
+            <!-- Dias da semana -->
+            <div class="d-flex text-center mb-1">
+                <?php foreach(['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'] as $d): ?>
+                <div style="width:14.28%;font-size:0.72rem;font-weight:600;color:#64748b;"><?= $d ?></div>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- Grid do calendário -->
+            <div id="calGrid" class="d-flex flex-wrap"></div>
+
+            <!-- Legenda -->
+            <div class="d-flex flex-wrap gap-3 mt-3" style="font-size:0.75rem;color:#64748b;">
+                <span><span class="dot-cal" style="background:#64748b;"></span> Tarefa</span>
+                <span><span class="dot-cal" style="background:#3b82f6;"></span> Entrega</span>
+                <span><span class="dot-cal" style="background:#8b5cf6;"></span> Reunião</span>
+                <span><span class="dot-cal" style="background:#10b981;"></span> Evento</span>
+                <span><span class="dot-cal" style="background:#f59e0b;"></span> Prazo</span>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- ATIVIDADES DO MÊS -->
+    <div class="col-lg-7">
+        <div class="card border-0 shadow-sm h-100"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0" id="tituloLista">Atividades do Mês</h5>
+                <div class="d-flex gap-1 flex-wrap">
+                    <button class="btn btn-sm btn-outline-secondary filtro-tipo active" data-tipo="todos">Todos</button>
+                    <button class="btn btn-sm btn-outline-secondary filtro-tipo" data-tipo="Tarefa" style="border-color:#64748b;color:#64748b;">Tarefas</button>
+                    <button class="btn btn-sm btn-outline-primary filtro-tipo" data-tipo="Entrega">Entregas</button>
+                    <button class="btn btn-sm btn-outline-secondary filtro-tipo" data-tipo="Reunião" style="border-color:#8b5cf6;color:#8b5cf6;">Reuniões</button>
+                    <button class="btn btn-sm btn-outline-success filtro-tipo" data-tipo="Evento">Eventos</button>
+                </div>
+            </div>
+            <div id="listaAtividades" style="max-height:420px;overflow-y:auto;"></div>
+        </div></div>
     </div>
 </div>
+
+<style>
+.dot-cal {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 4px;
+}
+.cal-day {
+    width: 14.28%;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    cursor: pointer;
+    border-radius: 8px;
+    position: relative;
+    transition: background 0.15s;
+    gap: 2px;
+    padding: 2px;
+}
+.cal-day:hover { background: #f1f5f9; }
+.cal-day.hoje { background: #0F2557; color: white; font-weight: 700; }
+.cal-day.hoje:hover { background: #193A82; }
+.cal-day.selecionado { background: #3b82f6; color: white; font-weight: 600; }
+.cal-day.selecionado:hover { background: #2563eb; }
+.cal-day.hoje.selecionado { background: #0F2557; outline: 3px solid #3b82f6; outline-offset: -2px; }
+.cal-day.tem-evento .dots { display: flex; gap: 2px; }
+.dots { display: flex; gap: 2px; min-height: 6px; }
+.dot-ev {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.atividade-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+.atividade-item:last-child { border-bottom: none; }
+.atividade-data {
+    min-width: 42px;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 4px 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0F2557;
+    line-height: 1.3;
+}
+</style>
+
+<script>
+(function() {
+    // Dados vindos do banco de dados
+    const todosEventos = <?= $eventos_js ?>;
+
+    const corTipo = {
+        'Tarefa':  '#64748b',
+        'Entrega': '#3b82f6',
+        'Reunião': '#8b5cf6',
+        'Evento':  '#10b981',
+        'Prazo':   '#f59e0b',
+    };
+    const badgeTipo = {
+        'Tarefa':  'badge-tarefa',
+        'Entrega': 'bg-primary',
+        'Reunião': 'badge-reuniao',
+        'Evento':  'bg-success',
+        'Prazo':   'bg-warning text-dark',
+    };
+    const badgeStatus = {
+        'Pendente':     'bg-warning-subtle text-warning fw-semibold',
+        'Em Andamento': 'bg-warning-subtle text-warning fw-semibold',
+        'Concluído':    'bg-success-subtle text-success fw-semibold',
+        'Urgente':      'bg-danger-subtle text-danger fw-semibold',
+        'Cancelado':    'bg-danger-subtle text-danger fw-semibold',
+        'Reprovado':    'bg-danger-subtle text-danger fw-semibold',
+    };
+
+    const style = document.createElement('style');
+    style.textContent = '.badge-reuniao { background:#8b5cf6 !important; color:white; } .badge-tarefa { background:#64748b !important; color:white; }';
+    document.head.appendChild(style);
+
+    const hoje = new Date();
+    let ano = hoje.getFullYear();
+    let mes = hoje.getMonth();
+
+    const nomesMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                        'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+    let filtroAtivo = 'todos';
+
+    function eventosMes(m, y) {
+        return todosEventos.filter(e => e.mes === m && e.ano === y);
+    }
+
+    function renderCalendario() {
+        const grid   = document.getElementById('calGrid');
+        const titulo = document.getElementById('calMesAno');
+        titulo.textContent = nomesMeses[mes] + ' ' + ano;
+
+        const primeiroDia = new Date(ano, mes, 1).getDay();
+        const diasNoMes   = new Date(ano, mes + 1, 0).getDate();
+        const ehMesAtual  = (ano === hoje.getFullYear() && mes === hoje.getMonth());
+
+        const eventos = eventosMes(mes, ano);
+
+        // Atualiza card "Eventos este mês"
+        document.getElementById('totalEventos').textContent = eventos.length;
+
+        const porDia = {};
+        eventos.forEach(e => { (porDia[e.dia] = porDia[e.dia] || []).push(e); });
+
+        grid.innerHTML = '';
+
+        for (let i = 0; i < primeiroDia; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'cal-day';
+            grid.appendChild(cell);
+        }
+
+        for (let d = 1; d <= diasNoMes; d++) {
+            const cell = document.createElement('div');
+            cell.className = 'cal-day' + (ehMesAtual && d === hoje.getDate() ? ' hoje' : '');
+
+            const num = document.createElement('span');
+            num.textContent = d;
+            cell.appendChild(num);
+
+            const dots = document.createElement('div');
+            dots.className = 'dots';
+            if (porDia[d]) {
+                porDia[d].slice(0, 3).forEach(ev => {
+                    const dot = document.createElement('span');
+                    dot.className = 'dot-ev';
+                    dot.style.background = corTipo[ev.tipo] || '#94a3b8';
+                    dots.appendChild(dot);
+                });
+                cell.classList.add('tem-evento');
+            }
+            cell.appendChild(dots);
+
+            cell.addEventListener('click', function() {
+                document.querySelectorAll('.cal-day.selecionado').forEach(function(el) {
+                    el.classList.remove('selecionado');
+                });
+                this.classList.add('selecionado');
+                renderLista(d);
+            });
+
+            grid.appendChild(cell);
+        }
+    }
+
+    function renderLista(diaFiltro) {
+        const lista  = document.getElementById('listaAtividades');
+        const titulo = document.getElementById('tituloLista');
+
+        let itens = eventosMes(mes, ano);
+
+        if (diaFiltro) {
+            itens = itens.filter(e => e.dia === diaFiltro);
+            titulo.textContent = 'Atividades — Dia ' + diaFiltro;
+        } else {
+            titulo.textContent = 'Atividades do Mês';
+        }
+
+        if (filtroAtivo !== 'todos') {
+            itens = itens.filter(e => e.tipo === filtroAtivo);
+        }
+
+        if (itens.length === 0) {
+            lista.innerHTML = '<p class="text-muted text-center py-4">Nenhuma atividade encontrada.</p>';
+            return;
+        }
+
+        lista.innerHTML = itens.map(ev => `
+            <div class="atividade-item">
+                <div class="atividade-data">
+                    <div style="font-size:1rem;">${String(ev.dia).padStart(2,'0')}</div>
+                    <div style="font-weight:400;color:#64748b;">${nomesMeses[ev.mes].slice(0,3)}</div>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-1">
+                        <span class="fw-medium" style="font-size:0.9rem;">${ev.titulo}</span>
+                        <div class="d-flex gap-1">
+                            <span class="badge ${badgeTipo[ev.tipo] || 'bg-secondary'}">${ev.tipo}</span>
+                            <span class="badge ${badgeStatus[ev.status] || 'bg-secondary'}">${ev.status}</span>
+                        </div>
+                    </div>
+                    <div class="text-muted mt-1" style="font-size:0.78rem;">
+                        <i class="bi bi-clock me-1"></i>${ev.hora}
+                        &nbsp;·&nbsp;<i class="bi bi-person me-1"></i>${ev.aluno}
+                        &nbsp;·&nbsp;<i class="bi bi-folder me-1"></i>${ev.projeto}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    document.getElementById('btnPrev').addEventListener('click', function() {
+        mes--; if (mes < 0) { mes = 11; ano--; }
+        renderCalendario();
+        renderLista(null);
+    });
+    document.getElementById('btnNext').addEventListener('click', function() {
+        mes++; if (mes > 11) { mes = 0; ano++; }
+        renderCalendario();
+        renderLista(null);
+    });
+
+    document.querySelectorAll('.filtro-tipo').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.filtro-tipo').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            filtroAtivo = this.dataset.tipo;
+            renderLista(null);
+        });
+    });
+
+    renderCalendario();
+    renderLista(null);
+})();
+</script>

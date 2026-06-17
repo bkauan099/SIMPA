@@ -18,23 +18,15 @@
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <select class="form-select" id="filtroTipo">
+            <select class="form-select" id="filtroTipo" onchange="filtrarSeletivos()">
                 <option value="">Tipo (Todos)</option>
+                <option value="ic">Ligas Acadêmicas</option>
                 <option value="esp">Projeto Especial</option>
-                <option value="liga">Ligas Acadêmicas</option>
-                <option value="jr">Empresa Jr</option>
-                <option value="atl">Atlética</option>
+                <option value="ext">Empresa Jr</option>
             </select>
         </div>
-        <div class="col-6 col-md-2">
-            <select class="form-select">
-                <option value="">Status</option>
-                <option>Aberto</option>
-                <option>Encerra em breve</option>
-            </select>
-        </div>
-        <div class="col-12 col-md-2">
-            <button class="btn btn-primary w-100">Filtrar</button>
+        <div class="col-12 col-md-2 text-muted small text-center" id="contadorSeletivos">
+            7 resultado(s)
         </div>
     </div>
 </div>
@@ -58,7 +50,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Liga acadêmica voltada ao estudo e pesquisa em bovinos, com foco em saúde animal, 
+            Liga acadêmica voltada ao estudo e pesquisa em bovinos, com foco em saúde animal,
             produção e bem-estar. Atividades práticas em campo e laboratório.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -87,7 +79,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Liga dedicada ao estudo da suinocultura, abrangendo nutrição, sanidade, reprodução 
+            Liga dedicada ao estudo da suinocultura, abrangendo nutrição, sanidade, reprodução
             e manejo de suínos. Voltada para alunos de Zootecnia e Medicina Veterinária.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -116,7 +108,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Equipe de competição Baja SAE Brasil com identidade cultural maranhense. Buscamos alunos 
+            Equipe de competição Baja SAE Brasil com identidade cultural maranhense. Buscamos alunos
             de Engenharia Mecânica, Elétrica e Computação para estrutura, eletrônica e sistemas embarcados.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -145,7 +137,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Equipe de robótica e automação da UEMA. Desenvolve projetos em eletrônica embarcada, 
+            Equipe de robótica e automação da UEMA. Desenvolve projetos em eletrônica embarcada,
             programação e robôs autônomos. Participação em competições nacionais.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -174,7 +166,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Empresa júnior de tecnologia da UEMA focada no desenvolvimento de soluções digitais 
+            Empresa júnior de tecnologia da UEMA focada no desenvolvimento de soluções digitais
             para clientes reais. Oportunidade de vivência profissional ainda na graduação.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -203,7 +195,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Projeto de extensão voltado ao debate político, cidadania e participação social. 
+            Projeto de extensão voltado ao debate político, cidadania e participação social.
             Promove fóruns, simulações de assembleia e formação em liderança estudantil.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -232,7 +224,7 @@
             </div>
         </div>
         <p style="font-size:0.88rem;color:#475569;margin-bottom:12px;">
-            Projeto focado em metodologias ágeis, gestão de projetos e desenvolvimento de software. 
+            Projeto focado em metodologias ágeis, gestão de projetos e desenvolvimento de software.
             Ideal para alunos de Computação, Sistemas de Informação e Engenharia de Software.
         </p>
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -246,3 +238,26 @@
     </div>
 
 </div>
+
+<script>
+document.getElementById('filtroSeletivo').addEventListener('input', filtrarSeletivos);
+
+function filtrarSeletivos() {
+    const busca = document.getElementById('filtroSeletivo').value.toLowerCase().trim();
+    const tipo  = document.getElementById('filtroTipo').value;
+    const cards = document.querySelectorAll('#listaSeletivos .seletivo-card');
+    let visiveis = 0;
+
+    cards.forEach(card => {
+        const texto     = card.textContent.toLowerCase();
+        const bateBusca = !busca || texto.includes(busca);
+        const bateTipo  = !tipo  || card.classList.contains(tipo);
+        const ok = bateBusca && bateTipo;
+        card.style.display = ok ? '' : 'none';
+        if (ok) visiveis++;
+    });
+
+    const cnt = document.getElementById('contadorSeletivos');
+    if (cnt) cnt.textContent = visiveis + ' resultado(s)';
+}
+</script>

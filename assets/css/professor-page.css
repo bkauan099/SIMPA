@@ -14,9 +14,9 @@
     --topbar-height: 64px;
 }
 
-html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:var(--texto-escuro); overflow-x:hidden; }
+html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:var(--texto-escuro); overflow:hidden; }
 
-.wrapper { display:flex; min-height:100vh; }
+.wrapper { display:flex; height:100vh; overflow:hidden; }
 
 /* ══ TOPBAR ══ */
 .navbar-custom {
@@ -32,6 +32,22 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .logo-uema-top    { max-height:72px; width:auto; }
 .logo-proexae-top { max-height:52px; width:auto; }
 .logo-sep { width:1px; height:32px; background:rgba(255,255,255,0.25); }
+
+.topbar-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.topbar-toggle:hover { background: rgba(255,255,255,0.1); }
 
 /* ══ SIDEBAR ══ */
 #sidebar {
@@ -160,31 +176,105 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .sidebar-overlay.active { display:block; }
 
 /* ══ CONTEÚDO ══ */
-#content { flex:1; display:flex; flex-direction:column; min-width:0; }
-.dashboard-container { padding:24px; flex:1; }
+#content { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden; }
+.dashboard-container {
+    padding:24px; flex:1; min-height:0;
+    overflow-y:auto; overflow-x:hidden;
+    scrollbar-width:thin;
+    scrollbar-color:#cbd5e1 transparent;
+}
+.dashboard-container::-webkit-scrollbar { width:5px; }
+.dashboard-container::-webkit-scrollbar-track { background:transparent; }
+.dashboard-container::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:10px; }
+.dashboard-container::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
 
 /* ══ CARDS ══ */
-.stat-card {
-    background:var(--branco); border-radius:12px; padding:20px;
-    display:flex; align-items:center;
-    box-shadow:0 2px 12px rgba(0,0,0,0.05); border:none; height:100%;
+.card {
+    border-radius: 12px !important;
 }
-.icon-circle {
-    width:48px; height:48px; border-radius:10px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:1.25rem; margin-right:15px; flex-shrink:0;
+.card.shadow-sm {
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
 }
-.bg-light-blue   { background:#eef2ff; color:#3b82f6; }
-.bg-light-orange { background:#fff7ed; color:#f97316; }
 
-.content-card {
-    background:var(--branco); border-radius:12px; padding:25px;
-    box-shadow:0 2px 12px rgba(0,0,0,0.05); margin-bottom:25px;
+/* ── Stat cards modernos (estilo aluno) ── */
+.stat-card-modern {
+    background: #fff;
+    border-radius: 14px;
+    padding: 18px 20px 16px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.06);
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    border-top: 4px solid var(--sc-color, #3b82f6);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.card-custom {
-    border-radius:15px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.08);
-    background:var(--branco);
+.stat-card-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+.stat-card-modern::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--sc-color, #3b82f6);
+    opacity: 0.04;
+    pointer-events: none;
+}
+.stat-card-modern .sc-watermark {
+    position: absolute;
+    right: 12px;
+    bottom: 6px;
+    font-size: 3rem;
+    color: var(--sc-color, #3b82f6);
+    opacity: 0.1;
+    line-height: 1;
+    pointer-events: none;
+}
+.stat-card-modern .sc-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    background: var(--sc-color, #3b82f6);
+    color: #fff;
+    opacity: 0.85;
+    margin-bottom: 10px;
+}
+.stat-card-modern .sc-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1;
+}
+
+/* Variantes de cor */
+.sc-green  { --sc-color: #16a34a; }
+.sc-yellow { --sc-color: #f59e0b; }
+.sc-red    { --sc-color: #ef4444; }
+.sc-blue   { --sc-color: #3b82f6; }
+.sc-purple { --sc-color: #7c3aed; }
+.sc-orange { --sc-color: #f97316; }
+.sc-teal   { --sc-color: #0d9488; }
+
+/* Legado — compat */
+.icon-circle {
+    width: 48px; height: 48px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; flex-shrink: 0;
+}
+.bg-light-blue   { background: #eef2ff; color: #3b82f6; }
+.bg-light-orange { background: #fff7ed; color: #f97316; }
+.stat-card {
+    background: var(--branco); border-radius: 12px; padding: 20px;
+    display: flex; align-items: center; gap: 15px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); border: none; height: 100%;
+}
+.content-card {
+    background: var(--branco); border-radius: 12px; padding: 25px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05); margin-bottom: 25px;
 }
 
 /* ══ TABELAS ══ */
@@ -192,7 +282,27 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     padding:14px 10px; border-bottom-color:#f1f5f9;
     color:var(--texto-escuro); vertical-align:middle;
 }
-.table th { font-weight:600; color:var(--texto-mutado); font-size:0.8rem; text-transform:uppercase; }
+.table th {
+    font-weight: 600;
+    color: var(--texto-mutado);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    padding: 12px 10px !important;
+    background-color: #f8fafc;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+.table td {
+    text-align: center;
+    vertical-align: middle !important;
+}
+.table td:first-child,
+.table th:first-child {
+    text-align: left;
+}
 
 /* ══ STATUS / BADGES ══ */
 .status-pill     { padding:4px 12px; border-radius:6px; font-size:0.8rem; font-weight:600; }
@@ -204,6 +314,107 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .btn-detail-outline { border:1px solid #dee2e6; color:#6c757d; background:transparent; }
 
 
+
+/* ══ TOPBAR — NOTIFICAÇÕES ══ */
+.tb-icon-btn {
+    background: none; border: none; color: white; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 8px; border-radius: 8px;
+    transition: background 0.15s; position: relative;
+}
+.tb-icon-btn:hover { background: rgba(255,255,255,0.12); }
+
+.tb-badge {
+    position: absolute; top: 2px; right: 2px;
+    background: #ef4444; color: white;
+    font-size: 0.58rem; font-weight: 700;
+    padding: 2px 5px; border-radius: 10px;
+    line-height: 1; min-width: 16px; text-align: center;
+    pointer-events: none;
+}
+
+.tb-dropdown-wrap { position: relative; }
+
+.tb-dropdown {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    background: white; border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.08);
+    display: none; z-index: 500; overflow: hidden;
+    animation: tbFadeIn 0.15s ease;
+}
+.tb-dropdown.aberto { display: block; }
+
+@keyframes tbFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.tb-dropdown-notif { width: 310px; max-height: 420px; overflow-y: auto; }
+.tb-dropdown-perfil { width: 190px; padding: 6px 0; }
+
+.tb-drop-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 0.88rem;
+    color: #1e293b;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.12s;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+.tb-drop-item:hover { background: #f8fafc; color: #1e293b; }
+.tb-drop-sair { color: #ef4444; }
+.tb-drop-sair:hover { background: #fff1f2; color: #ef4444; }
+
+.tb-drop-divider { height: 1px; background: #f1f5f9; margin: 4px 0; }
+
+.tb-drop-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid #f1f5f9;
+    background: white; position: sticky; top: 0; z-index: 1;
+}
+
+.tb-btn-lerall {
+    background: none; border: none; font-size: 0.72rem;
+    color: #3b82f6; cursor: pointer; font-weight: 600;
+    padding: 0; font-family: inherit;
+}
+.tb-btn-lerall:hover { text-decoration: underline; }
+
+.tb-notif-item {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f8fafc;
+    background: #eff6ff;
+    transition: background 0.15s;
+}
+.tb-notif-item[data-lida="1"] { background: white; opacity: 0.7; }
+.tb-notif-item:last-child { border-bottom: none; }
+
+.tb-notif-texto {
+    display: flex; align-items: flex-start;
+    font-size: 0.82rem; color: #1e293b;
+    margin-bottom: 6px; line-height: 1.4;
+}
+.tb-notif-texto i { margin-top: 1px; }
+
+.tb-notif-toggle {
+    background: none; border: none; font-size: 0.7rem;
+    color: #3b82f6; cursor: pointer; padding: 0;
+    font-weight: 600; font-family: inherit;
+}
+.tb-notif-toggle:hover { text-decoration: underline; }
+
+.tb-notif-vazia {
+    padding: 24px 16px; text-align: center;
+    font-size: 0.82rem; color: #94a3b8;
+}
 
 /* ══ RESPONSIVIDADE ══ */
 @media (max-width: 767px) {
@@ -219,13 +430,14 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     #sidebar.open .nav-label { display:inline; }
     #sidebar.open ul li a { justify-content:flex-start; padding:12px 20px; }
     #sidebar.open ul li a i { width:28px; }
+    .topbar-toggle { display:flex; }
+    .sidebar-toggle-wrap { display:none !important; }
     .navbar-custom { padding:0 14px; }
     .dashboard-container { padding:12px; }
-    .logo-uema-top    { max-height:52px; }
-    .logo-proexae-top { max-height:38px; }
+    .logo-uema-top    { max-height:36px; max-width:100px; }
+    .logo-proexae-top { max-height:28px; max-width:80px; }
     .col-lg-8, .col-lg-4 { flex:0 0 100% !important; max-width:100% !important; }
     .table-responsive { overflow-x:auto; }
-
 }
 
 @media (min-width: 768px) and (max-width: 991px) {
@@ -235,8 +447,58 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 }
 
 @media (max-width: 480px) {
+    .navbar-custom { height:54px; padding:0 10px; }
+    .logo-sep { display:none; }
+    .logo-proexae-top { display:none; }
+    .logo-uema-top { max-height:32px; max-width:90px; }
+    .topbar-right { gap:10px; }
     .dashboard-container { padding:10px; }
     .content-card { padding:14px; }
-    .stat-card { padding:12px; }
+    .card .card-body { padding: 14px; }
     .col-sm-6 { flex:0 0 100% !important; max-width:100% !important; }
+}
+
+/* ══ BOOTSTRAP MODAL OVERRIDES ══ */
+.modal .modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.modal .modal-header {
+    border-bottom: none;
+    padding: 20px 25px 10px;
+}
+
+.modal .modal-body {
+    padding: 15px 25px 20px;
+}
+
+.modal .modal-footer {
+    border-top: none;
+    padding: 5px 25px 20px;
+}
+
+.modal .modal-title {
+    font-size: 1.2rem;
+}
+
+.modal .form-control,
+.modal .form-select {
+    padding: 10px 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.modal .form-control:focus {
+    border-color: var(--azul-uema);
+    box-shadow: 0 0 0 3px rgba(15, 37, 87, 0.1);
+}
+
+.modal label.form-label {
+    color: var(--azul-uema);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
 }

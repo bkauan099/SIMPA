@@ -1,7 +1,4 @@
 conexao/conexao.php
-
-
-<?php
-header("Location: login-page.php");
-exit();
-?>
+.claude/
+uploads/producoes/
+uploads/certificados/
