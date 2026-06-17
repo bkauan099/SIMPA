@@ -923,7 +923,7 @@ const _EXTS_CODIGO = ['txt','js','ts','jsx','tsx','mjs','cjs',
     'sql','md','markdown','csv','log'];
 
 function _escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 function abrirModalVisualizar(caminho, nome) {
