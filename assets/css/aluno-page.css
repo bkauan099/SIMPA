@@ -535,15 +535,10 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     .logo-proexae-top { max-height: 28px; }
     .logo-sep { display: none; }
 
-    /* Dropdown notificações: fixo relativo à viewport (o sino não é o último
-       ícone do topbar, então ancorar via "right" do próprio wrapper jogava
-       o painel para fora da tela à esquerda) */
+    /* Dropdown notificações: limitar largura e evitar transbordamento */
     .tb-dropdown-notif {
-        position: fixed;
-        top: calc(var(--topbar-height) + 8px);
-        left: 10px;
-        right: 10px;
-        width: auto;
+        width: calc(100vw - 20px);
+        right: -8px;
         max-height: 70vh;
         overflow-y: auto;
     }
@@ -556,9 +551,6 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
         max-width: 100% !important;
     }
     .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    /* Esconde colunas secundárias nas tabelas de tarefas/cronograma — evita que
-       o TÍTULO seja empurrado para fora da tela em telas estreitas */
-    .col-projeto, .col-tipo { display: none; }
     .seletivo-card .d-flex.justify-content-between { flex-direction: column; }
     .seletivo-card button { width: 100%; margin-top: 10px; }
 

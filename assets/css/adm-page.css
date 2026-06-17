@@ -247,16 +247,16 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     .topbar-right a { font-size:0.85rem; }
 }
 
-/* ══ BANNER PRINCIPAL (index.php) — proporção fixa, imagem inteira sempre visível,
-   sem cortar conteúdo e sem "pular" de altura ao trocar de slide, em qualquer tela ══ */
+/* ══ BANNER PRINCIPAL (index.php) — não cortar conteúdo da imagem no mobile ══ */
 #bannerPrincipal .carousel-item img {
     width: 100%;
-    aspect-ratio: 16 / 5;
-    object-fit: contain;
-    background: #eef2f6;
+    height: 450px;
+    object-fit: cover;
 }
 @media (max-width: 767px) {
     #bannerPrincipal .carousel-item img {
-        aspect-ratio: 16 / 9;
+        height: auto;
+        object-fit: contain;
+        background: #eef2f6;
     }
 }
