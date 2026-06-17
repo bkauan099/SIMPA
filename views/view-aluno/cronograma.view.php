@@ -146,8 +146,8 @@
                     <th>DATA</th>
                     <th>HORA</th>
                     <th>TÍTULO</th>
-                    <th>PROJETO</th>
-                    <th>TIPO</th>
+                    <th class="col-projeto">PROJETO</th>
+                    <th class="col-tipo">TIPO</th>
                     <th>STATUS</th>
                     <th class="text-center">AÇÃO</th>
                 </tr>
@@ -214,8 +214,8 @@
                             <td class="fw-bold"><?= date('d/m/Y', strtotime($item['data'])) ?></td>
                             <td><?= $item['hora'] ? substr($item['hora'], 0, 5) : '—' ?></td>
                             <td class="fw-medium"><?= htmlspecialchars($item['titulo']) ?></td>
-                            <td class="text-muted small"><?= htmlspecialchars($item['projeto'] ?? '—') ?></td>
-                            <td>
+                            <td class="col-projeto text-muted small"><?= htmlspecialchars($item['projeto'] ?? '—') ?></td>
+                            <td class="col-tipo">
                                 <?php if ($item['tipo'] === 'tarefa'): ?>
                                     <span class="badge bg-light text-dark border"><i class="bi bi-check2-square me-1"></i>Tarefa</span>
                                 <?php else: ?>

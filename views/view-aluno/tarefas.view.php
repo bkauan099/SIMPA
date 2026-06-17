@@ -86,7 +86,7 @@
             <thead class="table-light">
                 <tr class="text-muted small">
                     <th>TÍTULO</th>
-                    <th>PROJETO</th>
+                    <th class="col-projeto">PROJETO</th>
                     <th>PRAZO</th>
                     <th>HORA</th>
                     <th>STATUS</th>
@@ -161,7 +161,7 @@
                             data-hora="<?= htmlspecialchars($item['hora'] ? substr($item['hora'], 0, 5) : '', ENT_QUOTES) ?>"
                             >
                             <td class="fw-medium"><?= htmlspecialchars($item['titulo']) ?></td>
-                            <td class="text-muted small"><?= htmlspecialchars($item['projeto'] ?? '—') ?></td>
+                            <td class="col-projeto text-muted small"><?= htmlspecialchars($item['projeto'] ?? '—') ?></td>
                             <td><?= date('d/m/Y', strtotime($item['data'])) ?></td>
                             <td><?= $item['hora'] ? substr($item['hora'], 0, 5) : '—' ?></td>
                             <td><span class="badge badge-status <?= $statusClass ?>" style="<?= $statusStyle ?>"><?= $statusLabel ?></span></td>
