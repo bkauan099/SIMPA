@@ -18,9 +18,11 @@
             <div class="logo-sep"></div>
             <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">
         </div>
-        <div class="text-white d-flex align-items-center gap-3">
-            <a href="login-page.php" class="text-white text-decoration-none fw-bold">
-                <i class="bi bi-person-circle"></i> Acessar Sistema
+        <div class="topbar-right text-white">
+            <a href="login-page.php" class="text-white text-decoration-none fw-bold text-nowrap">
+                <i class="bi bi-person-circle"></i>
+                <span class="d-none d-sm-inline">Acessar Sistema</span>
+                <span class="d-inline d-sm-none">Acessar</span>
             </a>
         </div>
     </header>
@@ -38,19 +40,19 @@
                     <div class="carousel-inner">
                         <div class="carousel-item active" data-bs-interval="5000">
                             <a href="https://www.proexae.uema.br/editais-unabi" target="_blank">
-                                <img src="https://www.proexae.uema.br/wp-content/uploads/2026/03/Carrossel-Editais-Abertos-Editais-de-Auxilios-Estudantis-2026-05-scaled.png" class="d-block w-100" style="height: 450px; object-fit: cover;" alt="Editais 2026">
+                                <img src="https://www.proexae.uema.br/wp-content/uploads/2026/03/Carrossel-Editais-Abertos-Editais-de-Auxilios-Estudantis-2026-05-scaled.png" class="d-block w-100" alt="Editais 2026">
                                 
                                
                             </a>
                         </div>
                         <div class="carousel-item" data-bs-interval="5000">
                             <a href="https://www.proexae.uema.br/editais-auxilios/" target="_blank">
-                                <img src="https://www.proexae.uema.br/wp-content/uploads/2026/03/banner-site-scaled.png" class="d-block w-100" style="height: 450px; object-fit: cover;" alt="Auxílios Estudantis">
+                                <img src="https://www.proexae.uema.br/wp-content/uploads/2026/03/banner-site-scaled.png" class="d-block w-100" alt="Auxílios Estudantis">
                             </a>
                         </div>
                         <div class="carousel-item" data-bs-interval="5000">
                             <a href="https://eskadauema.com/" target="_blank">
-                                <img src="https://www.proexae.uema.br/wp-content/uploads/2023/03/Banner-Eskada-.png" class="d-block w-100" style="height: 450px; object-fit: cover;" alt="Eskada UEMA">
+                                <img src="https://www.proexae.uema.br/wp-content/uploads/2023/03/Banner-Eskada-.png" class="d-block w-100" alt="Eskada UEMA">
                             </a>
                         </div>
                     </div>
@@ -80,7 +82,7 @@
                 ];
 
                 foreach ($links as $link): ?>
-                    <div class="col-md-3"> 
+                    <div class="col-12 col-sm-6 col-md-3">
                         <a href="<?= $link['url'] ?>" target="_blank" class="text-decoration-none h-100 d-block">
                             <div class="stat-card card-aumentado text-center d-flex flex-column align-items-center justify-content-center p-3">
                                 <div class="icon-circle bg-light-blue mb-3">
@@ -102,7 +104,7 @@
                 <a href="https://www.proexae.uema.br/noticias" target="_blank" class="btn btn-sm btn-outline-primary" style="border-color: #004085; color: #004085;">Ver todas</a>
             </div>
             <div class="row g-3">
-                <div class="col-md-4">
+                <div class="col-12 col-sm-6 col-md-4">
                     <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-noticia">
                         <div class="card-body">
                             <span class="badge mb-2" style="background-color: #004085;">Visita Técnica</span>
@@ -119,7 +121,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-12 col-sm-6 col-md-4">
                     <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-noticia">
                         <div class="card-body">
                             <span class="badge mb-2" style="background-color: #004085;">Editais</span>
@@ -136,7 +138,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-12 col-sm-6 col-md-4">
                     <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-noticia">
                         <div class="card-body">
                             <span class="badge mb-2" style="background-color: #004085;">Eventos</span>

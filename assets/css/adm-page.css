@@ -239,4 +239,24 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     .content-card { padding:14px; }
     .stat-card { padding:12px; }
     .col-sm-6 { flex:0 0 100% !important; max-width:100% !important; }
+    .navbar-custom { padding:0 10px; }
+    .logo-uema-top    { max-height:38px; }
+    .logo-proexae-top { max-height:26px; }
+    .logo-sep { display:none; }
+    .topbar-left { gap:8px; }
+    .topbar-right a { font-size:0.85rem; }
+}
+
+/* ══ BANNER PRINCIPAL (index.php) — não cortar conteúdo da imagem no mobile ══ */
+#bannerPrincipal .carousel-item img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+}
+@media (max-width: 767px) {
+    #bannerPrincipal .carousel-item img {
+        height: auto;
+        object-fit: contain;
+        background: #eef2f6;
+    }
 }
