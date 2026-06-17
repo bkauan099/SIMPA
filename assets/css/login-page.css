@@ -121,25 +121,13 @@ body::before {
 
 /* Responsivo para manter a elegância na tela do celular */
 @media (max-width: 480px) {
-    .container {
-        padding: 28px 24px;
-    }
     .uema {
-        gap: 18px;
+        gap: 20px;
     }
     .uema img:first-child {
-        height: 48px;
+        height: 80px;
     }
     .uema img:last-child {
-        height: 52px;
-    }
-}
-
-@media (max-width: 360px) {
-    .uema img:first-child {
-        height: 40px;
-    }
-    .uema img:last-child {
-        height: 44px;
+        height: 45px;
     }
 }
