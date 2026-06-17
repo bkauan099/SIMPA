@@ -2,3 +2,5 @@ conexao/conexao.php
 .claude/
 uploads/producoes/
 uploads/certificados/
+.env
+conexao/conexao.php
