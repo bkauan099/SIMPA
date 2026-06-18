@@ -631,7 +631,6 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     .icon-circle { width: 40px; height: 40px; font-size: 1rem; margin-right: 10px; }
     h3.fw-bold { font-size: 1.2rem; }
     .navbar-custom { height: 56px; }
-    .col-sm-6 { flex: 0 0 100% !important; max-width: 100% !important; }
     .logo-uema-top    { max-height: 34px; }
     .logo-proexae-top { max-height: 26px; }
 }
