@@ -265,7 +265,7 @@ window.addEventListener('orientationchange', () => {
     }, 150);
 });
 
-function carregarPagina(abaSolicitada) {
+function carregarPagina(abaSolicitada, pushState = true) {
     if (_fetchAtivo) { _fetchAtivo.abort(); _fetchAtivo = null; }
 
     document.querySelectorAll('#sidebar ul li a').forEach(l => l.classList.remove('active'));
@@ -286,7 +286,14 @@ function carregarPagina(abaSolicitada) {
         default:                   arquivo = 'pages-aluno/pagina-inicial.php'; abaSolicitada = 'pagina-inicial'; break;
     }
 
-    history.replaceState({ page: abaSolicitada }, '', location.pathname);
+    // pushState empilha uma entrada nova no histórico (permite o botão "voltar"
+    // do navegador circular pelas páginas da SPA); replaceState só é usado na
+    // carga inicial e na resposta ao próprio popstate, pra não duplicar entrada
+    if (pushState) {
+        history.pushState({ page: abaSolicitada }, '', location.pathname + '#' + abaSolicitada);
+    } else {
+        history.replaceState({ page: abaSolicitada }, '', location.pathname + '#' + abaSolicitada);
+    }
 
     const container = document.getElementById('conteudo-dinamico');
     container.innerHTML = '<div class="text-center mt-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div></div>';
@@ -315,11 +322,16 @@ function carregarPagina(abaSolicitada) {
         });
 }
 
+window.addEventListener('popstate', (e) => {
+    const pagina = e.state?.page || location.hash.replace('#', '') || 'pagina-inicial';
+    carregarPagina(pagina, false);
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const pagina = history.state?.page
         || location.hash.replace('#', '')
         || 'pagina-inicial';
-    carregarPagina(pagina);
+    carregarPagina(pagina, false);
 });
 
 // ── Slide-over global ─────────────────────────────────────────
