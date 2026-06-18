@@ -148,8 +148,8 @@
                     <th>TÍTULO</th>
                     <th class="col-projeto">PROJETO</th>
                     <th class="col-tipo">TIPO</th>
-                    <th>STATUS</th>
-                    <th class="text-center">AÇÃO</th>
+                    <th class="text-nowrap">STATUS</th>
+                    <th class="text-center text-nowrap">AÇÃO</th>
                 </tr>
             </thead>
             <tbody>
@@ -223,7 +223,7 @@
                                 <?php endif; ?>
                             </td>
                             <td><span class="badge badge-status <?= $statusClass ?>" style="<?= $statusStyle ?>"><?= $statusLabel ?></span></td>
-                            <td class="text-center">
+                            <td class="text-center text-nowrap">
                                 <?php if ($docRefazer): ?>
                                     <button class="btn btn-sm btn-outline-success"
                                             onclick="event.stopPropagation();reenviarCorrecao(this)"
