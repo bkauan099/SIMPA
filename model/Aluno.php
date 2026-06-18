@@ -345,7 +345,7 @@ class Aluno {
                   AND p.titulo = ai.titulo
             ) doc_st ON true
             WHERE ai.id_usuario = :id
-            ORDER BY ai.data DESC, ai.created_at DESC
+            ORDER BY ai.created_at DESC, ai.data DESC
         ";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id' => $id_usuario]);
