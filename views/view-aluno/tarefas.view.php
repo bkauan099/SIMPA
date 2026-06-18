@@ -6,7 +6,7 @@
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-sm-3">
+    <div class="col-6 col-sm-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #f59e0b;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#f59e0b;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#f59e0b;opacity:0.1;line-height:1;pointer-events:none;">
@@ -18,7 +18,7 @@
             <div class="fw-bold lh-1" id="statPendentes" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['pendentes'] ?></div>
         </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-6 col-sm-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ea580c;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#ea580c;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ea580c;opacity:0.1;line-height:1;pointer-events:none;">
@@ -30,7 +30,7 @@
             <div class="fw-bold lh-1" id="statCorrigir" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['corrigir'] ?></div>
         </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-6 col-sm-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ef4444;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#ef4444;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ef4444;opacity:0.1;line-height:1;pointer-events:none;">
@@ -42,7 +42,7 @@
             <div class="fw-bold lh-1" id="statNaoConcluidos" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['nao_concluidos'] ?></div>
         </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-6 col-sm-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #16a34a;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#16a34a;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#16a34a;opacity:0.1;line-height:1;pointer-events:none;">

@@ -30,7 +30,7 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
 
 <!-- STAT CARDS -->
 <div class="row g-3 mb-4">
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-6 col-sm-6 col-lg-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #3b82f6;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#3b82f6;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#3b82f6;opacity:0.1;line-height:1;pointer-events:none;">
@@ -43,7 +43,7 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
             <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">REGISTROS</div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-6 col-sm-6 col-lg-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #22c55e;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#22c55e;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#22c55e;opacity:0.1;line-height:1;pointer-events:none;">
@@ -56,7 +56,7 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
             <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">ATIVIDADES CONCLUÍDAS</div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-6 col-sm-6 col-lg-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ef4444;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#ef4444;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ef4444;opacity:0.1;line-height:1;pointer-events:none;">
@@ -69,7 +69,7 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
             <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">NÃO CONCLUÍDAS</div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-6 col-sm-6 col-lg-3">
         <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #a855f7;position:relative;overflow:hidden;">
             <div style="position:absolute;inset:0;background:#a855f7;opacity:0.04;pointer-events:none;"></div>
             <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#a855f7;opacity:0.1;line-height:1;pointer-events:none;">

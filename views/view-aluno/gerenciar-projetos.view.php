@@ -65,7 +65,7 @@
 </style>
 
 <div class="row g-3 mb-4">
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-6 col-sm-6 col-lg-3">
         <div class="pj-card" style="--c:#3b82f6;">
             <div class="pj-badge"><i class="bi bi-folder-fill"></i> Ativos</div>
             <div class="pj-num"><?= $estatisticas['ativos'] ?></div>
@@ -73,7 +73,7 @@
             <div class="pj-ico"><i class="bi bi-folder-fill"></i></div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-6 col-sm-6 col-lg-3">
         <div class="pj-card" style="--c:#22c55e;">
             <div class="pj-badge"><i class="bi bi-people-fill"></i> Participações</div>
             <div class="pj-num"><?= $estatisticas['total'] ?></div>
@@ -81,7 +81,7 @@
             <div class="pj-ico"><i class="bi bi-people-fill"></i></div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-6 col-sm-6 col-lg-3">
         <div class="pj-card" style="--c:#8b5cf6;">
             <div class="pj-badge"><i class="bi bi-check2-all"></i> Concluídos</div>
             <div class="pj-num"><?= $estatisticas['concluidos'] ?></div>
@@ -89,7 +89,7 @@
             <div class="pj-ico"><i class="bi bi-check2-all"></i></div>
         </div>
     </div>
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-6 col-sm-6 col-lg-3">
         <div class="pj-card" style="--c:#f59e0b;">
             <div class="pj-badge"><i class="bi bi-clock-history"></i> Carga</div>
             <div class="pj-num"><?= $estatisticas['carga'] ?>h</div>
