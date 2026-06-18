@@ -5,11 +5,11 @@ require_once 'conexao/conexao.php';
 $busca = isset($_GET['search']) ? trim($_GET['search']) : '';
 $status_filtro = isset($_GET['status']) ? trim($_GET['status']) : '';
 
-// 2. Estatísticas dos Cards — aprovado→ativo | reprovado→inativo
+// 2. Estatísticas dos Cards — mesmo vocabulário do aluno: concluido (aprovado) | cancelado (reprovado)
 $stats = $pdo->query("SELECT COUNT(*) as total,
-    SUM(CASE WHEN status = 'pendente' THEN 1 ELSE 0 END) as pendentes,
-    SUM(CASE WHEN status = 'ativo'    THEN 1 ELSE 0 END) as aprovados,
-    SUM(CASE WHEN status = 'inativo'  THEN 1 ELSE 0 END) as reprovados
+    SUM(CASE WHEN status = 'pendente'  THEN 1 ELSE 0 END) as pendentes,
+    SUM(CASE WHEN status = 'concluido' THEN 1 ELSE 0 END) as aprovados,
+    SUM(CASE WHEN status = 'cancelado' THEN 1 ELSE 0 END) as reprovados
     FROM producoes")->fetch(PDO::FETCH_ASSOC);
 
 // 3. Query da Tabela
@@ -38,20 +38,21 @@ function getIconeArquivo($nome) {
     return 'bi-file-earmark-text text-secondary';
 }
 
-// aprovado → ativo | reprovado → inativo
+// Mesmo vocabulário usado pelo lado do aluno (model/Aluno.php, toggle-concluido.php)
 $status_class = [
     'pendente'  => 'bg-warning-subtle text-warning fw-semibold',
-    'ativo'     => 'bg-success-subtle text-success fw-semibold',
-    'inativo'   => 'bg-danger-subtle text-danger fw-semibold',
     'concluido' => 'bg-success-subtle text-success fw-semibold',
     'cancelado' => 'bg-danger-subtle text-danger fw-semibold',
+    'refazer'   => 'text-white fw-semibold',
+];
+$status_style = [
+    'refazer' => 'background:#ea580c;',
 ];
 $status_label = [
     'pendente'  => 'Pendente',
-    'ativo'     => 'Aprovado',
-    'inativo'   => 'Reprovado',
-    'concluido' => 'Concluído',
-    'cancelado' => 'Cancelado',
+    'concluido' => 'Aprovado',
+    'cancelado' => 'Reprovado',
+    'refazer'   => 'Corrigir',
 ];
 ?>
 
@@ -97,8 +98,9 @@ $status_label = [
     <div class="col-md-3"><select id="filtroStatusModal" class="form-select form-select-sm" onchange="filtrarDocumentosModal()">
         <option value="">Todos os Status</option>
         <option value="pendente">Pendente</option>
-        <option value="ativo">Aprovado</option>
-        <option value="inativo">Reprovado</option>
+        <option value="concluido">Aprovado</option>
+        <option value="cancelado">Reprovado</option>
+        <option value="refazer">Corrigir</option>
     </select></div>
     <div class="col-md-3">
         <button class="btn btn-outline-secondary btn-sm w-100" onclick="limparFiltrosDocs()">Limpar</button>
@@ -139,6 +141,7 @@ function limparFiltrosDocs() {
                 <?php foreach ($documentos as $doc):
                     $s = $doc['status'];
                     $badgeClass = $status_class[$s] ?? 'bg-secondary';
+                    $badgeStyle = $status_style[$s] ?? '';
                     $badgeLabel = $status_label[$s] ?? ucfirst($s);
                     $exibirNome = !empty($doc['titulo']) ? $doc['titulo'] : $doc['tipo'];
                 ?>
@@ -147,20 +150,22 @@ function limparFiltrosDocs() {
                     <span class="fw-bold text-dark"><?= htmlspecialchars($exibirNome) ?></span></div></td>
                     <td><span class="badge bg-light text-dark border"><?= htmlspecialchars($doc['nome_projeto']) ?></span></td>
                     <td><?= date('d/m/Y H:i', strtotime($doc['data_registro'])) ?></td>
-                    <td><span class="badge <?= $badgeClass ?>"><?= $badgeLabel ?></span></td>
+                    <td><span class="badge <?= $badgeClass ?>" style="<?= $badgeStyle ?>"><?= $badgeLabel ?></span></td>
                     <td class="text-center">
                         <div class="btn-group">
                             <a href="controllers/controller-professor/servir-doc-tarefa.php?id=<?= $doc['id_producao'] ?>" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
                             <?php if ($s === 'pendente'): ?>
-                                <button class="btn btn-sm btn-outline-success ms-1" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'ativo', this)"><i class="bi bi-check2"></i></button>
-                                <button class="btn btn-sm btn-outline-danger ms-1" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'inativo', this)"><i class="bi bi-x"></i></button>
+                                <button class="btn btn-sm btn-outline-success ms-1" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'concluido', this)" title="Aprovar"><i class="bi bi-check2"></i></button>
+                                <button class="btn btn-sm btn-outline-warning ms-1" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'refazer', this)" title="Pedir correção"><i class="bi bi-arrow-repeat"></i></button>
+                                <button class="btn btn-sm btn-outline-danger ms-1" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'cancelado', this)" title="Reprovar"><i class="bi bi-x"></i></button>
                             <?php else: ?>
                                 <div class="btn-group ms-1">
                                     <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"><i class="bi bi-pencil-square"></i></button>
                                     <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                         <li><a class="dropdown-item" href="#" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'pendente', this)">Pendente</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'ativo', this)">Aprovado</a></li>
-                                        <li><a class="dropdown-item" href="#" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'inativo', this)">Reprovado</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'concluido', this)">Aprovado</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'refazer', this)">Pedir correção</a></li>
+                                        <li><a class="dropdown-item" href="#" onclick="alterarStatusDoc(<?= $doc['id_producao'] ?>, 'cancelado', this)">Reprovado</a></li>
                                     </ul>
                                 </div>
                             <?php endif; ?>
