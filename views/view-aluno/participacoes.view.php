@@ -201,8 +201,8 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
                 </div>
 
                 <!-- Direita: status -->
-                <div class="flex-shrink-0">
-                    <span class="badge rounded-pill px-2 py-1" style="<?= $statusStyle ?>font-size:0.72rem;">
+                <div class="flex-shrink-0 text-end" style="max-width:110px;">
+                    <span class="badge rounded-pill px-2 py-1" style="<?= $statusStyle ?>font-size:0.72rem;white-space:normal;text-align:center;">
                         <i class="bi <?= $statusIco ?> me-1"></i><?= $statusLabel ?>
                     </span>
                 </div>
