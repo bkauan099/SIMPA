@@ -56,7 +56,7 @@ $diaHoje   = (int) $hojeObj->format('j');
                     <?php else: ?>
                         <?php foreach ($projetosAtivos as $nomeProjeto): ?>
                             <span class="badge rounded-pill px-3 py-2"
-                                  style="background:#eff6ff;color:#1d4ed8;font-size:0.8rem;font-weight:600;">
+                                  style="background:#eff6ff;color:#1d4ed8;font-size:0.8rem;font-weight:600;white-space:normal;text-align:left;max-width:100%;">
                                 <?= htmlspecialchars($nomeProjeto) ?>
                             </span>
                         <?php endforeach; ?>
