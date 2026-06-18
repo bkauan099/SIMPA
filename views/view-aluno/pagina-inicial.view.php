@@ -88,10 +88,10 @@ $diaHoje   = (int) $hojeObj->format('j');
                     </div>
                     <?php endif; ?>
                 </div>
-                <table class="table table-hover mb-0" style="table-layout:fixed;width:100%">
-                    <colgroup><col style="width:55%"><col style="width:25%"><col style="width:20%"></colgroup>
+                <div class="table-responsive">
+                <table class="table table-hover mb-0" style="min-width:420px;">
                     <thead class="table-primary">
-                        <tr><th>Título</th><th>Data</th><th>Status</th></tr>
+                        <tr><th style="min-width:200px;">Título</th><th class="text-nowrap">Data</th><th class="text-nowrap">Status</th></tr>
                     </thead>
                     <tbody id="tbodyTarefas" data-pagina="0">
                         <?php if (empty($tarefas)): ?>
@@ -104,16 +104,16 @@ $diaHoje   = (int) $hojeObj->format('j');
                                     <td>
                                         <div class="fw-medium"><?= htmlspecialchars($t['titulo']) ?></div>
                                         <?php if (!empty($t['projeto']) && $t['projeto'] !== '—'): ?>
-                                        <span style="font-size:0.7rem;background:#eff6ff;color:#1d4ed8;padding:1px 8px;border-radius:20px;font-weight:600;">
+                                        <span style="font-size:0.7rem;background:#eff6ff;color:#1d4ed8;padding:1px 8px;border-radius:20px;font-weight:600;white-space:normal;">
                                             <i class="bi bi-folder2 me-1"></i><?= htmlspecialchars($t['projeto']) ?>
                                         </span>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
+                                    <td class="text-nowrap">
                                         <div style="font-size:0.85rem;"><?= date('d/m/Y', strtotime($t['data'])) ?></div>
                                         <?php if ($t['hora']): ?><div class="text-muted" style="font-size:0.75rem;"><?= substr($t['hora'], 0, 5) ?></div><?php endif; ?>
                                     </td>
-                                    <td><?= _statusBadge($t, $hoje_str) ?></td>
+                                    <td class="text-nowrap"><?= _statusBadge($t, $hoje_str) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -122,6 +122,7 @@ $diaHoje   = (int) $hojeObj->format('j');
                         </tr>
                     </tbody>
                 </table>
+                </div>
                 <div class="d-flex justify-content-between align-items-center mt-4 mb-1">
                     <h6 class="mb-0"><i class="bi bi-calendar-event"></i> Eventos</h6>
                     <?php if (count($eventos) > 2): ?>
@@ -132,10 +133,10 @@ $diaHoje   = (int) $hojeObj->format('j');
                     </div>
                     <?php endif; ?>
                 </div>
-                <table class="table table-hover mb-0" style="table-layout:fixed;width:100%">
-                    <colgroup><col style="width:55%"><col style="width:25%"><col style="width:20%"></colgroup>
+                <div class="table-responsive">
+                <table class="table table-hover mb-0" style="min-width:420px;">
                     <thead class="table-success">
-                        <tr><th>Título</th><th>Data</th><th>Status</th></tr>
+                        <tr><th style="min-width:200px;">Título</th><th class="text-nowrap">Data</th><th class="text-nowrap">Status</th></tr>
                     </thead>
                     <tbody id="tbodyEventos" data-pagina="0">
                         <?php if (empty($eventos)): ?>
@@ -148,16 +149,16 @@ $diaHoje   = (int) $hojeObj->format('j');
                                     <td>
                                         <div class="fw-medium"><?= htmlspecialchars($e['titulo']) ?></div>
                                         <?php if (!empty($e['projeto']) && $e['projeto'] !== '—'): ?>
-                                        <span style="font-size:0.7rem;background:#f0fdf4;color:#15803d;padding:1px 8px;border-radius:20px;font-weight:600;">
+                                        <span style="font-size:0.7rem;background:#f0fdf4;color:#15803d;padding:1px 8px;border-radius:20px;font-weight:600;white-space:normal;">
                                             <i class="bi bi-folder2 me-1"></i><?= htmlspecialchars($e['projeto']) ?>
                                         </span>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
+                                    <td class="text-nowrap">
                                         <div style="font-size:0.85rem;"><?= date('d/m/Y', strtotime($e['data'])) ?></div>
                                         <?php if ($e['hora']): ?><div class="text-muted" style="font-size:0.75rem;"><?= substr($e['hora'], 0, 5) ?></div><?php endif; ?>
                                     </td>
-                                    <td><?= _statusBadge($e, $hoje_str) ?></td>
+                                    <td class="text-nowrap"><?= _statusBadge($e, $hoje_str) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -166,6 +167,7 @@ $diaHoje   = (int) $hojeObj->format('j');
                         </tr>
                     </tbody>
                 </table>
+                </div>
 
                 <script>
                 function carrossel(tbodyId, cls, indId, prevId, nextId, dir) {

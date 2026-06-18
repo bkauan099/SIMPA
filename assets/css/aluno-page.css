@@ -187,6 +187,17 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .dashboard-container::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:10px; }
 .dashboard-container::-webkit-scrollbar-thumb:hover { background:#94a3b8; }
 
+/* Barra de rolagem horizontal sempre visível nas tabelas que estouram a
+   largura da tela — sinaliza pro usuário que dá pra arrastar pro lado */
+.table-responsive {
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #e2e8f0;
+}
+.table-responsive::-webkit-scrollbar { height:8px; }
+.table-responsive::-webkit-scrollbar-track { background:#e2e8f0; border-radius:10px; }
+.table-responsive::-webkit-scrollbar-thumb { background:#94a3b8; border-radius:10px; }
+.table-responsive::-webkit-scrollbar-thumb:hover { background:#64748b; }
+
 /* ══ CARDS ══ */
 .stat-card {
     background:var(--branco); border-radius:12px; padding:20px;
