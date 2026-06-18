@@ -171,12 +171,12 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
             <div class="d-flex justify-content-between align-items-start gap-3">
 
                 <!-- Esquerda: ícone + conteúdo -->
-                <div class="d-flex gap-3 align-items-start flex-grow-1 min-width-0">
+                <div class="d-flex gap-3 align-items-start flex-grow-1" style="min-width:0;">
                     <div class="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0 mt-1"
                          style="width:34px;height:34px;background:<?= $cor ?>18;">
                         <i class="bi <?= $icone ?>" style="color:<?= $cor ?>;font-size:0.9rem;"></i>
                     </div>
-                    <div class="flex-grow-1 min-width-0">
+                    <div class="flex-grow-1" style="min-width:0;">
                         <div class="fw-semibold text-truncate"><?= htmlspecialchars($r['titulo']) ?></div>
                         <?php if ($desc !== ''): ?>
                         <div class="text-muted mt-1" style="font-size:0.8rem;line-height:1.4;">
