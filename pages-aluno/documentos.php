@@ -220,7 +220,20 @@ $total = count($documentos);
             </tbody>
         </table>
     </div>
+    <div class="d-flex align-items-center justify-content-center gap-2 mt-3" id="paginaWrap-documentos" style="display:none;">
+        <button class="btn btn-sm btn-outline-primary" id="paginaPrev-documentos" onclick="paginarIr('documentos', -1)"><i class="bi bi-chevron-left"></i></button>
+        <span class="d-flex align-items-center gap-1" style="font-size:0.85rem;">
+            Página
+            <input type="number" min="1" id="paginaInput-documentos" value="1"
+                   class="form-control form-control-sm text-center" style="width:55px;"
+                   onkeydown="if(event.key==='Enter'){ paginarIrPara('documentos', this.value); this.blur(); }"
+                   onblur="paginarIrPara('documentos', this.value)">
+            de <span id="paginaTotal-documentos">1</span>
+        </span>
+        <button class="btn btn-sm btn-outline-primary" id="paginaNext-documentos" onclick="paginarIr('documentos', 1)"><i class="bi bi-chevron-right"></i></button>
+    </div>
 </div>
+<script>paginarIniciar('documentos', '#tabelaDocumentos tbody tr[data-busca]');</script>
 
 
 <script>
@@ -234,10 +247,11 @@ function filtrarDocumentos() {
         const ok = (!busca  || tr.dataset.busca.includes(busca))
                 && (!tipo   || tr.dataset.tipo === tipo)
                 && (!status || tr.dataset.status === status);
-        tr.style.display = ok ? '' : 'none';
+        tr.dataset.filtroOculto = ok ? '0' : '1';
         if (ok) visiveis++;
     });
     const cnt = document.getElementById('contadorDocs');
     if (cnt) cnt.textContent = visiveis + ' resultado(s)';
+    if (typeof paginarRecalcular === 'function') paginarRecalcular('documentos');
 }
 </script>

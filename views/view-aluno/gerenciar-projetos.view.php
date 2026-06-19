@@ -102,7 +102,7 @@
 <div class="content-card">
     <h5 class="fw-bold mb-3">Meus Projetos</h5>
     <div class="table-responsive">
-        <table class="table table-hover align-middle w-100">
+        <table class="table table-hover align-middle w-100" id="tabelaProjetos">
             <thead class="table-light">
                 <tr class="text-muted small">
                     <th>TÍTULO</th>
@@ -156,4 +156,17 @@
             </tbody>
         </table>
     </div>
+    <div class="d-flex align-items-center justify-content-center gap-2 mt-3" id="paginaWrap-projetos" style="display:none;">
+        <button class="btn btn-sm btn-outline-primary" id="paginaPrev-projetos" onclick="paginarIr('projetos', -1)"><i class="bi bi-chevron-left"></i></button>
+        <span class="d-flex align-items-center gap-1" style="font-size:0.85rem;">
+            Página
+            <input type="number" min="1" id="paginaInput-projetos" value="1"
+                   class="form-control form-control-sm text-center" style="width:55px;"
+                   onkeydown="if(event.key==='Enter'){ paginarIrPara('projetos', this.value); this.blur(); }"
+                   onblur="paginarIrPara('projetos', this.value)">
+            de <span id="paginaTotal-projetos">1</span>
+        </span>
+        <button class="btn btn-sm btn-outline-primary" id="paginaNext-projetos" onclick="paginarIr('projetos', 1)"><i class="bi bi-chevron-right"></i></button>
+    </div>
 </div>
+<script>paginarIniciar('projetos', '#tabelaProjetos tbody tr[data-titulo]');</script>

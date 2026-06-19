@@ -217,6 +217,19 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
     <i class="bi bi-funnel fs-1 d-block mb-2 opacity-50"></i>
     <p class="mb-0">Nenhum registro encontrado para este filtro.</p>
 </div>
+<div class="d-flex align-items-center justify-content-center gap-2 mt-3" id="paginaWrap-registros" style="display:none;">
+    <button class="btn btn-sm btn-outline-primary" id="paginaPrev-registros" onclick="paginarIr('registros', -1)"><i class="bi bi-chevron-left"></i></button>
+    <span class="d-flex align-items-center gap-1" style="font-size:0.85rem;">
+        Página
+        <input type="number" min="1" id="paginaInput-registros" value="1"
+               class="form-control form-control-sm text-center" style="width:55px;"
+               onkeydown="if(event.key==='Enter'){ paginarIrPara('registros', this.value); this.blur(); }"
+               onblur="paginarIrPara('registros', this.value)">
+        de <span id="paginaTotal-registros">1</span>
+    </span>
+    <button class="btn btn-sm btn-outline-primary" id="paginaNext-registros" onclick="paginarIr('registros', 1)"><i class="bi bi-chevron-right"></i></button>
+</div>
+<script>paginarIniciar('registros', '.registro-card');</script>
 <?php endif; ?>
 
 <style>

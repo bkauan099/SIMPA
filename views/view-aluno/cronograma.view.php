@@ -325,4 +325,17 @@
             </tbody>
         </table>
     </div>
+    <div class="d-flex align-items-center justify-content-center gap-2 mt-3" id="paginaWrap-cronograma" style="display:none;">
+        <button class="btn btn-sm btn-outline-primary" id="paginaPrev-cronograma" onclick="paginarIr('cronograma', -1)"><i class="bi bi-chevron-left"></i></button>
+        <span class="d-flex align-items-center gap-1" style="font-size:0.85rem;">
+            Página
+            <input type="number" min="1" id="paginaInput-cronograma" value="1"
+                   class="form-control form-control-sm text-center" style="width:55px;"
+                   onkeydown="if(event.key==='Enter'){ paginarIrPara('cronograma', this.value); this.blur(); }"
+                   onblur="paginarIrPara('cronograma', this.value)">
+            de <span id="paginaTotal-cronograma">1</span>
+        </span>
+        <button class="btn btn-sm btn-outline-primary" id="paginaNext-cronograma" onclick="paginarIr('cronograma', 1)"><i class="bi bi-chevron-right"></i></button>
+    </div>
 </div>
+<script>paginarIniciar('cronograma', '#tabelaCronograma tbody tr[data-tipo]');</script>

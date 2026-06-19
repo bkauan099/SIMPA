@@ -1100,7 +1100,7 @@ function filtrarItens() {
     linhas.forEach(tr => {
         const ok = (!busca  || tr.dataset.busca.includes(busca))
                 && (!status || tr.dataset.status === status);
-        tr.style.display = ok ? '' : 'none';
+        tr.dataset.filtroOculto = ok ? '0' : '1';
         const descRow = tr.nextElementSibling;
         if (descRow && descRow.classList.contains('tr-descricao') && !ok) {
             descRow.style.display = 'none';
@@ -1111,6 +1111,7 @@ function filtrarItens() {
     });
     const c = document.getElementById('contadorItens');
     if (c) c.textContent = n + ' resultado(s)';
+    paginarRecalcular('tarefas');
 }
 
 // ── Cronograma ────────────────────────────────────────────────
@@ -1225,7 +1226,7 @@ function filtrarCronograma() {
         const ok = (!busca  || tr.dataset.busca.includes(busca))
                 && (!tipo   || tr.dataset.tipo   === tipo)
                 && (!status || tr.dataset.status === status);
-        tr.style.display = ok ? '' : 'none';
+        tr.dataset.filtroOculto = ok ? '0' : '1';
         const desc = tr.nextElementSibling;
         if (desc && desc.classList.contains('tr-descricao') && !ok) {
             desc.style.display = 'none';
@@ -1236,6 +1237,7 @@ function filtrarCronograma() {
     });
     const c = document.getElementById('contadorItens');
     if (c) c.textContent = n + ' resultado(s)';
+    paginarRecalcular('cronograma');
 }
 
 // ── Registros ─────────────────────────────────────────────────
@@ -1299,11 +1301,74 @@ function aplicarFiltroRegistros() {
     document.querySelectorAll('.registro-card').forEach(c => {
         const ok = (tipo === 'todos' || c.dataset.tipo === tipo)
                 && (!txt || c.dataset.busca.includes(txt));
-        c.style.display = ok ? '' : 'none';
+        c.dataset.filtroOculto = ok ? '0' : '1';
         if (ok) n++;
     });
     const sem = document.getElementById('semResultados');
     if (sem) sem.classList.toggle('d-none', n > 0);
+    paginarRecalcular('registros');
+}
+
+// ── Paginação genérica reutilizável (Tarefas / Cronograma / Registros) ──
+// Cada item elegível (não escondido pelo filtro, via data-filtro-oculto)
+// é distribuído em páginas de tamanho fixo; o filtro só decide elegibilidade,
+// a paginação decide o que é mostrado dentro do que sobrou do filtro.
+const PAGINACAO_POR_PAGINA = 10;
+const _paginacaoState = {};
+
+function paginarIniciar(grupo, seletorItens) {
+    _paginacaoState[grupo] = { paginaAtual: 1, seletorItens };
+    _paginarAtualizar(grupo);
+}
+
+function _paginarAtualizar(grupo) {
+    const st = _paginacaoState[grupo];
+    if (!st) return;
+    const itens = Array.from(document.querySelectorAll(st.seletorItens));
+    const elegiveis = itens.filter(el => el.dataset.filtroOculto !== '1');
+    const total = elegiveis.length;
+    const totalPaginas = Math.max(1, Math.ceil(total / PAGINACAO_POR_PAGINA));
+    if (st.paginaAtual > totalPaginas) st.paginaAtual = totalPaginas;
+    if (st.paginaAtual < 1) st.paginaAtual = 1;
+
+    elegiveis.forEach((el, i) => {
+        const pagina = Math.floor(i / PAGINACAO_POR_PAGINA) + 1;
+        el.style.display = (pagina === st.paginaAtual) ? '' : 'none';
+    });
+    itens.forEach(el => { if (el.dataset.filtroOculto === '1') el.style.display = 'none'; });
+
+    const campo = document.getElementById('paginaInput-' + grupo);
+    if (campo) campo.value = st.paginaAtual;
+    const totalEl = document.getElementById('paginaTotal-' + grupo);
+    if (totalEl) totalEl.textContent = totalPaginas;
+    const wrap = document.getElementById('paginaWrap-' + grupo);
+    if (wrap) wrap.style.display = total > PAGINACAO_POR_PAGINA ? '' : 'none';
+    const prevBtn = document.getElementById('paginaPrev-' + grupo);
+    if (prevBtn) prevBtn.disabled = st.paginaAtual <= 1;
+    const nextBtn = document.getElementById('paginaNext-' + grupo);
+    if (nextBtn) nextBtn.disabled = st.paginaAtual >= totalPaginas;
+}
+
+function paginarIr(grupo, delta) {
+    const st = _paginacaoState[grupo];
+    if (!st) return;
+    st.paginaAtual += delta;
+    _paginarAtualizar(grupo);
+}
+
+function paginarIrPara(grupo, valor) {
+    const st = _paginacaoState[grupo];
+    if (!st) return;
+    const n = parseInt(valor, 10);
+    if (!isNaN(n) && n >= 1) st.paginaAtual = n;
+    _paginarAtualizar(grupo);
+}
+
+function paginarRecalcular(grupo) {
+    const st = _paginacaoState[grupo];
+    if (!st) return;
+    st.paginaAtual = 1;
+    _paginarAtualizar(grupo);
 }
 
 // ── Calendário / Página Inicial ───────────────────────────────

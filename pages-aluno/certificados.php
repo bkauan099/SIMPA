@@ -183,7 +183,20 @@ function iconeArquivoCert(string $ext): string {
             </tbody>
         </table>
     </div>
+    <div class="d-flex align-items-center justify-content-center gap-2 mt-3" id="paginaWrap-certificados" style="display:none;">
+        <button class="btn btn-sm btn-outline-primary" id="paginaPrev-certificados" onclick="paginarIr('certificados', -1)"><i class="bi bi-chevron-left"></i></button>
+        <span class="d-flex align-items-center gap-1" style="font-size:0.85rem;">
+            Página
+            <input type="number" min="1" id="paginaInput-certificados" value="1"
+                   class="form-control form-control-sm text-center" style="width:55px;"
+                   onkeydown="if(event.key==='Enter'){ paginarIrPara('certificados', this.value); this.blur(); }"
+                   onblur="paginarIrPara('certificados', this.value)">
+            de <span id="paginaTotal-certificados">1</span>
+        </span>
+        <button class="btn btn-sm btn-outline-primary" id="paginaNext-certificados" onclick="paginarIr('certificados', 1)"><i class="bi bi-chevron-right"></i></button>
+    </div>
 </div>
+<script>paginarIniciar('certificados', '#tabelaCertificados tbody tr[data-busca]');</script>
 <?php endif; ?>
 
 <script>
@@ -193,10 +206,11 @@ function filtrarCertificados() {
     let visiveis = 0;
     linhas.forEach(tr => {
         const ok = !busca || tr.dataset.busca.includes(busca);
-        tr.style.display = ok ? '' : 'none';
+        tr.dataset.filtroOculto = ok ? '0' : '1';
         if (ok) visiveis++;
     });
     const cnt = document.getElementById('contadorCerts');
     if (cnt) cnt.textContent = visiveis + ' resultado(s)';
+    if (typeof paginarRecalcular === 'function') paginarRecalcular('certificados');
 }
 </script>

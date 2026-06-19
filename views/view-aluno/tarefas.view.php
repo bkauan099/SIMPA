@@ -272,4 +272,17 @@
             </tbody>
         </table>
     </div>
+    <div class="d-flex align-items-center justify-content-center gap-2 mt-3" id="paginaWrap-tarefas" style="display:none;">
+        <button class="btn btn-sm btn-outline-primary" id="paginaPrev-tarefas" onclick="paginarIr('tarefas', -1)"><i class="bi bi-chevron-left"></i></button>
+        <span class="d-flex align-items-center gap-1" style="font-size:0.85rem;">
+            Página
+            <input type="number" min="1" id="paginaInput-tarefas" value="1"
+                   class="form-control form-control-sm text-center" style="width:55px;"
+                   onkeydown="if(event.key==='Enter'){ paginarIrPara('tarefas', this.value); this.blur(); }"
+                   onblur="paginarIrPara('tarefas', this.value)">
+            de <span id="paginaTotal-tarefas">1</span>
+        </span>
+        <button class="btn btn-sm btn-outline-primary" id="paginaNext-tarefas" onclick="paginarIr('tarefas', 1)"><i class="bi bi-chevron-right"></i></button>
+    </div>
 </div>
+<script>paginarIniciar('tarefas', '#tabelaTarefas tbody tr[data-tipo]');</script>
