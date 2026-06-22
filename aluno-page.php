@@ -554,7 +554,10 @@ function atualizarBotoesTarefa(tr) {
         ? `<button class="btn btn-sm btn-outline-primary ms-1" onclick="event.stopPropagation();abrirModalEdicao(this.closest('tr'))" title="Ver arquivo"><i class="bi bi-eye"></i></button>`
         : `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Nenhum arquivo anexado"><i class="bi bi-eye"></i></button>`;
 
-    if (docRefazer) {
+    if (docRefazer && prazoPastou) {
+        td.innerHTML = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" disabled title="Prazo encerrado, não é possível reenviar"><i class="bi bi-lock-fill"></i></button>`
+            + `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" disabled title="Prazo encerrado"><i class="bi bi-pencil"></i></button>`;
+    } else if (docRefazer) {
         td.innerHTML = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();reenviarCorrecao(this)" title="Reenviar documento"><i class="bi bi-check-lg"></i></button>`
             + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Enviar novo arquivo"><i class="bi bi-pencil"></i></button>`;
     } else if (concluido && prazoPastou) {
@@ -1187,7 +1190,10 @@ function atualizarBotoesCronograma(tr) {
         : `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" style="cursor:default;" title="Nenhum arquivo anexado"><i class="bi bi-eye"></i></button>`;
 
     let acoes = '';
-    if (docRefazer) {
+    if (docRefazer && prazoPastou) {
+        acoes = `<button class="btn btn-sm btn-outline-secondary opacity-50" onclick="event.stopPropagation()" disabled title="Prazo encerrado, não é possível reenviar"><i class="bi bi-lock-fill"></i></button>`
+              + `<button class="btn btn-sm btn-outline-secondary ms-1 opacity-50" onclick="event.stopPropagation()" disabled title="Prazo encerrado"><i class="bi bi-pencil"></i></button>`;
+    } else if (docRefazer) {
         acoes = `<button class="btn btn-sm btn-outline-success" onclick="event.stopPropagation();reenviarCorrecao(this)" title="Reenviar documento"><i class="bi bi-check-lg"></i></button>`
               + `<button class="btn btn-sm btn-outline-warning ms-1" onclick="event.stopPropagation();abrirModalEnvio(this.closest('tr'))" title="Enviar novo arquivo"><i class="bi bi-pencil"></i></button>`;
     } else if (concluido && prazoPastou) {

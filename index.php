@@ -6,6 +6,7 @@
     <title>Portal ProExae - UEMA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/adm-page.css">
 </head>
@@ -18,11 +19,9 @@
             <div class="logo-sep"></div>
             <img src="assets/img/proexae-branco-semfundo.png" alt="ProExae" class="logo-proexae-top">
         </div>
-        <div class="topbar-right text-white">
-            <a href="login-page.php" class="text-white text-decoration-none fw-bold text-nowrap">
-                <i class="bi bi-person-circle"></i>
-                <span class="d-none d-sm-inline">Acessar Sistema</span>
-                <span class="d-inline d-sm-none">Acessar</span>
+        <div class="text-white d-flex align-items-center gap-3">
+            <a href="login-page.php" class="text-white text-decoration-none fw-bold">
+                <i class="bi bi-person-circle"></i> Acessar Sistema
             </a>
         </div>
     </header>
@@ -37,22 +36,22 @@
                         <button type="button" data-bs-target="#bannerPrincipal" data-bs-slide-to="2"></button>
                     </div>
 
-                    <div class="carousel-inner">
+                    <div class="carousel-inner" style="background-color:#f4f7f6;">
                         <div class="carousel-item active" data-bs-interval="5000">
                             <a href="https://www.proexae.uema.br/editais-unabi" target="_blank">
-                                <img src="https://www.proexae.uema.br/wp-content/uploads/2026/03/Carrossel-Editais-Abertos-Editais-de-Auxilios-Estudantis-2026-05-scaled.png" class="d-block w-100" alt="Editais 2026">
+                                <img src="https://www.proexae.uema.br/wp-content/uploads/2026/03/Carrossel-Editais-Abertos-Editais-de-Auxilios-Estudantis-2026-05-scaled.png" class="d-block w-100" style="height: 450px; object-fit: contain; background-color:#f4f7f6;" alt="Editais 2026">
                                 
                                
                             </a>
                         </div>
                         <div class="carousel-item" data-bs-interval="5000">
                             <a href="https://www.proexae.uema.br/editais-auxilios/" target="_blank">
-                                <img src="https://www.proexae.uema.br/wp-content/uploads/2026/03/banner-site-scaled.png" class="d-block w-100" alt="Auxílios Estudantis">
+                                <img src="https://www.proexae.uema.br/wp-content/uploads/2026/03/banner-site-scaled.png" class="d-block w-100" style="height: 450px; object-fit: contain; background-color:#f4f7f6;" alt="Auxílios Estudantis">
                             </a>
                         </div>
                         <div class="carousel-item" data-bs-interval="5000">
                             <a href="https://eskadauema.com/" target="_blank">
-                                <img src="https://www.proexae.uema.br/wp-content/uploads/2023/03/Banner-Eskada-.png" class="d-block w-100" alt="Eskada UEMA">
+                                <img src="https://www.proexae.uema.br/wp-content/uploads/2023/03/Banner-Eskada-.png" class="d-block w-100" style="height: 450px; object-fit: contain; background-color:#f4f7f6;" alt="Eskada UEMA">
                             </a>
                         </div>
                     </div>
@@ -74,20 +73,41 @@
                     ['url' => 'https://www.proexae.uema.br/coordenadoria-de-assuntos-estudantis/', 'icon' => 'bi-globe', 'txt' => 'Coordenação de Assuntos Estudantis'],
                     ['url' => 'https://www.proexae.uema.br/', 'icon' => 'bi-mortarboard', 'txt' => 'Portal Proexae'],
                     ['url' => 'https://sis.sig.uema.br/sigaa/', 'icon' => 'bi-pc-display', 'txt' => 'Sigaa Uema'],
-                    ['url' => 'https://www.proexae.uema.br/coordenacao-de-cultura/', 'icon' => 'bi-person-badge', 'txt' => 'Coordenação De Cultura e Desporto'],
+                    ['url' => 'https://www.proexae.uema.br/coordenacao-de-cultura/', 'icon' => 'bi-palette-fill', 'icon2' => 'fa-solid fa-futbol', 'icon2_style' => 'full', 'txt' => 'Coordenação De Cultura e Desporto'],
                     ['url' => 'https://uemanet.uema.br/', 'icon' => 'bi-laptop', 'txt' => 'Uemanet'],
                     ['url' => 'https://eskadauema.com/', 'icon' => 'bi-book', 'txt' => 'Cursos Online'],
                     ['url' => 'https://sis.sig.uema.br/sigaa/public/extensao/paginaListaPeriodosInscricoesAtividadesPublico.jsf?aba=p-extensao', 'icon' => 'bi-calendar-event', 'txt' => 'Eventos Uema'],
-                    ['url' => 'https://www.proexae.uema.br/editais', 'icon' => 'bi-envelope', 'txt' => 'Editais Abertos'],
+                    ['url' => 'https://www.proexae.uema.br/editais', 'icon' => 'bi-file-earmark-text-fill', 'icon2' => 'bi-megaphone-fill', 'icon2_style' => 'badge', 'txt' => 'Editais Abertos'],
                 ];
 
-                foreach ($links as $link): ?>
-                    <div class="col-12 col-sm-6 col-md-3">
+                foreach ($links as $link): 
+                    $icon2Class = !empty($link['icon2']) ? ((strpos($link['icon2'], 'fa-') === 0) ? $link['icon2'] : 'bi ' . $link['icon2']) : '';
+                    $icon2Style = $link['icon2_style'] ?? 'badge';
+                ?>
+                    <div class="col-md-3"> 
                         <a href="<?= $link['url'] ?>" target="_blank" class="text-decoration-none h-100 d-block">
                             <div class="stat-card card-aumentado text-center d-flex flex-column align-items-center justify-content-center p-3">
-                                <div class="icon-circle bg-light-blue mb-3">
-                                    <i class="bi <?= $link['icon'] ?>" style="font-size: 1.5rem; color: #004085;"></i>
-                                </div>
+
+                                <?php if (!empty($link['icon2']) && $icon2Style === 'full'): ?>
+                                    <!-- Ícones no mesmo tamanho, dividindo o mesmo frame -->
+                                    <div class="icon-circle bg-light-blue mb-3" style="display:flex; align-items:center; justify-content:center; gap:4px;">
+                                        <i class="bi <?= $link['icon'] ?>" style="font-size: 1.3rem; color: #004085;"></i>
+                                        <i class="<?= $icon2Class ?>" style="font-size: 1.3rem; color: #004085;"></i>
+                                    </div>
+
+                                <?php elseif (!empty($link['icon2'])): ?>
+                                    <!-- Ícone 2 sobreposto no canto inferior direito do ícone 1, em menor escala -->
+                                    <div class="icon-circle bg-light-blue mb-3" style="position: relative;">
+                                        <i class="bi <?= $link['icon'] ?>" style="font-size: 1.5rem; color: #004085;"></i>
+                                        <i class="<?= $icon2Class ?>" style="position:absolute; bottom:-4px; right:-8px; font-size:1rem; color:#004085; background:#eef2ff; border-radius:50%; padding:3px; box-shadow:0 0 0 2px #ffffff;"></i>
+                                    </div>
+
+                                <?php else: ?>
+                                    <div class="icon-circle bg-light-blue mb-3">
+                                        <i class="bi <?= $link['icon'] ?>" style="font-size: 1.5rem; color: #004085;"></i>
+                                    </div>
+                                <?php endif; ?>
+
                                 <h6 class="mb-0 text-dark fw-bold" style="font-size: 0.85rem; line-height: 1.2;"><?= $link['txt'] ?></h6>
                             </div>
                         </a>
@@ -104,7 +124,7 @@
                 <a href="https://www.proexae.uema.br/noticias" target="_blank" class="btn btn-sm btn-outline-primary" style="border-color: #004085; color: #004085;">Ver todas</a>
             </div>
             <div class="row g-3">
-                <div class="col-12 col-sm-6 col-md-4">
+                <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-noticia">
                         <div class="card-body">
                             <span class="badge mb-2" style="background-color: #004085;">Visita Técnica</span>
@@ -121,7 +141,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-md-4">
+                <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-noticia">
                         <div class="card-body">
                             <span class="badge mb-2" style="background-color: #004085;">Editais</span>
@@ -138,7 +158,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-sm-6 col-md-4">
+                <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden card-noticia">
                         <div class="card-body">
                             <span class="badge mb-2" style="background-color: #004085;">Eventos</span>

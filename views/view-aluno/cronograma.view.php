@@ -224,7 +224,18 @@
                             </td>
                             <td><span class="badge badge-status <?= $statusClass ?>" style="<?= $statusStyle ?>"><?= $statusLabel ?></span></td>
                             <td class="text-center text-nowrap">
-                                <?php if ($docRefazer): ?>
+                                <?php if ($docRefazer && $prazoPassou): ?>
+                                    <button class="btn btn-sm btn-outline-secondary opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            disabled title="Prazo encerrado, não é possível reenviar">
+                                        <i class="bi bi-lock-fill"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1 opacity-50"
+                                            onclick="event.stopPropagation()"
+                                            disabled title="Prazo encerrado">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                <?php elseif ($docRefazer): ?>
                                     <button class="btn btn-sm btn-outline-success"
                                             onclick="event.stopPropagation();reenviarCorrecao(this)"
                                             title="Reenviar documento">

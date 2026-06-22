@@ -30,18 +30,15 @@
             <div class="row justify-content-center text-center mt-5">
                 <div class="col-md-8">
                     <h2 class="fw-bold" style="color: #004085;">SOBRE O SIMPA</h2>
-                    <p class="text-center mt-3">O <strong>SIMPA</strong> (Sistema Integrado de Monitoramento de Projetos Acadêmicos) é uma plataforma institucional desenvolvida para apoiar a gestão, o acompanhamento
-                        e a avaliação de projetos acadêmicos da Universidade Estadual do Maranhão (UEMA), no
-                        âmbito da Pró-Reitoria de Extensão e Assuntos Estudantis (PROEXAE).
-                        O sistema tem como objetivo central organizar, integrar e dar transparência às informações
-                        relacionadas a projetos de extensão e iniciativas acadêmicas, permitindo que estudantes,
-                        professores orientadores e gestores acompanhem, de forma padronizada, todas as etapas de
-                        execução das atividades.
-                        Com interface alinhada à identidade visual institucional da UEMA e foco em usabilidade, o
-                        SIMPA contribui para a eficiência da gestão institucional, o fortalecimento das ações de
-                        extensão e a tomada de decisões baseadas em dados.
-                        Desenvolvido com as tecnologias PHP, HTML, CSS e JavaScript, utilizando o framework
-                        Bootstrap e ambiente local XAMPP com servidor Apache.</p>
+                    <p class="mt-3" style="text-align: justify !important;">
+                        O <strong>SIMPA</strong> (Sistema Integrado de Monitoramento de Projetos Acadêmicos) é uma plataforma institucional desenvolvida para apoiar a gestão, o acompanhamento e a avaliação de projetos acadêmicos da Universidade Estadual do Maranhão (UEMA), no âmbito da Pró-Reitoria de Extensão e Assuntos Estudantis (PROEXAE).
+                    </p>
+                    <p style="text-align: justify !important;">
+                        O sistema tem como objetivo central organizar, integrar e dar transparência às informações relacionadas a projetos de extensão e iniciativas acadêmicas, permitindo que estudantes, professores orientadores e gestores acompanhem, de forma padronizada, todas as etapas de execução das atividades. Com interface alinhada à identidade visual institucional da UEMA e foco em usabilidade, o SIMPA contribui para a eficiência da gestão institucional, o fortalecimento das ações de extensão e a tomada de decisões baseadas em dados.
+                    </p>
+                    <p style="text-align: justify !important;">
+                        Desenvolvido com as tecnologias PHP, HTML, CSS e JavaScript, utilizando o framework Bootstrap e ambiente local XAMPP com servidor Apache.
+                    </p>
                 </div>
                
             </div>

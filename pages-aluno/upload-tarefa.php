@@ -23,11 +23,25 @@ $stmt->execute([':id' => $id_usuario]);
 $matricula = $stmt->fetchColumn();
 if (!$matricula) { echo json_encode(['ok' => false, 'erro' => 'Matrícula não encontrada.']); exit; }
 
-// Busca id_projeto direto da agenda_items (fonte confiável)
+// Busca id_projeto e prazo direto da agenda_items (fonte confiável)
 $id_projeto = null;
-$stmt = $pdo->prepare("SELECT id_projeto FROM agenda_items WHERE id = :id AND id_usuario = :uid");
+$stmt = $pdo->prepare("SELECT id_projeto, data, hora FROM agenda_items WHERE id = :id AND id_usuario = :uid");
 $stmt->execute([':id' => $id_tarefa, ':uid' => $id_usuario]);
-$id_projeto = $stmt->fetchColumn() ?: null;
+$tarefaInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+$id_projeto = $tarefaInfo['id_projeto'] ?? null;
+
+// Bloquear envio (inclusive reenvio de correção) se o prazo já passou
+if ($tarefaInfo) {
+    $prazoPassou = $tarefaInfo['data'] < date('Y-m-d');
+    if (!$prazoPassou && !empty($tarefaInfo['hora'])) {
+        $prazoComHora = new DateTime($tarefaInfo['data'] . ' ' . substr($tarefaInfo['hora'], 0, 5));
+        $prazoPassou  = new DateTime() > $prazoComHora;
+    }
+    if ($prazoPassou) {
+        echo json_encode(['ok' => false, 'erro' => 'Prazo encerrado. Não é possível enviar arquivo para esta atividade.']);
+        exit;
+    }
+}
 
 // Fallback: id_projeto enviado pelo front-end
 if (!$id_projeto) {
