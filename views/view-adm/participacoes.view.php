@@ -420,6 +420,10 @@ $alunos = array_filter($listaUsuariosAtivos, fn($u) =>
 </div>
 
 <script>
+function _escHtml(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 let projetoAtualId   = null;
 let projetoAtualNome = '';
 let tipoMembroAtual  = null;
@@ -494,13 +498,13 @@ function carregarMembros(idProjeto) {
                         <div class="d-flex align-items-center gap-2">
                             <img src="${avatar}" class="rounded-circle" width="30" height="30">
                             <div>
-                                <div class="fw-medium small">${m.usuario_nome}</div>
-                                <div class="text-muted" style="font-size:.7rem">${m.usuario_email}</div>
+                                <div class="fw-medium small">${_escHtml(m.usuario_nome)}</div>
+                                <div class="text-muted" style="font-size:.7rem">${_escHtml(m.usuario_email)}</div>
                             </div>
                         </div>
                     </td>
                     <td>${perfBadge}</td>
-                    <td class="fw-medium">${m.funcao}</td>
+                    <td class="fw-medium">${_escHtml(m.funcao)}</td>
                     <td>${m.carga_horaria ? m.carga_horaria+'h' : '—'}</td>
                     <td>${entrada}</td><td>${saida}</td><td>${stBadge}</td>
                     <td>

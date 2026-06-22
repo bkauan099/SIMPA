@@ -16,7 +16,15 @@ $model = new RelatorioExportModel($pdo);
 
 // ── CSV genérico ─────────────────────────────────────────────────────────────
 function csvLinha(array $cols): string {
-    return implode(';', array_map(fn($c) => '"' . str_replace('"','""', $c ?? '') . '"', $cols)) . "\n";
+    return implode(';', array_map(function ($c) {
+        $c = (string) ($c ?? '');
+        // Neutraliza CSV/Formula Injection: Excel/LibreOffice interpretam células
+        // que começam com =, +, -, @ como fórmula ao abrir o arquivo
+        if (preg_match('/^[=+\-@\t\r]/', $c)) {
+            $c = "'" . $c;
+        }
+        return '"' . str_replace('"', '""', $c) . '"';
+    }, $cols)) . "\n";
 }
 
 // ── Relatório Geral (todos os projetos) ──────────────────────────────────────
@@ -117,16 +125,16 @@ if ($tipo === 'projeto' && $id_projeto) {
 // ── Funções de geração de HTML ───────────────────────────────────────────────
 function gerarHtmlGeral(array $projetos, string $agora, string $filtro): string {
     $total   = count($projetos);
-    $filtroTx = $filtro ? " — Status: " . ucfirst($filtro) : '';
+    $filtroTx = $filtro ? " — Status: " . htmlspecialchars(ucfirst($filtro)) : '';
     $linhas  = '';
     foreach ($projetos as $i => $p) {
         $st = ucfirst($p['status']);
         $cor = match($p['status']) { 'ativo' => '#22c55e', 'concluido' => '#3b82f6', 'pendente' => '#f59e0b', default => '#94a3b8' };
         $linhas .= "<tr>
             <td>" . ($i+1) . "</td>
-            <td><strong>{$p['titulo']}</strong></td>
-            <td>{$p['tipo']}</td>
-            <td>{$p['area']}</td>
+            <td><strong>" . htmlspecialchars($p['titulo']) . "</strong></td>
+            <td>" . htmlspecialchars($p['tipo'] ?? '') . "</td>
+            <td>" . htmlspecialchars($p['area'] ?? '') . "</td>
             <td><span style='background:{$cor};color:#fff;padding:2px 8px;border-radius:4px;font-size:.75rem'>{$st}</span></td>
             <td>" . ($p['data_inicio'] ? date('d/m/Y', strtotime($p['data_inicio'])) : '—') . "</td>
             <td>" . ($p['data_fim']    ? date('d/m/Y', strtotime($p['data_fim']))    : '—') . "</td>
@@ -152,9 +160,9 @@ function gerarHtmlProjeto(array $proj, array $membros, array $prods, string $ago
         $perf = match(strtolower($m['perfil'])) { 'professor_orientador' => 'Professor', 'admin' => 'Admin', default => 'Aluno' };
         $st   = $m['status'] === 'ativo' ? '<span style="color:#22c55e">●</span> Ativo' : '<span style="color:#ef4444">●</span> Inativo';
         $linhasMem .= "<tr>
-            <td>{$m['nome']}</td><td>{$m['email']}</td>
-            <td>{$m['matricula']}</td><td>{$perf}</td>
-            <td><strong>{$m['funcao']}</strong></td>
+            <td>" . htmlspecialchars($m['nome']) . "</td><td>" . htmlspecialchars($m['email']) . "</td>
+            <td>" . htmlspecialchars($m['matricula'] ?? '—') . "</td><td>{$perf}</td>
+            <td><strong>" . htmlspecialchars($m['funcao']) . "</strong></td>
             <td>{$m['carga_horaria']}h</td>
             <td>" . ($m['data_entrada'] ? date('d/m/Y', strtotime($m['data_entrada'])) : '—') . "</td>
             <td>" . ($m['data_saida']   ? date('d/m/Y', strtotime($m['data_saida']))   : '—') . "</td>
@@ -172,9 +180,10 @@ function gerarHtmlProjeto(array $proj, array $membros, array $prods, string $ago
         foreach ($filtrados as $pd) {
             $stCorPd = match($pd['status']) { 'ativo' => '#22c55e', 'pendente' => '#f59e0b', default => '#ef4444' };
             $stLabelPd = match($pd['status']) { 'ativo' => 'Aprovado', 'pendente' => 'Pendente', default => 'Rejeitado' };
-            $link = $pd['caminho'] ? "<a href='{$pd['caminho']}' style='color:#3b82f6'>{$pd['caminho']}</a>" : '—';
+            $caminhoEsc = htmlspecialchars($pd['caminho'] ?? '');
+            $link = $pd['caminho'] ? "<a href='{$caminhoEsc}' style='color:#3b82f6'>{$caminhoEsc}</a>" : '—';
             $rows .= "<tr>
-                <td><strong>{$pd['titulo']}</strong></td>
+                <td><strong>" . htmlspecialchars($pd['titulo']) . "</strong></td>
                 <td><span style='background:{$stCorPd};color:#fff;padding:1px 6px;border-radius:3px;font-size:.72rem'>{$stLabelPd}</span></td>
                 <td>" . ($pd['data_registro'] ? date('d/m/Y', strtotime($pd['data_registro'])) : '—') . "</td>
                 <td>{$link}</td>
@@ -190,7 +199,7 @@ function gerarHtmlProjeto(array $proj, array $membros, array $prods, string $ago
     if ($outros) {
         $rows = '';
         foreach ($outros as $pd) {
-            $rows .= "<tr><td>{$pd['titulo']}</td><td>" . ucfirst($pd['tipo']) . "</td><td>{$pd['status']}</td>
+            $rows .= "<tr><td>" . htmlspecialchars($pd['titulo']) . "</td><td>" . htmlspecialchars(ucfirst($pd['tipo'] ?? '')) . "</td><td>" . htmlspecialchars($pd['status']) . "</td>
                 <td>" . ($pd['data_registro'] ? date('d/m/Y', strtotime($pd['data_registro'])) : '—') . "</td></tr>";
         }
         $secProd .= "<h3 style='margin:28px 0 8px;color:#2B3C50;font-size:1rem'>Outros (" . count($outros) . ")</h3>
@@ -205,8 +214,8 @@ function gerarHtmlProjeto(array $proj, array $membros, array $prods, string $ago
         <div style='background:#f8fafc;border-radius:8px;padding:16px 20px;margin-bottom:24px;border-left:4px solid {$statusCor}'>
             <table style='width:100%;border:none'>
                 <tr>
-                    <td><strong>Tipo:</strong> {$proj['tipo_nome']}</td>
-                    <td><strong>Área:</strong> {$proj['area']}</td>
+                    <td><strong>Tipo:</strong> " . htmlspecialchars($proj['tipo_nome'] ?? '—') . "</td>
+                    <td><strong>Área:</strong> " . htmlspecialchars($proj['area'] ?? '—') . "</td>
                     <td><strong>Status:</strong> <span style='color:{$statusCor};font-weight:700'>" . ucfirst($proj['status']) . "</span></td>
                 </tr>
                 <tr>
@@ -215,7 +224,7 @@ function gerarHtmlProjeto(array $proj, array $membros, array $prods, string $ago
                     <td><strong>Membros:</strong> " . count($membros) . " &nbsp; <strong>Produções:</strong> " . count($prods) . "</td>
                 </tr>
             </table>
-            " . ($proj['descricao'] ? "<p style='margin:10px 0 0;color:#64748b;font-size:.85rem'>{$proj['descricao']}</p>" : '') . "
+            " . ($proj['descricao'] ? "<p style='margin:10px 0 0;color:#64748b;font-size:.85rem'>" . htmlspecialchars($proj['descricao']) . "</p>" : '') . "
         </div>
 
         <h2 style='color:#2B3C50;font-size:1.05rem;margin:24px 0 8px;border-bottom:1px solid #e2e8f0;padding-bottom:6px'>
@@ -231,7 +240,7 @@ function gerarHtmlProjeto(array $proj, array $membros, array $prods, string $ago
         </h2>
         " . ($secProd ?: "<p style='color:#94a3b8'>Nenhuma produção cadastrada para este projeto.</p>");
 
-    return gerarLayoutHtml("Relatório do Projeto: {$proj['titulo']}", $agora, $conteudo);
+    return gerarLayoutHtml("Relatório do Projeto: " . htmlspecialchars($proj['titulo']), $agora, $conteudo);
 }
 
 function gerarLayoutHtml(string $titulo, string $agora, string $conteudo): string {

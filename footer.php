@@ -2,7 +2,7 @@
         <div class="container text-center py-4">
             <img src="assets/img/uema-logo.png" height="90" alt="Logo UEMA" class="mb-3">
             <p class="mb-1 fw-bold text-white">© Universidade Estadual do Maranhão - UEMA</p>
-            <a href="sobre.php" target="_blank">Equipe de Residentes TIC 16</a>
+            <a href="sobre.php" target="_blank" style="color:#fff;text-decoration:underline;">Equipe de Residentes TIC 16</a>
             <p class="mb-0 text-white-50" style="font-size: 0.85rem;">Pró-Reitoria de Infraestrutura - PROINFRA</p>
             <p class="mb-0 text-white-50" style="font-size: 0.85rem;">Coordenação de Tecnologia da Computação e Comunicação - CTIC</p>
             <p class="mb-0 text-white-50" style="font-size: 0.85rem;">Cidade Universitária Paulo VI – Caixa Postal 09 – São Luís/MA. FONE: (98) 2016-8100.</p>

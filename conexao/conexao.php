@@ -15,6 +15,8 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 } catch (PDOException $e) {
-    die("Erro ao conectar ao banco de dados: " . $e->getMessage());
+    error_log("SIMPA: falha ao conectar ao banco — " . $e->getMessage());
+    http_response_code(500);
+    die("Não foi possível conectar ao banco de dados. Tente novamente em alguns instantes.");
 }
 ?>

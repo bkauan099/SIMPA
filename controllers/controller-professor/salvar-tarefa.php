@@ -4,6 +4,12 @@ require_once '../../conexao/conexao.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+$id_professor = $_SESSION['id_usuario'] ?? null;
+if (!$id_professor) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Sessão expirada.']);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Método inválido.']);
     exit;
@@ -26,6 +32,31 @@ if (empty($titulo)) {
 if ($id_projeto <= 0) {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione um projeto.']);
     exit;
+}
+
+// Garante que o professor logado participa deste projeto
+$stmtOwner = $pdo->prepare(
+    "SELECT 1 FROM participacao WHERE id_projeto = :proj AND id_usuario = :uid LIMIT 1"
+);
+$stmtOwner->execute([':proj' => $id_projeto, ':uid' => $id_professor]);
+if (!$stmtOwner->fetch()) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Você não tem permissão sobre este projeto.']);
+    exit;
+}
+
+// Se for edição, garante que a tarefa também pertence a um projeto do professor
+if (!empty($id)) {
+    $stmtTarefa = $pdo->prepare("
+        SELECT 1 FROM agenda_items ai
+        WHERE ai.id = :id
+          AND ai.id_projeto IN (SELECT id_projeto FROM participacao WHERE id_usuario = :uid)
+        LIMIT 1
+    ");
+    $stmtTarefa->execute([':id' => $id, ':uid' => $id_professor]);
+    if (!$stmtTarefa->fetch()) {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Tarefa não encontrada ou sem permissão.']);
+        exit;
+    }
 }
 
 $dataValida   = (!empty($data)) ? $data : null;

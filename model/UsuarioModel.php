@@ -32,7 +32,12 @@ class UsuarioModel {
     }
 
     public function buscarPorId($id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM usuarios WHERE id_usuario = :id");
+        // Nunca selecionar a coluna "senha" (hash) — endpoints administrativos
+        // não devem devolver isso na resposta, mesmo que hasheada
+        $stmt = $this->pdo->prepare(
+            "SELECT id_usuario, nome, email, matricula, perfil, curso, status, cadastrado_por
+             FROM usuarios WHERE id_usuario = :id"
+        );
         $stmt->execute([':id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

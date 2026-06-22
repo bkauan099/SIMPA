@@ -165,6 +165,10 @@
 </div>
 
 <script>
+function _escHtml(s) {
+    return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
 const MODULO_ESTILOS = {
     USUARIOS:      { bg:'#dbeafe', cor:'#1d4ed8', icone:'bi-people' },
     PROJETOS:      { bg:'#dcfce7', cor:'#15803d', icone:'bi-folder' },
@@ -316,7 +320,7 @@ function renderizarTabela(logs) {
         if (log.contexto && typeof log.contexto === 'object') {
             ctxHtml = '<div class="mt-1">' +
                 Object.entries(log.contexto).map(([k,v]) =>
-                    `<span class="ctx-pill"><strong>${k}:</strong> ${v}</span>`
+                    `<span class="ctx-pill"><strong>${_escHtml(k)}:</strong> ${_escHtml(v)}</span>`
                 ).join('') + '</div>';
         }
 
@@ -327,16 +331,16 @@ function renderizarTabela(logs) {
             <td>${badgeMod}</td>
             <td>${badgeAc}</td>
             <td>
-                <span class="fw-medium">${log.descricao}</span>
+                <span class="fw-medium">${_escHtml(log.descricao)}</span>
                 ${ctxHtml}
             </td>
             <td>
                 <div class="d-flex align-items-center gap-2">
                     <img src="${avatar}" class="rounded-circle" width="26" height="26">
-                    <span style="font-size:.82rem">${log.nome_usuario}</span>
+                    <span style="font-size:.82rem">${_escHtml(log.nome_usuario)}</span>
                 </div>
             </td>
-            <td style="font-size:.78rem;color:#94a3b8">${log.ip}</td>
+            <td style="font-size:.78rem;color:#94a3b8">${_escHtml(log.ip)}</td>
         </tr>`;
     }).join('');
 }

@@ -75,5 +75,5 @@ try {
     echo json_encode(['sucesso'=>true]);
 } catch (PDOException $e) {
     if (file_exists($caminhoFinal)) unlink($caminhoFinal);
-    echo json_encode(['sucesso'=>false,'mensagem'=>'Erro no banco: ' . $e->getMessage()]);
+    echo json_encode(['sucesso'=>false,'mensagem'=>'Erro ao salvar o certificado.']);
 }

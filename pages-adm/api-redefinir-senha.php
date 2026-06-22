@@ -81,19 +81,14 @@ if ($acao === 'verificar_email') {
             'sucesso'  => true,
             'mensagem' => "Código enviado para {$email}. Verifique sua caixa de entrada (e a pasta de spam).",
         ]);
-    } elseif ($resultado === 'SMTP_NAO_CONFIGURADO') {
-        // Modo desenvolvimento: exibir código na tela
-        echo json_encode([
-            'sucesso'    => true,
-            'mensagem'   => "SMTP não configurado. Configure o arquivo <code>.env</code> para envio real.",
-            'codigo_dev' => $codigo,
-        ]);
     } else {
-        // SMTP configurado mas falhou — ainda exibe código + mensagem de erro
+        // SMTP não configurado ou falhou — NUNCA expor o código na resposta:
+        // isso permitiria sequestrar qualquer conta sem acesso ao e-mail.
+        // O código fica só no log do servidor para o ADM recuperar manualmente.
+        error_log("SIMPA reset-senha: SMTP indisponível ({$resultado}) — código para {$email}: {$codigo}");
         echo json_encode([
-            'sucesso'    => true,
-            'mensagem'   => "Falha no envio: $resultado",
-            'codigo_dev' => $codigo,
+            'sucesso'  => true,
+            'mensagem' => "Não foi possível enviar o e-mail agora. Tente novamente em alguns minutos ou contate o suporte.",
         ]);
     }
     exit;
@@ -108,14 +103,24 @@ if ($acao === 'verificar_codigo') {
         exit;
     }
     if (strtotime($_SESSION['reset_expira']) < time()) {
-        foreach (['reset_codigo','reset_expira'] as $k) unset($_SESSION[$k]);
+        foreach (['reset_codigo','reset_expira','reset_tentativas'] as $k) unset($_SESSION[$k]);
         echo json_encode(['sucesso' => false, 'mensagem' => 'Código expirado. Solicite um novo.']);
         exit;
     }
+
+    // Rate limiting — no máximo 5 tentativas por código, senão invalida e exige novo envio
+    $_SESSION['reset_tentativas'] = ($_SESSION['reset_tentativas'] ?? 0) + 1;
+    if ($_SESSION['reset_tentativas'] > 5) {
+        foreach (['reset_codigo','reset_expira','reset_tentativas'] as $k) unset($_SESSION[$k]);
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Muitas tentativas incorretas. Solicite um novo código.']);
+        exit;
+    }
+
     if ($codigo !== $_SESSION['reset_codigo']) {
         echo json_encode(['sucesso' => false, 'mensagem' => 'Código incorreto. Tente novamente.']);
         exit;
     }
+    unset($_SESSION['reset_tentativas']);
     $_SESSION['reset_validado'] = true;
     echo json_encode(['sucesso' => true, 'mensagem' => 'Código verificado!']);
     exit;
@@ -136,7 +141,7 @@ if ($acao === 'nova_senha') {
     $stmt = $pdo->prepare("UPDATE usuarios SET senha = :senha WHERE id_usuario = :id");
     $ok   = $stmt->execute([':senha' => $hash, ':id' => (int)$_SESSION['reset_id']]);
 
-    foreach (['reset_email','reset_codigo','reset_expira','reset_nome','reset_id','reset_validado'] as $k) unset($_SESSION[$k]);
+    foreach (['reset_email','reset_codigo','reset_expira','reset_nome','reset_id','reset_validado','reset_tentativas'] as $k) unset($_SESSION[$k]);
 
     echo json_encode(['sucesso' => $ok, 'mensagem' => $ok ? 'Senha redefinida com sucesso!' : 'Erro ao salvar.']);
     exit;

@@ -12,9 +12,11 @@ class DashboardController {
 
     public function index() {
         try {
-            $id_professor = (isset($_SESSION['id_usuario']) && !empty($_SESSION['id_usuario']))
-                ? $_SESSION['id_usuario']
-                : 2;
+            $id_professor = $_SESSION['id_usuario'] ?? null;
+            if (!$id_professor) {
+                echo "<div class='alert alert-danger'>Sessão expirada. Faça login novamente.</div>";
+                return;
+            }
 
             $projetoModel = new Projeto($this->pdo);
 
@@ -142,7 +144,7 @@ class DashboardController {
             require __DIR__ . '/../../views/view-professor/pagina-inicial.view.php';
 
         } catch (Exception $e) {
-            echo "Erro no Controller: " . $e->getMessage();
+            echo "<div class='alert alert-danger'>Erro ao carregar o painel.</div>";
         }
     }
 }

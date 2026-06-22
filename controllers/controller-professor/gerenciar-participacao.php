@@ -1,7 +1,14 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 require_once '../../conexao/conexao.php';
 require_once '../../model/Usuario.php';
+
+$id_professor = $_SESSION['id_usuario'] ?? null;
+if (!$id_professor) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Sessão expirada.']);
+    exit;
+}
 
 $usuarioModel = new Usuario($pdo);
 
@@ -16,6 +23,17 @@ $carga_horaria = $_POST['carga_horaria'] ?? 0;
 
 if (!$id_usuario || !$id_projeto) {
     echo json_encode(['sucesso' => false, 'mensagem' => 'Dados incompletos.']);
+    exit;
+}
+
+// Garante que o professor logado participa deste projeto antes de
+// vincular/remover qualquer aluno (evita IDOR entre orientadores)
+$stmtOwner = $pdo->prepare(
+    "SELECT 1 FROM participacao WHERE id_projeto = :proj AND id_usuario = :uid LIMIT 1"
+);
+$stmtOwner->execute([':proj' => $id_projeto, ':uid' => $id_professor]);
+if (!$stmtOwner->fetch()) {
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Você não tem permissão sobre este projeto.']);
     exit;
 }
 
