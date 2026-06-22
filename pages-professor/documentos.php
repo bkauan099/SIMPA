@@ -1,22 +1,29 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) session_start();
 require_once 'conexao/conexao.php';
+
+$id_professor = $_SESSION['id_usuario'] ?? 0;
 
 // 1. Filtros iniciais
 $busca = isset($_GET['search']) ? trim($_GET['search']) : '';
 $status_filtro = isset($_GET['status']) ? trim($_GET['status']) : '';
 
-// 2. Estatísticas dos Cards — mesmo vocabulário do aluno: concluido (aprovado) | cancelado (reprovado)
-$stats = $pdo->query("SELECT COUNT(*) as total,
+// 2. Estatísticas dos Cards — apenas dos projetos do professor logado
+$stmtStats = $pdo->prepare("SELECT COUNT(*) as total,
     SUM(CASE WHEN status = 'pendente'  THEN 1 ELSE 0 END) as pendentes,
     SUM(CASE WHEN status = 'concluido' THEN 1 ELSE 0 END) as aprovados,
     SUM(CASE WHEN status = 'cancelado' THEN 1 ELSE 0 END) as reprovados
-    FROM producoes")->fetch(PDO::FETCH_ASSOC);
+    FROM producoes
+    WHERE id_projeto IN (SELECT id_projeto FROM participacao WHERE id_usuario = :prof)");
+$stmtStats->execute([':prof' => $id_professor]);
+$stats = $stmtStats->fetch(PDO::FETCH_ASSOC);
 
-// 3. Query da Tabela
+// 3. Query da Tabela — só documentos de projetos em que o professor participa
 // MIGRADO: nome_original→tipo | caminho_arquivo→caminho | data_upload→data_registro | id_documento→id_producao
 $sql = "SELECT d.*, p.titulo as nome_projeto FROM producoes d
-        LEFT JOIN projetos p ON d.id_projeto = p.id_projeto WHERE 1=1";
-$params = [];
+        LEFT JOIN projetos p ON d.id_projeto = p.id_projeto
+        WHERE d.id_projeto IN (SELECT id_projeto FROM participacao WHERE id_usuario = ?)";
+$params = [$id_professor];
 if (!empty($busca)) {
     $sql .= " AND (unaccent(COALESCE(d.titulo, d.tipo)) ILIKE unaccent(?))";
     $params[] = "%$busca%";

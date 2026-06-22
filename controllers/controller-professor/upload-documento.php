@@ -11,11 +11,19 @@ if (!$id_professor) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_projeto = $_POST['id_projeto'] ?? null;
+    $id_projeto = (int) ($_POST['id_projeto'] ?? 0);
     $descricao  = $_POST['descricao']  ?? '';
 
     if (!$id_projeto || !isset($_FILES['arquivo'])) {
         echo json_encode(['sucesso' => false, 'mensagem' => 'Dados incompletos.']);
+        exit;
+    }
+
+    // Verifica se o professor participa deste projeto
+    $stmtCheck = $pdo->prepare("SELECT 1 FROM participacao WHERE id_usuario = :prof AND id_projeto = :proj LIMIT 1");
+    $stmtCheck->execute([':prof' => $id_professor, ':proj' => $id_projeto]);
+    if (!$stmtCheck->fetchColumn()) {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Sem permissão neste projeto.']);
         exit;
     }
 
@@ -35,6 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $permitidos = ['pdf', 'doc', 'docx', 'jpg', 'png'];
     if (!in_array($extensao, $permitidos)) {
         echo json_encode(['sucesso' => false, 'mensagem' => 'Tipo de arquivo não permitido.']);
+        exit;
+    }
+    if ($arquivo['size'] > 10 * 1024 * 1024) {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Arquivo muito grande (máx. 10 MB).']);
         exit;
     }
 
@@ -66,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['sucesso' => true]);
         } catch (PDOException $e) {
             if (file_exists($caminhoFinal)) unlink($caminhoFinal);
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao salvar o documento.']);
         }
     } else {
         echo json_encode(['sucesso' => false, 'mensagem' => 'Falha ao salvar o arquivo.']);

@@ -19,9 +19,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $sqlBusca = "SELECT caminho FROM producoes WHERE id_producao = :id";
+        // Só busca o documento se ele pertencer a um projeto em que o professor participa
+        $sqlBusca = "
+            SELECT caminho FROM producoes
+            WHERE id_producao = :id
+              AND id_projeto IN (
+                  SELECT id_projeto FROM participacao WHERE id_usuario = :prof
+              )
+        ";
         $stmtBusca = $pdo->prepare($sqlBusca);
-        $stmtBusca->execute([':id' => $id_documento]);
+        $stmtBusca->execute([':id' => $id_documento, ':prof' => $id_professor]);
         $doc = $stmtBusca->fetch(PDO::FETCH_ASSOC);
 
         if ($doc) {
@@ -39,9 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             echo json_encode(['sucesso' => true]);
         } else {
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Documento não encontrado.']);
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Documento não encontrado ou sem permissão.']);
         }
     } catch (PDOException $e) {
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao excluir: ' . $e->getMessage()]);
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao excluir o documento.']);
     }
 }

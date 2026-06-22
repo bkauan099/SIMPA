@@ -1,7 +1,14 @@
 <?php
+session_start();
 require_once '../../conexao/conexao.php';
 require_once '../../model/Projeto.php';
 require_once '../../model/Usuario.php';
+
+$id_professor = $_SESSION['id_usuario'] ?? null;
+if (!$id_professor) {
+    echo "<div class='list-group-item text-muted small'>Sessão expirada.</div>";
+    exit;
+}
 
 $projetoModel = new Projeto($pdo);
 $usuarioModel = new Usuario($pdo);
@@ -32,7 +39,16 @@ if (isset($_GET['busca'])) {
 
 // AÇÃO 2: LISTAR ALUNOS ATUAIS
 if (isset($_GET['id_projeto']) && $_GET['id_projeto'] !== 'null' && is_numeric($_GET['id_projeto'])) {
-    $id_projeto = $_GET['id_projeto'];
+    $id_projeto = (int) $_GET['id_projeto'];
+
+    // Garante que o professor logado participa deste projeto
+    $stmtOwner = $pdo->prepare("SELECT 1 FROM participacao WHERE id_projeto = :proj AND id_usuario = :prof LIMIT 1");
+    $stmtOwner->execute([':proj' => $id_projeto, ':prof' => $id_professor]);
+    if (!$stmtOwner->fetch()) {
+        echo "<div class='text-center py-3 text-muted small'>Você não tem permissão sobre este projeto.</div>";
+        exit;
+    }
+
     $participantes = $projetoModel->listarParticipantes($id_projeto);
 
     echo '<table class="table table-hover align-middle">

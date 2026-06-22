@@ -98,6 +98,10 @@ try {
     // ── LOGIN VÁLIDO ──────────────────────────────────────────────────────────
     if ($u && $u['status'] === 'ativo' && password_verify($senha, $u['senha'])) {
 
+        // Regenera o ID de sessão após autenticar — evita session fixation
+        // (impede que um ID de sessão conhecido antes do login seja reaproveitado)
+        session_regenerate_id(true);
+
         $_SESSION['id_usuario'] = $u['id_usuario'];
         $_SESSION['nome']       = $u['nome'];
         $_SESSION['email']      = $u['email'];

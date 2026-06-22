@@ -1,5 +1,12 @@
 <?php
+session_start();
 require_once '../../conexao/conexao.php';
+
+$id_professor = $_SESSION['id_usuario'] ?? 0;
+if (!$id_professor) {
+    echo "<tr><td colspan='5' class='text-center py-4 text-muted'>Sessão expirada.</td></tr>";
+    exit;
+}
 
 $id_projeto = isset($_GET['id_projeto']) ? intval($_GET['id_projeto']) : 0;
 $busca = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -25,8 +32,9 @@ try {
     // MIGRADO: documentos_projeto → producoes
     // d.id_documento → d.id_producao | d.nome_original → d.tipo | d.caminho_arquivo → d.caminho | d.data_upload → d.data_registro
     $sql = "SELECT d.*, p.titulo as nome_projeto FROM producoes d
-            LEFT JOIN projetos p ON d.id_projeto = p.id_projeto WHERE 1=1";
-    $params = [];
+            LEFT JOIN projetos p ON d.id_projeto = p.id_projeto
+            WHERE d.id_projeto IN (SELECT id_projeto FROM participacao WHERE id_usuario = :prof)";
+    $params = [':prof' => $id_professor];
 
     if ($id_projeto > 0) {
         $sql .= " AND d.id_projeto = :id_projeto";
@@ -89,5 +97,5 @@ try {
         }
     }
 } catch (PDOException $e) {
-    echo "<tr><td colspan='5'>Erro: {$e->getMessage()}</td></tr>";
+    echo "<tr><td colspan='5' class='text-center py-4 text-muted'>Erro ao buscar documentos.</td></tr>";
 }
