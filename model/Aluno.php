@@ -102,9 +102,12 @@ class Aluno {
             FROM agenda_items ai
             LEFT JOIN projetos proj ON proj.id_projeto = ai.id_projeto
             WHERE ai.id_usuario = :id
+              AND ai.data >= CURRENT_DATE - INTERVAL '7 days'
             ORDER BY
                 CASE WHEN ai.data >= CURRENT_DATE THEN 0 ELSE 1 END ASC,
-                ai.data ASC
+                CASE WHEN ai.data >= CURRENT_DATE THEN ai.data ELSE NULL END ASC NULLS LAST,
+                CASE WHEN ai.data < CURRENT_DATE THEN ai.data ELSE NULL END DESC NULLS LAST,
+                ai.hora ASC
             LIMIT 50
         ";
         $stmt = $this->pdo->prepare($sql);
