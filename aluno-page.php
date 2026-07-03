@@ -105,7 +105,7 @@ $_totalNotif   = count($_notificacoes);
                                 Nenhuma notificação
                             </div>
                             <?php else: foreach ($_notificacoes as $_n): ?>
-                            <div class="tb-notif-item" data-lida="0">
+                            <div class="tb-notif-item" data-lida="0" data-notif-key="<?= htmlspecialchars($_n['texto'], ENT_QUOTES) ?>">
                                 <div class="tb-notif-texto">
                                     <i class="bi <?= $_n['icone'] ?>" style="color:<?= $_n['cor'] ?>;margin-right:6px;flex-shrink:0;"></i><span><?= $_n['texto'] ?></span>
                                 </div>
@@ -1468,14 +1468,23 @@ function showDay(el) {
         localStorage.setItem(STORAGE_KEY_TS, JSON.stringify(ts));
     }
 
+    // Codifica o texto bruto para uso seguro em atributo HTML
+    function encodeAttr(str) {
+        return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Lê a chave estável do item (data-notif-key), nunca innerHTML
+    function getKey(item) {
+        return item.dataset.notifKey || '';
+    }
+
     // ── Intercepta cliques em "Marcar como lida" para persistir ──
     document.getElementById('listaNotif').addEventListener('click', function(e) {
         const btn = e.target.closest('.tb-notif-toggle');
         if (!btn) return;
         const item  = btn.closest('.tb-notif-item');
-        const span  = item.querySelector('span');
-        if (!span) return;
-        const texto = span.innerHTML.trim();
+        const texto = getKey(item);
+        if (!texto) return;
         const lidas = getLidas();
         if (item.dataset.lida === '1') {
             lidas.delete(texto);
@@ -1499,9 +1508,9 @@ function showDay(el) {
     document.getElementById('btnLerTodas').addEventListener('click', function() {
         const lidas = getLidas();
         document.querySelectorAll('#listaNotif .tb-notif-item').forEach(function(item) {
-            const span = item.querySelector('span');
-            if (!span) return;
-            lidas.add(span.innerHTML.trim());
+            const texto = getKey(item);
+            if (!texto) return;
+            lidas.add(texto);
             item.dataset.lida = '1';
             const btn = item.querySelector('.tb-notif-toggle');
             if (btn) btn.textContent = 'Marcar como não lida';
@@ -1533,7 +1542,7 @@ function showDay(el) {
                 const texto  = n.texto.trim();
                 const jaLida = lidas.has(texto) ? '1' : '0';
                 const btnTxt = jaLida === '1' ? 'Marcar como não lida' : 'Marcar como lida';
-                return `<div class="tb-notif-item" data-lida="${jaLida}">
+                return `<div class="tb-notif-item" data-lida="${jaLida}" data-notif-key="${encodeAttr(texto)}">
                     <div class="tb-notif-texto">
                         <i class="bi ${n.icone}" style="color:${n.cor};margin-right:6px;flex-shrink:0;"></i>
                         <span>${texto}</span>
@@ -1554,9 +1563,8 @@ function showDay(el) {
         if (lidas.size === 0) return;
         let naoLidos = 0;
         document.querySelectorAll('#listaNotif .tb-notif-item').forEach(function(item) {
-            const span = item.querySelector('span');
-            if (!span) return;
-            const texto = span.innerHTML.trim();
+            const texto = getKey(item);
+            if (!texto) { naoLidos++; return; }
             if (lidas.has(texto)) {
                 item.dataset.lida = '1';
                 const btn = item.querySelector('.tb-notif-toggle');
