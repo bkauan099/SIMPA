@@ -1479,19 +1479,39 @@ function showDay(el) {
         const lidas = getLidas();
         if (item.dataset.lida === '1') {
             lidas.delete(texto);
+            item.dataset.lida = '0';
+            btn.textContent = 'Marcar como lida';
         } else {
             lidas.add(texto);
+            item.dataset.lida = '1';
+            btn.textContent = 'Marcar como não lida';
         }
         salvarLidas(lidas);
+        const naoLidos = document.querySelectorAll('#listaNotif .tb-notif-item[data-lida="0"]').length;
+        const badge = document.getElementById('badgeNotif');
+        if (badge) {
+            badge.textContent = naoLidos;
+            badge.style.display = naoLidos > 0 ? '' : 'none';
+        }
     });
 
     // ── Intercepta "Marcar todas como lidas" ─────────────────────
     document.getElementById('btnLerTodas').addEventListener('click', function() {
         const lidas = getLidas();
-        document.querySelectorAll('#listaNotif .tb-notif-item span').forEach(function(s) {
-            lidas.add(s.innerHTML.trim());
+        document.querySelectorAll('#listaNotif .tb-notif-item').forEach(function(item) {
+            const span = item.querySelector('span');
+            if (!span) return;
+            lidas.add(span.innerHTML.trim());
+            item.dataset.lida = '1';
+            const btn = item.querySelector('.tb-notif-toggle');
+            if (btn) btn.textContent = 'Marcar como não lida';
         });
         salvarLidas(lidas);
+        const badge = document.getElementById('badgeNotif');
+        if (badge) {
+            badge.textContent = '0';
+            badge.style.display = 'none';
+        }
     });
 
     // ── Renderiza lista preservando estado do localStorage ───────
