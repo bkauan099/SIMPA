@@ -96,7 +96,10 @@ $_totalNotif   = count($_notificacoes);
                     <div class="tb-dropdown tb-dropdown-notif" id="dropNotif">
                         <div class="tb-drop-header">
                             <span class="fw-semibold" style="font-size:0.85rem;color:#1e293b;">Notificações</span>
-                            <button class="tb-btn-lerall" id="btnLerTodas">Marcar todas como lidas</button>
+                            <div style="display:flex;gap:8px;">
+                                <button class="tb-btn-lerall" id="btnLerTodas">Marcar todas como lidas</button>
+                                <button class="tb-btn-lerall" id="btnLimpar" style="color:#ef4444;">Limpar</button>
+                            </div>
                         </div>
                         <div id="listaNotif">
                             <?php if (empty($_notificacoes)): ?>
@@ -1446,8 +1449,18 @@ function showDay(el) {
 
     const QUINZE_DIAS_MS  = 15 * 24 * 60 * 60 * 1000;
     const STORAGE_KEY_TS  = 'notif_lidas_ts_<?= (int)$id_usuario ?>';
+    const STORAGE_KEY_DESC = 'notif_desc_<?= (int)$id_usuario ?>';
 
     // ── localStorage helpers ──────────────────────────────────────
+    function getDescartadas() {
+        try { return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_DESC) || '[]')); }
+        catch(e) { return new Set(); }
+    }
+    function salvarDescartadas(set) {
+        try { localStorage.setItem(STORAGE_KEY_DESC, JSON.stringify([...set].slice(-500))); }
+        catch(e) {}
+    }
+
     function getLidas() {
         try {
             const agora = Date.now();
@@ -1529,16 +1542,18 @@ function showDay(el) {
         const badge   = document.getElementById('badgeNotif');
         if (!listaEl || !badge) return;
 
-        const lidas = getLidas();
+        const lidas      = getLidas();
+        const descartadas = getDescartadas();
+        const visiveis   = lista.filter(function(n) { return !descartadas.has(n.texto.trim()); });
 
-        if (lista.length === 0) {
+        if (visiveis.length === 0) {
             listaEl.innerHTML = `
                 <div class="tb-notif-vazia">
                     <i class="bi bi-bell-slash" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
                     Nenhuma notificação
                 </div>`;
         } else {
-            listaEl.innerHTML = lista.map(function(n) {
+            listaEl.innerHTML = visiveis.map(function(n) {
                 const texto  = n.texto.trim();
                 const jaLida = lidas.has(texto) ? '1' : '0';
                 const btnTxt = jaLida === '1' ? 'Marcar como não lida' : 'Marcar como lida';
@@ -1557,15 +1572,39 @@ function showDay(el) {
         badge.style.display = naoLidos > 0 ? '' : 'none';
     }
 
-    // ── Aplica estado do localStorage no carregamento inicial ────
-    (function aplicarLidasIniciais() {
-        const lidas = getLidas();
-        if (lidas.size === 0) return;
-        let naoLidos = 0;
+    // ── Limpar todas as notificações ──────────────────────────────
+    document.getElementById('btnLimpar').addEventListener('click', function() {
+        const desc = getDescartadas();
         document.querySelectorAll('#listaNotif .tb-notif-item').forEach(function(item) {
             const texto = getKey(item);
+            if (texto) desc.add(texto);
+        });
+        salvarDescartadas(desc);
+        const listaEl = document.getElementById('listaNotif');
+        if (listaEl) {
+            listaEl.innerHTML = `
+                <div class="tb-notif-vazia">
+                    <i class="bi bi-bell-slash" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                    Nenhuma notificação
+                </div>`;
+        }
+        const badge = document.getElementById('badgeNotif');
+        if (badge) { badge.textContent = '0'; badge.style.display = 'none'; }
+    });
+
+    // ── Aplica estado do localStorage no carregamento inicial ────
+    (function aplicarLidasIniciais() {
+        const lidas      = getLidas();
+        const descartadas = getDescartadas();
+        let naoLidos = 0;
+        let algum = false;
+        document.querySelectorAll('#listaNotif .tb-notif-item').forEach(function(item) {
+            algum = true;
+            const texto = getKey(item);
             if (!texto) { naoLidos++; return; }
-            if (lidas.has(texto)) {
+            if (descartadas.has(texto)) {
+                item.style.display = 'none';
+            } else if (lidas.has(texto)) {
                 item.dataset.lida = '1';
                 const btn = item.querySelector('.tb-notif-toggle');
                 if (btn) btn.textContent = 'Marcar como não lida';
