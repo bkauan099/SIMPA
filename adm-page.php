@@ -59,13 +59,9 @@ $iniciais = strtoupper(implode('', array_map(fn($p) => mb_substr($p, 0, 1), arra
         .pm-item.sair{color:#ef4444;border-top:1px solid #f1f5f9}
         .pm-item.sair i{color:#ef4444}
 
-        /* ── Modais de perfil ── */
-        .input-olho{position:relative}
-        .input-olho input{padding-right:44px}
-        .btn-olho-m{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9ca3af;font-size:1rem}
-        .forca-b{display:flex;gap:4px;margin-top:5px}
-        .forca-b div{flex:1;height:4px;border-radius:2px;background:#e2e8f0;transition:background .3s}
-        .forca-lbl{font-size:.73rem;color:#64748b;margin-top:2px}
+        @keyframes tbFadeIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+        @keyframes eyePop { 0%{transform:scale(1) rotate(0deg)} 35%{transform:scale(1.35) rotate(-12deg)} 70%{transform:scale(0.9) rotate(4deg)} 100%{transform:scale(1) rotate(0deg)} }
+        .olho-pop{animation:eyePop 0.25s ease}
     </style>
 </head>
 <body>
@@ -178,25 +174,122 @@ $iniciais = strtoupper(implode('', array_map(fn($p) => mb_substr($p, 0, 1), arra
 </div>
 
 <!-- MODAL TROCAR SENHA -->
-<div class="modal fade" id="modalSenha" tabindex="-1">
-  <div class="modal-dialog"><div class="modal-content">
-    <div class="modal-header"><h5 class="modal-title fw-bold"><i class="bi bi-key me-2"></i>Trocar Senha</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
-    <div class="modal-body">
-        <div class="mb-3"><label class="form-label fw-medium">Senha Atual</label>
-            <div class="input-olho"><input type="password" class="form-control" id="sAtual"><button type="button" class="btn-olho-m" onclick="verM('sAtual')">👁</button></div>
+<div id="modalSenha"
+     style="display:none;position:fixed;inset:0;z-index:1091;
+            background:rgba(0,0,0,0.45);align-items:center;justify-content:center;"
+     onclick="if(event.target===this) fecharTrocarSenha()">
+
+    <div style="background:#fff;border-radius:20px;width:90%;max-width:380px;
+                box-shadow:0 8px 40px rgba(0,0,0,0.22);overflow:hidden;
+                animation:tbFadeIn .2s ease;">
+
+        <div style="background:linear-gradient(135deg,#0F2557 0%,#1d4ed8 100%);
+                    padding:28px 24px 22px;text-align:center;position:relative;">
+
+            <button onclick="fecharTrocarSenha()"
+                    style="position:absolute;top:12px;right:14px;
+                           background:rgba(255,255,255,0.15);border:none;
+                           border-radius:8px;width:30px;height:30px;
+                           color:white;cursor:pointer;font-size:0.95rem;
+                           display:flex;align-items:center;justify-content:center;
+                           transition:background .15s;"
+                    onmouseenter="this.style.background='rgba(255,255,255,0.25)'"
+                    onmouseleave="this.style.background='rgba(255,255,255,0.15)'">
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+            <div style="width:56px;height:56px;border-radius:50%;
+                        background:rgba(255,255,255,0.18);
+                        border:3px solid rgba(255,255,255,0.45);
+                        display:flex;align-items:center;justify-content:center;
+                        font-size:1.5rem;color:white;margin:0 auto 12px;">
+                <i class="bi bi-key-fill"></i>
+            </div>
+
+            <div style="color:white;font-weight:700;font-size:1rem;">Trocar Senha</div>
+            <div style="color:rgba(255,255,255,0.6);font-size:0.78rem;margin-top:3px;">
+                Defina uma nova senha de acesso
+            </div>
         </div>
-        <div class="mb-3"><label class="form-label fw-medium">Nova Senha</label>
-            <div class="input-olho"><input type="password" class="form-control" id="sNova" oninput="forcaM(this.value)"><button type="button" class="btn-olho-m" onclick="verM('sNova')">👁</button></div>
-            <div class="forca-b"><div id="m1"></div><div id="m2"></div><div id="m3"></div><div id="m4"></div></div>
-            <div class="forca-lbl" id="mLbl"></div>
+
+        <div style="padding:20px 24px 24px;">
+
+            <div style="margin-bottom:14px;">
+                <label style="font-size:0.73rem;font-weight:700;color:#64748b;
+                              text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px;">
+                    Senha Atual
+                </label>
+                <div style="display:flex;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+                    <input type="password" id="sAtual" placeholder="••••••••"
+                           style="flex:1;border:none;padding:9px 12px;font-size:0.88rem;outline:none;color:#1e293b;">
+                    <button type="button" onclick="verM('sAtual', this)"
+                            style="border:none;background:transparent;padding:0 12px;color:#94a3b8;cursor:pointer;">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-bottom:8px;">
+                <label style="font-size:0.73rem;font-weight:700;color:#64748b;
+                              text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px;">
+                    Nova Senha
+                </label>
+                <div style="display:flex;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+                    <input type="password" id="sNova" placeholder="••••••••" oninput="forcaM(this.value)"
+                           style="flex:1;border:none;padding:9px 12px;font-size:0.88rem;outline:none;color:#1e293b;">
+                    <button type="button" onclick="verM('sNova', this)"
+                            style="border:none;background:transparent;padding:0 12px;color:#94a3b8;cursor:pointer;">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-bottom:14px;">
+                <div style="height:4px;background:#f1f5f9;border-radius:2px;margin-bottom:3px;">
+                    <div id="mForcaBar" style="height:100%;border-radius:2px;transition:width .3s,background .3s;width:0%"></div>
+                </div>
+                <span id="mLbl" style="font-size:0.72rem;font-weight:600;"></span>
+            </div>
+
+            <div style="margin-bottom:16px;">
+                <label style="font-size:0.73rem;font-weight:700;color:#64748b;
+                              text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px;">
+                    Confirmar Nova Senha
+                </label>
+                <div style="display:flex;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+                    <input type="password" id="sConf" placeholder="••••••••"
+                           style="flex:1;border:none;padding:9px 12px;font-size:0.88rem;outline:none;color:#1e293b;">
+                    <button type="button" onclick="verM('sConf', this)"
+                            style="border:none;background:transparent;padding:0 12px;color:#94a3b8;cursor:pointer;">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div id="sfb" style="font-size:0.82rem;margin-bottom:12px;min-height:18px;text-align:center;font-weight:500;"></div>
+
+            <div style="display:flex;gap:10px;">
+                <button onclick="fecharTrocarSenha()"
+                        style="flex:1;padding:9px;border:1px solid #e2e8f0;border-radius:10px;
+                               background:#fff;color:#64748b;cursor:pointer;font-size:0.88rem;
+                               transition:background .15s;"
+                        onmouseenter="this.style.background='#f8fafc'"
+                        onmouseleave="this.style.background='#fff'">
+                    Cancelar
+                </button>
+                <button onclick="salvarSenha()"
+                        style="flex:1;padding:9px;border:none;border-radius:10px;
+                               background:linear-gradient(135deg,#1d4ed8,#3b82f6);
+                               color:white;cursor:pointer;font-size:0.88rem;font-weight:600;
+                               transition:opacity .15s;"
+                        onmouseenter="this.style.opacity='0.9'"
+                        onmouseleave="this.style.opacity='1'">
+                    Salvar
+                </button>
+            </div>
+
         </div>
-        <div class="mb-3"><label class="form-label fw-medium">Confirmar Nova Senha</label>
-            <div class="input-olho"><input type="password" class="form-control" id="sConf"><button type="button" class="btn-olho-m" onclick="verM('sConf')">👁</button></div>
-        </div>
-        <div id="sfb"></div>
     </div>
-    <div class="modal-footer"><button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-warning" onclick="salvarSenha()"><i class="bi bi-key me-1"></i>Alterar</button></div>
-  </div></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -331,23 +424,42 @@ function salvarPerfil(){
 
 function abrirTrocarSenha(){
     fecharDrops();
-    ['sAtual','sNova','sConf'].forEach(id=>document.getElementById(id).value='');
-    for(let i=1;i<=4;i++) document.getElementById('m'+i).style.background='#e2e8f0';
+    ['sAtual','sNova','sConf'].forEach(id=>{ const el=document.getElementById(id); el.value=''; el.type='password'; });
+    document.querySelectorAll('#modalSenha .bi-eye-slash').forEach(i=>i.className='bi bi-eye');
+    document.getElementById('mForcaBar').style.width='0%';
     document.getElementById('mLbl').textContent='';
-    document.getElementById('sfb').innerHTML='';
-    new bootstrap.Modal(document.getElementById('modalSenha')).show();
+    const sfb=document.getElementById('sfb'); sfb.textContent=''; sfb.style.color='';
+    document.getElementById('modalSenha').style.display='flex';
+    document.body.style.overflow='hidden';
 }
+function fecharTrocarSenha(){
+    document.getElementById('modalSenha').style.display='none';
+    document.body.style.overflow='';
+}
+document.addEventListener('keydown',function(e){
+    if(e.key==='Escape' && document.getElementById('modalSenha')?.style.display==='flex') fecharTrocarSenha();
+});
 
 function salvarSenha(){
+    const sfb=document.getElementById('sfb');
     const fd=new FormData(); fd.append('senha_atual',document.getElementById('sAtual').value); fd.append('nova_senha',document.getElementById('sNova').value); fd.append('confirma',document.getElementById('sConf').value);
     fetch('pages-adm/api-perfil.php?acao=senha',{method:'POST',body:fd}).then(r=>r.json()).then(d=>{
-        document.getElementById('sfb').innerHTML=`<div class="alert alert-${d.sucesso?'success':'danger'} py-2 mt-2">${d.mensagem}</div>`;
-        if(d.sucesso) setTimeout(()=>bootstrap.Modal.getInstance(document.getElementById('modalSenha')).hide(),1500);
-    }).catch(()=>{ document.getElementById('sfb').innerHTML='<div class="alert alert-danger py-2 mt-2">Erro de comunicação.</div>'; });
+        sfb.style.color=d.sucesso?'#22c55e':'#ef4444'; sfb.textContent=d.mensagem;
+        if(d.sucesso) setTimeout(fecharTrocarSenha,1500);
+    }).catch(()=>{ sfb.style.color='#ef4444'; sfb.textContent='Erro de conexão.'; });
 }
 
-function verM(id){ const el=document.getElementById(id); el.type=el.type==='password'?'text':'password'; }
-function forcaM(v){ let p=0; if(v.length>=6)p++; if(v.length>=10)p++; if(/[A-Z]/.test(v)&&/[a-z]/.test(v))p++; if(/[0-9]/.test(v)&&/[^A-Za-z0-9]/.test(v))p++; const c=['#ef4444','#f97316','#eab308','#22c55e'],l=['Muito fraca','Fraca','Boa','Forte']; for(let i=1;i<=4;i++) document.getElementById('m'+i).style.background=i<=p?c[p-1]:'#e2e8f0'; document.getElementById('mLbl').textContent=v.length>0?(l[p-1]||''):''; }
+function verM(id, btn){
+    const inp=document.getElementById(id); const show=inp.type==='password'; inp.type=show?'text':'password';
+    if(btn){ const icon=btn.querySelector('i'); if(icon){ icon.className=show?'bi bi-eye-slash':'bi bi-eye'; icon.classList.remove('olho-pop'); void icon.offsetWidth; icon.classList.add('olho-pop'); } }
+}
+function forcaM(v){
+    const bar=document.getElementById('mForcaBar'), lbl=document.getElementById('mLbl');
+    if(!v){ bar.style.width='0%'; lbl.textContent=''; return; }
+    let pts=0; if(v.length>=8)pts++; if(/[A-Z]/.test(v))pts++; if(/[0-9]/.test(v))pts++; if(/[^A-Za-z0-9]/.test(v))pts++;
+    const levels=['','Fraca','Fraca','Média','Forte'], colors=['','#ef4444','#ef4444','#f59e0b','#22c55e'], widths=['0%','30%','50%','75%','100%'];
+    bar.style.width=widths[pts]; bar.style.background=colors[pts]; lbl.textContent=levels[pts]; lbl.style.color=colors[pts];
+}
 
 // ── Init ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', ()=>{
