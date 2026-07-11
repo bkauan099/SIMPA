@@ -95,9 +95,10 @@ $_totalNotif   = count($_notificacoes);
                     </button>
                     <div class="tb-dropdown tb-dropdown-notif" id="dropNotif">
                         <div class="tb-drop-header">
-                            <span class="fw-semibold" style="font-size:0.85rem;color:#1e293b;">Notificações</span>
-                            <div style="display:flex;gap:8px;">
-                                <button class="tb-btn-lerall" id="btnLerTodas">Marcar todas como lidas</button>
+                            <span class="fw-semibold" style="font-size:0.92rem;color:#1e293b;">Notificações</span>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <button class="tb-btn-lerall" id="btnLerTodas">Marcar lidas</button>
+                                <span style="color:#e2e8f0;font-size:.8rem;">|</span>
                                 <button class="tb-btn-lerall" id="btnLimpar" style="color:#ef4444;">Limpar</button>
                             </div>
                         </div>

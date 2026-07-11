@@ -355,8 +355,10 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
     100% { transform: scale(1) rotate(0deg); }
 }
 .olho-pop { animation: eyePop 0.25s ease; }
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear { display: none; }
 
-.tb-dropdown-notif { width: 330px; max-height: 420px; overflow-y: auto; }
+.tb-dropdown-notif { width: 360px; max-height: 420px; overflow-y: auto; }
 .tb-dropdown-perfil { width: 190px; padding: 6px 0; }
 
 .tb-drop-item {
@@ -383,14 +385,14 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 
 .tb-drop-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 16px 10px;
+    padding: 16px 18px;
     border-bottom: 1px solid #f1f5f9;
     background: white; position: sticky; top: 0; z-index: 1;
 }
 
 .tb-btn-lerall {
-    background: none; border: none; font-size: 0.72rem;
-    color: #3b82f6; cursor: pointer; font-weight: 600;
+    background: none; border: none; font-size: 0.78rem;
+    color: #3b82f6; cursor: pointer; font-weight: 500;
     padding: 0; font-family: inherit;
 }
 .tb-btn-lerall:hover { text-decoration: underline; }
@@ -398,8 +400,8 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .tb-notif-item {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    padding: 11px 16px;
+    gap: 12px;
+    padding: 13px 18px;
     border-bottom: 1px solid #f8fafc;
     cursor: pointer;
     transition: background 0.15s;
@@ -421,8 +423,8 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 }
 
 .tb-notif-vazia {
-    padding: 24px 16px; text-align: center;
-    font-size: 0.82rem; color: #94a3b8;
+    padding: 36px 24px; text-align: center;
+    font-size: 0.86rem; color: #94a3b8;
 }
 
 /* ══ RESPONSIVIDADE ══ */

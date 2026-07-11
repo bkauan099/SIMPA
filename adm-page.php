@@ -28,19 +28,19 @@ $iniciais = strtoupper(implode('', array_map(fn($p) => mb_substr($p, 0, 1), arra
         .notif-btn{position:relative;background:none;border:none;padding:6px 8px;color:inherit;cursor:pointer;border-radius:8px;transition:background .15s}
         .notif-btn:hover{background:rgba(255,255,255,.12)}
         .notif-badge{position:absolute;top:2px;right:2px;background:#ef4444;color:#fff;border-radius:999px;font-size:.6rem;font-weight:700;min-width:16px;height:16px;display:none;align-items:center;justify-content:center;padding:0 3px;line-height:1}
-        .notif-drop{position:absolute;right:0;top:calc(100% + 10px);width:330px;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:9999;display:none;flex-direction:column;overflow:hidden}
+        .notif-drop{position:absolute;right:0;top:calc(100% + 10px);width:360px;background:#fff;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:9999;display:none;flex-direction:column;overflow:hidden}
         .notif-drop.show{display:flex}
-        .notif-drop-header{padding:13px 16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
-        .notif-drop-header h6{margin:0;font-weight:700;font-size:.88rem;color:#1e293b}
-        .notif-list{max-height:320px;overflow-y:auto}
-        .notif-item{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .15s;color:#1e293b;text-decoration:none}
+        .notif-drop-header{padding:16px 18px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
+        .notif-drop-header h6{margin:0;font-weight:700;font-size:.92rem;color:#1e293b}
+        .notif-list{max-height:340px;overflow-y:auto}
+        .notif-item{display:flex;align-items:flex-start;gap:12px;padding:13px 18px;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .15s;color:#1e293b;text-decoration:none}
         .notif-item:hover{background:#f8fafc}
         .notif-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;margin-top:2px}
         .ni-projeto{background:#fef9c3;color:#ca8a04}
         .ni-documento{background:#dbeafe;color:#2563eb}
         .ni-usuario{background:#dcfce7;color:#16a34a}
-        .notif-vazia{padding:24px;text-align:center;color:#94a3b8;font-size:.85rem}
-        .notif-drop-footer{padding:10px 16px;text-align:center;border-top:1px solid #f1f5f9}
+        .notif-vazia{padding:36px 24px;text-align:center;color:#94a3b8;font-size:.86rem}
+        .notif-drop-footer{padding:13px 18px;text-align:center;border-top:1px solid #f1f5f9}
 
         /* ── Perfil ── */
         .perfil-btn{display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;color:inherit;padding:4px 8px;border-radius:8px;transition:background .15s}
@@ -62,6 +62,7 @@ $iniciais = strtoupper(implode('', array_map(fn($p) => mb_substr($p, 0, 1), arra
         @keyframes tbFadeIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
         @keyframes eyePop { 0%{transform:scale(1) rotate(0deg)} 35%{transform:scale(1.35) rotate(-12deg)} 70%{transform:scale(0.9) rotate(4deg)} 100%{transform:scale(1) rotate(0deg)} }
         .olho-pop{animation:eyePop 0.25s ease}
+        input[type="password"]::-ms-reveal,input[type="password"]::-ms-clear{display:none}
     </style>
 </head>
 <body>
@@ -110,16 +111,17 @@ $iniciais = strtoupper(implode('', array_map(fn($p) => mb_substr($p, 0, 1), arra
                     <div class="notif-drop" id="notifDrop">
                         <div class="notif-drop-header">
                             <h6><i class="bi bi-bell me-2"></i>Notificações</h6>
-                            <div style="display:flex;gap:6px;align-items:center;">
-                                <button onclick="lerTodasAdm()" style="background:none;border:none;font-size:.75rem;color:#3b82f6;cursor:pointer;padding:0;white-space:nowrap;">Marcar todas como lidas</button>
-                                <button onclick="limparAdm()" style="background:none;border:none;font-size:.75rem;color:#ef4444;cursor:pointer;padding:0;">Limpar</button>
+                            <div style="display:flex;gap:10px;align-items:center;">
+                                <button onclick="lerTodasAdm()" style="background:none;border:none;font-size:.78rem;color:#3b82f6;cursor:pointer;padding:0;white-space:nowrap;font-weight:500;">Marcar lidas</button>
+                                <span style="color:#e2e8f0;font-size:.8rem;">|</span>
+                                <button onclick="limparAdm()" style="background:none;border:none;font-size:.78rem;color:#ef4444;cursor:pointer;padding:0;font-weight:500;">Limpar</button>
                             </div>
                         </div>
                         <div class="notif-list" id="notifList">
                             <div class="notif-vazia">Carregando...</div>
                         </div>
                         <div class="notif-drop-footer">
-                            <small class="text-muted" style="font-size:.75rem">Atualiza automaticamente a cada 60s</small>
+                            <small class="text-muted" style="font-size:.78rem">Atualiza automaticamente a cada 60s</small>
                         </div>
                     </div>
                 </div>
