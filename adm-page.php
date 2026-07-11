@@ -33,7 +33,7 @@ $iniciais = strtoupper(implode('', array_map(fn($p) => mb_substr($p, 0, 1), arra
         .notif-drop-header{padding:13px 16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between}
         .notif-drop-header h6{margin:0;font-weight:700;font-size:.88rem}
         .notif-list{max-height:320px;overflow-y:auto}
-        .notif-item{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .15s;color:inherit;text-decoration:none}
+        .notif-item{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid #f8fafc;cursor:pointer;transition:background .15s;color:#1e293b;text-decoration:none}
         .notif-item:hover{background:#f8fafc}
         .notif-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;margin-top:2px}
         .ni-projeto{background:#fef9c3;color:#ca8a04}
