@@ -18,27 +18,35 @@
 <!-- CARDS ESTATÍSTICAS -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-box-arrow-in-right"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= number_format($estatisticas['total_acessos']) ?></h4><small class="text-muted">Total de Acessos</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #3b82f6;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#3b82f6;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#3b82f6;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-box-arrow-in-right"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#3b82f6;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-box-arrow-in-right"></i> Total de Acessos</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= number_format($estatisticas['total_acessos']) ?></div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle" style="background:#dcfce7;color:#16a34a;"><i class="bi bi-check-circle-fill"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= number_format($estatisticas['acessos_sucesso']) ?></h4><small class="text-muted">Logins com Sucesso</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #16a34a;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#16a34a;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#16a34a;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-check-circle-fill"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#16a34a;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-check-circle-fill"></i> Logins com Sucesso</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= number_format($estatisticas['acessos_sucesso']) ?></div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle" style="background:#fee2e2;color:#dc2626;"><i class="bi bi-x-circle-fill"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= number_format($estatisticas['acessos_falha']) ?></h4><small class="text-muted">Tentativas Falhas</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #dc2626;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#dc2626;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#dc2626;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-x-circle-fill"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#dc2626;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-x-circle-fill"></i> Tentativas Falhas</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= number_format($estatisticas['acessos_falha']) ?></div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle" style="background:#fef9c3;color:#ca8a04;"><i class="bi bi-people-fill"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= number_format($estatisticas['usuarios_unicos']) ?></h4><small class="text-muted">Usuários Únicos</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ca8a04;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#ca8a04;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ca8a04;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-people-fill"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#ca8a04;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-people-fill"></i> Usuários Únicos</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= number_format($estatisticas['usuarios_unicos']) ?></div>
         </div>
     </div>
 </div>

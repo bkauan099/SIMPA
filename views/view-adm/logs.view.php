@@ -20,39 +20,51 @@
 <!-- CARDS DE ESTATÍSTICAS -->
 <div class="row g-3 mb-4" id="cardsStats">
     <div class="col-6 col-xl-2">
-        <div class="stat-card">
-            <div class="icon-circle" style="background:#dbeafe;color:#1d4ed8"><i class="bi bi-journal-text"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="st_total">—</h4><small class="text-muted">Total</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #1d4ed8;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#1d4ed8;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#1d4ed8;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-journal-text"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#1d4ed8;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-journal-text"></i> Total</div>
+            <div class="fw-bold lh-1" id="st_total" style="font-size:2rem;color:#1e293b;">—</div>
         </div>
     </div>
     <div class="col-6 col-xl-2">
-        <div class="stat-card">
-            <div class="icon-circle" style="background:#dcfce7;color:#16a34a"><i class="bi bi-check-circle"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="st_login_ok">—</h4><small class="text-muted">Logins OK</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #16a34a;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#16a34a;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#16a34a;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-check-circle"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#16a34a;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-check-circle"></i> Logins OK</div>
+            <div class="fw-bold lh-1" id="st_login_ok" style="font-size:2rem;color:#1e293b;">—</div>
         </div>
     </div>
     <div class="col-6 col-xl-2">
-        <div class="stat-card">
-            <div class="icon-circle" style="background:#fee2e2;color:#dc2626"><i class="bi bi-x-circle"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="st_login_falha">—</h4><small class="text-muted">Falhas Login</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #dc2626;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#dc2626;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#dc2626;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-x-circle"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#dc2626;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-x-circle"></i> Falhas Login</div>
+            <div class="fw-bold lh-1" id="st_login_falha" style="font-size:2rem;color:#1e293b;">—</div>
         </div>
     </div>
     <div class="col-6 col-xl-2">
-        <div class="stat-card">
-            <div class="icon-circle" style="background:#fef9c3;color:#a16207"><i class="bi bi-pencil-square"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="st_mod">—</h4><small class="text-muted">Modificações</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #a16207;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#a16207;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#a16207;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-pencil-square"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#a16207;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-pencil-square"></i> Modificações</div>
+            <div class="fw-bold lh-1" id="st_mod" style="font-size:2rem;color:#1e293b;">—</div>
         </div>
     </div>
     <div class="col-6 col-xl-2">
-        <div class="stat-card">
-            <div class="icon-circle" style="background:#fee2e2;color:#dc2626"><i class="bi bi-trash"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="st_rem">—</h4><small class="text-muted">Remoções</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #dc2626;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#dc2626;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#dc2626;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-trash"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#dc2626;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-trash"></i> Remoções</div>
+            <div class="fw-bold lh-1" id="st_rem" style="font-size:2rem;color:#1e293b;">—</div>
         </div>
     </div>
     <div class="col-6 col-xl-2">
-        <div class="stat-card">
-            <div class="icon-circle" style="background:#f3e8ff;color:#7c3aed"><i class="bi bi-clock-history"></i></div>
-            <div><h4 class="mb-0 fw-bold" id="st_24h">—</h4><small class="text-muted">Últimas 24h</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #7c3aed;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#7c3aed;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#7c3aed;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-clock-history"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#7c3aed;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-clock-history"></i> Últimas 24h</div>
+            <div class="fw-bold lh-1" id="st_24h" style="font-size:2rem;color:#1e293b;">—</div>
         </div>
     </div>
 </div>

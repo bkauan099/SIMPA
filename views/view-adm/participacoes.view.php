@@ -38,27 +38,35 @@ $alunos = array_filter($listaUsuariosAtivos, fn($u) =>
 <!-- ESTATÍSTICAS -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-diagram-3"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $estatisticas['total'] ?></h4><small class="text-muted">Total de Vínculos</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #3b82f6;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#3b82f6;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#3b82f6;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-diagram-3"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#3b82f6;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-diagram-3"></i> Total de Vínculos</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['total'] ?></div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-blue"><i class="bi bi-person-check"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $estatisticas['ativos'] ?></h4><small class="text-muted">Vínculos Ativos</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #22c55e;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#22c55e;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#22c55e;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-person-check"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#22c55e;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-person-check"></i> Vínculos Ativos</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['ativos'] ?></div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-person-x"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $estatisticas['encerrados'] ?></h4><small class="text-muted">Encerrados</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #ef4444;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#ef4444;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#ef4444;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-person-x"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#ef4444;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-person-x"></i> Encerrados</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['encerrados'] ?></div>
         </div>
     </div>
     <div class="col-6 col-lg-3">
-        <div class="stat-card">
-            <div class="icon-circle bg-light-orange"><i class="bi bi-folder2-open"></i></div>
-            <div><h4 class="mb-0 fw-bold"><?= $estatisticas['projetos_com_participantes'] ?></h4><small class="text-muted">Projetos com Equipe</small></div>
+        <div style="background:#fff;border-radius:14px;padding:18px 20px 16px;box-shadow:0 2px 14px rgba(0,0,0,0.06);border-top:4px solid #f97316;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:#f97316;opacity:0.04;pointer-events:none;"></div>
+            <div style="position:absolute;right:12px;bottom:6px;font-size:3rem;color:#f97316;opacity:0.1;line-height:1;pointer-events:none;"><i class="bi bi-folder2-open"></i></div>
+            <div style="display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 10px;border-radius:20px;background:#f97316;color:#fff;opacity:0.85;margin-bottom:10px;"><i class="bi bi-folder2-open"></i> Projetos com Equipe</div>
+            <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['projetos_com_participantes'] ?></div>
         </div>
     </div>
 </div>
