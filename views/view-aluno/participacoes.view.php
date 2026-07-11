@@ -40,7 +40,6 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
                 <i class="bi bi-collection-fill"></i> Total
             </div>
             <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['total'] ?></div>
-            <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">REGISTROS</div>
         </div>
     </div>
     <div class="col-6 col-sm-6 col-lg-3">
@@ -53,7 +52,6 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
                 <i class="bi bi-check-circle-fill"></i> Concluídos
             </div>
             <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['concluidos'] ?></div>
-            <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">ATIVIDADES CONCLUÍDAS</div>
         </div>
     </div>
     <div class="col-6 col-sm-6 col-lg-3">
@@ -66,7 +64,6 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
                 <i class="bi bi-x-circle-fill"></i> Não Concluídos
             </div>
             <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['pendentes'] ?></div>
-            <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">NÃO CONCLUÍDAS</div>
         </div>
     </div>
     <div class="col-6 col-sm-6 col-lg-3">
@@ -79,7 +76,6 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
                 <i class="bi bi-calendar2-week-fill"></i> Este Mês
             </div>
             <div class="fw-bold lh-1" style="font-size:2rem;color:#1e293b;"><?= $estatisticas['este_mes'] ?></div>
-            <div style="font-size:0.72rem;font-weight:600;letter-spacing:.05em;color:#64748b;margin-top:4px;">NO MÊS ATUAL</div>
         </div>
     </div>
 </div>
