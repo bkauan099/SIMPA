@@ -140,7 +140,7 @@ $iniciais = implode('', array_map(
                 <div style="display:flex;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
                     <input type="password" id="mSenhaAtual" placeholder="••••••••"
                            style="flex:1;border:none;padding:9px 12px;font-size:0.88rem;outline:none;color:#1e293b;">
-                    <button type="button" onclick="verM('mSenhaAtual')"
+                    <button type="button" onclick="verM('mSenhaAtual', this)"
                             style="border:none;background:transparent;padding:0 12px;color:#94a3b8;cursor:pointer;">
                         <i class="bi bi-eye"></i>
                     </button>
@@ -155,7 +155,7 @@ $iniciais = implode('', array_map(
                 <div style="display:flex;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
                     <input type="password" id="mSenhaNova" placeholder="••••••••" oninput="forcaM(this.value)"
                            style="flex:1;border:none;padding:9px 12px;font-size:0.88rem;outline:none;color:#1e293b;">
-                    <button type="button" onclick="verM('mSenhaNova')"
+                    <button type="button" onclick="verM('mSenhaNova', this)"
                             style="border:none;background:transparent;padding:0 12px;color:#94a3b8;cursor:pointer;">
                         <i class="bi bi-eye"></i>
                     </button>
@@ -177,7 +177,7 @@ $iniciais = implode('', array_map(
                 <div style="display:flex;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">
                     <input type="password" id="mSenhaConf" placeholder="••••••••"
                            style="flex:1;border:none;padding:9px 12px;font-size:0.88rem;outline:none;color:#1e293b;">
-                    <button type="button" onclick="verM('mSenhaConf')"
+                    <button type="button" onclick="verM('mSenhaConf', this)"
                             style="border:none;background:transparent;padding:0 12px;color:#94a3b8;cursor:pointer;">
                         <i class="bi bi-eye"></i>
                     </button>

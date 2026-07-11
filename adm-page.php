@@ -45,7 +45,8 @@ $iniciais = strtoupper(implode('', array_map(fn($p) => mb_substr($p, 0, 1), arra
         /* ── Perfil ── */
         .perfil-btn{display:flex;align-items:center;gap:8px;background:none;border:none;cursor:pointer;color:inherit;padding:4px 8px;border-radius:8px;transition:background .15s}
         .perfil-btn:hover{background:rgba(255,255,255,.12)}
-        .avatar{width:34px;height:34px;border-radius:50%;background:#3b82f6;color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none}
+        .avatar{width:34px;height:34px;border-radius:50%;background:#2563eb;color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;user-select:none}
+        #topAvatar{box-shadow:0 0 0 2px rgba(255,255,255,0.35)}
         .perfil-drop{position:absolute;right:0;top:calc(100% + 10px);width:255px;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:9999;display:none;flex-direction:column;overflow:hidden}
         .perfil-drop.show{display:flex}
         .perfil-drop-header{padding:14px 16px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:12px}

@@ -126,8 +126,9 @@ if (!empty($_GET['ajax'])) {
                     <!-- PERFIL -->
                     <div class="tb-dropdown-wrap" id="wrapPerfil">
                         <button class="tb-icon-btn" id="btnPerfil" aria-label="Perfil">
-                            <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['nome'] ?? 'Professor') ?>&background=0F2557&color=fff"
-                                 class="rounded-circle" width="32" alt="Avatar">
+                            <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['nome'] ?? 'Professor') ?>&background=2563eb&color=fff&bold=true"
+                                 class="rounded-circle" width="32" alt="Avatar"
+                                 style="box-shadow:0 0 0 2px rgba(255,255,255,0.35)">
                             <span class="fw-medium d-none d-sm-inline" style="font-size:0.88rem;">
                                 <?= htmlspecialchars(explode(' ', $_SESSION['nome'] ?? 'Professor')[0]) ?> <i class="bi bi-chevron-down" style="font-size:0.7rem;"></i>
                             </span>
@@ -1171,9 +1172,19 @@ if (!empty($_GET['ajax'])) {
             if (m) { m.style.display = 'none'; document.body.style.overflow = ''; }
         };
 
-        function verM(id) {
-            const inp = document.getElementById(id);
-            inp.type = inp.type === 'password' ? 'text' : 'password';
+        function verM(id, btn) {
+            const inp  = document.getElementById(id);
+            const show = inp.type === 'password';
+            inp.type   = show ? 'text' : 'password';
+            if (btn) {
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+                    icon.classList.remove('olho-pop');
+                    void icon.offsetWidth;
+                    icon.classList.add('olho-pop');
+                }
+            }
         }
         function forcaM(v) {
             const bar = document.getElementById('mForcaBar');

@@ -77,9 +77,19 @@
     atualizarBadge();
 })();
 
-function verM(id) {
-    const inp = document.getElementById(id);
-    inp.type = inp.type === 'password' ? 'text' : 'password';
+function verM(id, btn) {
+    const inp  = document.getElementById(id);
+    const show = inp.type === 'password';
+    inp.type   = show ? 'text' : 'password';
+    if (btn) {
+        const icon = btn.querySelector('i');
+        if (icon) {
+            icon.className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
+            icon.classList.remove('olho-pop');
+            void icon.offsetWidth;
+            icon.classList.add('olho-pop');
+        }
+    }
 }
 
 function forcaM(v) {

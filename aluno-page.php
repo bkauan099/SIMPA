@@ -121,8 +121,9 @@ $_totalNotif   = count($_notificacoes);
                 <!-- PERFIL -->
                 <div class="tb-dropdown-wrap" id="wrapPerfil">
                     <button class="tb-icon-btn" id="btnPerfil" aria-label="Perfil">
-                        <img src="https://ui-avatars.com/api/?name=<?= urlencode($nomeUsuario) ?>&background=1d4ed8&color=fff"
-                             class="rounded-circle" width="32" alt="Avatar">
+                        <img src="https://ui-avatars.com/api/?name=<?= urlencode($nomeUsuario) ?>&background=2563eb&color=fff&bold=true"
+                             class="rounded-circle" width="32" alt="Avatar"
+                             style="box-shadow:0 0 0 2px rgba(255,255,255,0.35)">
                         <span class="fw-medium d-none d-sm-inline" style="font-size:0.88rem;">
                             <?= htmlspecialchars($primeiroNome) ?> <i class="bi bi-chevron-down" style="font-size:0.7rem;"></i>
                         </span>
