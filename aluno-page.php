@@ -131,6 +131,9 @@ $_totalNotif   = count($_notificacoes);
                         <button class="tb-drop-item" onclick="abrirModalPerfil()">
                             <i class="bi bi-person me-2"></i>Meu Perfil
                         </button>
+                        <button class="tb-drop-item" onclick="abrirModalSenha()">
+                            <i class="bi bi-key me-2"></i>Trocar Senha
+                        </button>
                         <div class="tb-drop-divider"></div>
                         <a href="logout.php" class="tb-drop-item tb-drop-sair">
                             <i class="bi bi-box-arrow-right me-2"></i>Sair
@@ -359,7 +362,8 @@ function fecharSlideOver() {
 
 document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    if (document.getElementById('modalPerfil')?.style.display          === 'flex') { fecharModalPerfil();    return; }
+    if (document.getElementById('modalSenha')?.style.display            === 'flex') { fecharModalSenha();     return; }
+    if (document.getElementById('modalPerfil')?.style.display           === 'flex') { fecharModalPerfil();    return; }
     if (document.getElementById('modalVisualizarArquivo').style.display === 'flex') { fecharModalVisualizar(); return; }
     if (document.getElementById('modalEnvioTarefa').style.display       === 'flex') { fecharModalEnvio();      return; }
     if (document.getElementById('modalEdicaoTarefa').style.display      === 'flex') { fecharModalEdicao();     return; }
