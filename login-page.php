@@ -60,9 +60,42 @@
         .sucesso-final p{font-size:.85rem;color:#64748b}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+        .btn-voltar-inicio{
+            position:fixed;top:22px;left:22px;z-index:10;
+            display:inline-flex;align-items:center;gap:10px;
+            background:#fff;border:1.5px solid #ddd;border-radius:12px;
+            padding:10px 18px;box-shadow:0 8px 28px rgba(0,0,0,.13);
+            color:#2B3C50;text-decoration:none;font-family:'Montserrat',sans-serif;
+            font-size:.875rem;font-weight:600;transition:box-shadow .2s,transform .15s,background .2s;
+            white-space:nowrap;
+        }
+        .btn-voltar-inicio:hover{
+            background:#f1f5f9;box-shadow:0 12px 36px rgba(0,0,0,.18);transform:translateY(-1px);
+        }
+        .btn-voltar-inicio__arrow{
+            display:flex;align-items:center;justify-content:center;
+            width:30px;height:30px;border-radius:8px;background:#2B3C50;color:#fff;flex-shrink:0;
+            transition:background .2s;
+        }
+        .btn-voltar-inicio:hover .btn-voltar-inicio__arrow{background:#1e2d3d;}
+        @media(max-width:480px){
+            .btn-voltar-inicio{top:12px;left:12px;padding:8px 14px;font-size:.8rem;}
+            .btn-voltar-inicio__arrow{width:26px;height:26px;}
+        }
     </style>
 </head>
 <body>
+
+<a href="index.php" class="btn-voltar-inicio" title="Voltar ao início">
+    <span class="btn-voltar-inicio__arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+        </svg>
+    </span>
+    <span class="btn-voltar-inicio__label">Voltar ao início</span>
+</a>
+
 <main class="container">
     <form id="formLogin" action="processa_login.php" method="POST">
         <div class="uema">
@@ -92,9 +125,6 @@
 
         <div class="create">
             <a href="#" onclick="abrirModal(event)">Esqueci minha senha</a>
-        </div>
-        <div class="create" style="margin-top:6px;">
-            <a href="index.php">← Voltar ao início</a>
         </div>
     </form>
 </main>
