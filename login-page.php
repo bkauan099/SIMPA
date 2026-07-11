@@ -93,6 +93,9 @@
         <div class="create">
             <a href="#" onclick="abrirModal(event)">Esqueci minha senha</a>
         </div>
+        <div class="create" style="margin-top:6px;">
+            <a href="index.php">← Voltar ao início</a>
+        </div>
     </form>
 </main>
 
