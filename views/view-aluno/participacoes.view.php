@@ -122,22 +122,22 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
             }
             if (!empty($r['concluido'])) {
                 $statusLabel = 'Concluído';
-                $statusStyle = 'background:#dcfce7;color:#16a34a;';
-                $statusIco   = 'bi-check-circle';
+                $statusClass = 'bg-success text-white';
+                $statusIco   = 'bi-check-circle-fill';
                 $statusKey   = 'concluido';
             } elseif (!empty($r['doc_cancelado'])) {
-                $statusLabel = 'Documento Reprovado';
-                $statusStyle = 'background:#fee2e2;color:#dc2626;';
+                $statusLabel = 'Reprovado';
+                $statusClass = 'bg-danger text-white';
                 $statusIco   = 'bi-x-circle-fill';
                 $statusKey   = 'nao_concluido';
             } elseif ($_passou) {
                 $statusLabel = 'Não Concluído';
-                $statusStyle = 'background:#fee2e2;color:#dc2626;';
+                $statusClass = 'bg-danger text-white';
                 $statusIco   = 'bi-x-circle';
                 $statusKey   = 'nao_concluido';
             } else {
                 $statusLabel = 'Pendente';
-                $statusStyle = 'background:#fef9c3;color:#a16207;';
+                $statusClass = 'bg-warning text-dark';
                 $statusIco   = 'bi-hourglass-split';
                 $statusKey   = 'pendente';
             }
@@ -159,7 +159,7 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
              data-icone="<?= $icone ?>"
              data-cor="<?= $cor ?>"
              data-status-label="<?= $statusLabel ?>"
-             data-status-style="<?= htmlspecialchars($statusStyle) ?>"
+             data-status-class="<?= $statusClass ?>"
              data-status-ico="<?= $statusIco ?>"
              data-projeto="<?= htmlspecialchars($r['projeto'] ?? '—', ENT_QUOTES) ?>"
              >
@@ -198,7 +198,7 @@ $hoje = new DateTime(); $hoje->setTime(0,0,0);
 
                 <!-- Direita: status -->
                 <div class="flex-shrink-0 text-end" style="max-width:110px;">
-                    <span class="badge rounded-pill px-2 py-1" style="<?= $statusStyle ?>font-size:0.72rem;white-space:normal;text-align:center;">
+                    <span class="badge <?= $statusClass ?>" style="font-size:0.72rem;white-space:normal;text-align:center;">
                         <i class="bi <?= $statusIco ?> me-1"></i><?= $statusLabel ?>
                     </span>
                 </div>

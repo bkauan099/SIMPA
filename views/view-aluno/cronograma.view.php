@@ -125,7 +125,7 @@
         <div class="col-6 col-md-2">
             <select class="form-select" id="filtroStatus" onchange="filtrarCronograma()">
                 <option value="">Status (Todos)</option>
-                <option value="proximo">Pendente</option>
+                <option value="pendente">Pendente</option>
                 <option value="nao_concluido">Não Concluído</option>
                 <option value="concluido">Concluído</option>
                 <option value="corrigir">Corrigir</option>
@@ -164,7 +164,7 @@
                         } elseif ($prazo < $hoje) {
                             $statusKey = 'nao_concluido'; $statusLabel = 'Não Concluído'; $statusClass = 'bg-danger text-white';
                         } else {
-                            $statusKey = 'proximo'; $statusLabel = 'Pendente'; $statusClass = 'bg-warning text-dark';
+                            $statusKey = 'pendente'; $statusLabel = 'Pendente'; $statusClass = 'bg-warning text-dark';
                         }
                         $descricao  = $item['descricao'] ?? '';
                         $mesDaLinha = date('Y-m', strtotime($item['data']));
@@ -177,7 +177,7 @@
                             $prazoComHora = new DateTime($item['data'] . ' ' . substr($item['hora'], 0, 5));
                             $prazoPassou  = $agora > $prazoComHora;
                         }
-                        if ($prazoPassou && $statusKey === 'proximo') {
+                        if ($prazoPassou && $statusKey === 'pendente') {
                             $statusKey   = 'nao_concluido';
                             $statusLabel = 'Não Concluído';
                             $statusClass = 'bg-danger text-white';

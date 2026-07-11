@@ -66,14 +66,14 @@ $diaHoje   = (int) $hojeObj->format('j');
                 <?php
                 function _statusBadge(array $item, string $hoje_str): string {
                     if (!empty($item['concluido'])) {
-                        return '<span class="badge bg-success">Concluído</span>';
+                        return '<span class="badge bg-success text-white">Concluído</span>';
                     }
                     $passou = $item['data'] < $hoje_str;
                     if (!$passou && !empty($item['hora'])) {
                         $passou = (new DateTime()) > new DateTime($item['data'] . ' ' . substr($item['hora'], 0, 5));
                     }
                     return $passou
-                        ? '<span class="badge bg-danger">Não Concluído</span>'
+                        ? '<span class="badge bg-danger text-white">Não Concluído</span>'
                         : '<span class="badge bg-warning text-dark">Pendente</span>';
                 }
                 ?>
