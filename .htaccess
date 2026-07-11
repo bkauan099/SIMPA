@@ -10,17 +10,20 @@ RewriteEngine On
 # Redirecionar raiz para login se não autenticado
 RewriteRule ^$ index.php [L]
 
-# ── URLs limpas (sem extensão .php) ──────────────────────────
-# 1. Redireciona GET /pagina.php → /pagina  (não afeta POST/AJAX)
+# ── URLs limpas (sem extensão .php) — apenas raiz ────────────
+# Só se aplica a arquivos na raiz (sem barra no caminho).
+# Fetch internos como pages-aluno/*.php ficam intactos.
+
+# 1. Redireciona GET /pagina.php → /pagina
 RewriteCond %{REQUEST_METHOD} GET
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteCond %{THE_REQUEST} \s/+([^/]+?)\.php[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L,NE]
 
 # 2. Reescreve /pagina → /pagina.php internamente
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.+?)/?$ $1.php [L]
+RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+RewriteRule ^([^/]+)/?$ $1.php [L]
 
 # Bloquear acesso direto a .env, logs, lib, model, views, conexao
 # (controllers NÃO é bloqueado aqui pois é chamado via fetch/AJAX pelo front-end)
