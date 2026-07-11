@@ -10,7 +10,7 @@
 .pj-card {
     background: #fff;
     border-radius: 14px;
-    padding: 20px 20px 18px;
+    padding: 18px 20px 16px;
     box-shadow: 0 2px 14px rgba(0,0,0,0.06);
     border-top: 4px solid var(--c);
     position: relative;
@@ -40,7 +40,7 @@
     font-weight: 800;
     color: #1e293b;
     line-height: 1;
-    margin-bottom: 6px;
+    margin-bottom: 0;
 }
 .pj-card .pj-label {
     font-size: 0.78rem;
