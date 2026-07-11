@@ -64,21 +64,21 @@
         .btn-voltar-inicio{
             position:fixed;top:22px;left:22px;z-index:10;
             display:inline-flex;align-items:center;gap:10px;
-            background:#111ec9;border:none;border-radius:12px;
-            padding:10px 18px;box-shadow:0 8px 28px rgba(17,30,201,.35);
-            color:#fff;text-decoration:none;font-family:'Montserrat',sans-serif;
+            background:#fff;border:1.5px solid #ddd;border-radius:12px;
+            padding:10px 18px;box-shadow:0 8px 28px rgba(0,0,0,.13);
+            color:#111ec9;text-decoration:none;font-family:'Montserrat',sans-serif;
             font-size:.875rem;font-weight:600;transition:box-shadow .2s,transform .15s,background .2s;
             white-space:nowrap;
         }
         .btn-voltar-inicio:hover{
-            background:#0000a2;box-shadow:0 12px 36px rgba(17,30,201,.45);transform:translateY(-1px);
+            background:#f1f5f9;box-shadow:0 12px 36px rgba(0,0,0,.18);transform:translateY(-1px);
         }
         .btn-voltar-inicio__arrow{
             display:flex;align-items:center;justify-content:center;
-            width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.18);color:#fff;flex-shrink:0;
+            width:30px;height:30px;border-radius:8px;background:#111ec9;color:#fff;flex-shrink:0;
             transition:background .2s;
         }
-        .btn-voltar-inicio:hover .btn-voltar-inicio__arrow{background:rgba(255,255,255,.28);}
+        .btn-voltar-inicio:hover .btn-voltar-inicio__arrow{background:#0000a2;}
         @media(max-width:480px){
             .btn-voltar-inicio{top:12px;left:12px;padding:8px 14px;font-size:.8rem;}
             .btn-voltar-inicio__arrow{width:26px;height:26px;}
