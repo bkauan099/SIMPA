@@ -113,7 +113,10 @@ $iniciais = strtoupper(implode('', array_map(fn($p) => mb_substr($p, 0, 1), arra
                     <div class="notif-drop" id="notifDrop">
                         <div class="notif-drop-header">
                             <h6><i class="bi bi-bell me-2"></i>Notificações</h6>
-                            <span class="badge bg-primary rounded-pill" id="notifTotal">0</span>
+                            <div style="display:flex;gap:6px;align-items:center;">
+                                <button onclick="lerTodasAdm()" style="background:none;border:none;font-size:.75rem;color:#3b82f6;cursor:pointer;padding:0;white-space:nowrap;">Marcar todas como lidas</button>
+                                <button onclick="limparAdm()" style="background:none;border:none;font-size:.75rem;color:#ef4444;cursor:pointer;padding:0;">Limpar</button>
+                            </div>
                         </div>
                         <div class="notif-list" id="notifList">
                             <div class="notif-vazia">Carregando...</div>
@@ -236,25 +239,63 @@ document.addEventListener('click', e=>{
 });
 
 // ── Notificações ─────────────────────────────────────────────
+const _NOTIF_ADM_UID   = '<?= (int)($_SESSION['id_usuario'] ?? 0) ?>';
+const _NK_LIDAS        = 'notif_lidas_adm_' + _NOTIF_ADM_UID;
+const _NK_DESC         = 'notif_desc_adm_'  + _NOTIF_ADM_UID;
+
+function _admGetSet(key) { try { return new Set(JSON.parse(localStorage.getItem(key)||'[]')); } catch(e){ return new Set(); } }
+function _admSaveSet(key,set) { try { localStorage.setItem(key, JSON.stringify([...set].slice(-500))); } catch(e){} }
+function _admKey(n) { return (n.titulo||'') + '||' + (n.texto||''); }
+
 function toggleNotif(){ const d=document.getElementById('notifDrop'); document.getElementById('perfilDrop').classList.remove('show'); d.classList.toggle('show'); if(d.classList.contains('show')) carregarNotifs(); }
 
 function carregarNotifs(){
     fetch('pages-adm/api-notificacoes.php',{cache:'no-store'}).then(r=>r.json()).then(data=>{
-        const lista=document.getElementById('notifList'), badge=document.getElementById('notifBadge'), total=document.getElementById('notifTotal');
-        const notifs=data.notificacoes||[], qtd=notifs.length;
-        badge.style.display=qtd>0?'flex':'none'; badge.textContent=qtd>9?'9+':qtd; total.textContent=qtd;
-        if(!qtd){ lista.innerHTML='<div class="notif-vazia"><i class="bi bi-bell-slash d-block fs-4 mb-1"></i>Nenhuma pendência</div>'; return; }
-        lista.innerHTML=notifs.map(n=>`
-            <div class="notif-item" onclick="nav('${n.acao}')">
+        const lista=document.getElementById('notifList'), badge=document.getElementById('notifBadge');
+        const lidas=_admGetSet(_NK_LIDAS), desc=_admGetSet(_NK_DESC);
+        const notifs=(data.notificacoes||[]).filter(n=>!desc.has(_admKey(n)));
+        const naoLidos=notifs.filter(n=>!lidas.has(_admKey(n))).length;
+        badge.style.display=naoLidos>0?'flex':'none'; badge.textContent=naoLidos>9?'9+':naoLidos;
+        if(!notifs.length){ lista.innerHTML='<div class="notif-vazia"><i class="bi bi-bell-slash d-block fs-4 mb-1"></i>Nenhuma pendência</div>'; return; }
+        lista.innerHTML=notifs.map(n=>{
+            const key=_admKey(n);
+            const lida=lidas.has(key)?'1':'0';
+            return `<div class="notif-item" data-notif-key="${key.replace(/"/g,'&quot;')}" data-lida="${lida}" onclick="nav('${n.acao}')" style="${lida==='1'?'opacity:.6;background:#f8fafc':''}">
                 <div class="notif-icon ni-${n.tipo}"><i class="bi ${n.icone}"></i></div>
                 <div class="flex-grow-1"><div class="fw-medium" style="font-size:.82rem">${n.titulo}</div><div class="text-muted" style="font-size:.76rem">${n.texto}</div></div>
                 <i class="bi bi-chevron-right text-muted small mt-1"></i>
-            </div>`).join('');
+            </div>`;
+        }).join('');
     }).catch(()=>{ document.getElementById('notifList').innerHTML='<div class="notif-vazia text-danger">Erro ao carregar</div>'; });
 }
 
+function lerTodasAdm(){
+    const lidas=_admGetSet(_NK_LIDAS);
+    document.querySelectorAll('#notifList .notif-item').forEach(function(item){
+        const key=item.dataset.notifKey; if(!key) return;
+        lidas.add(key); item.dataset.lida='1'; item.style.opacity='.6'; item.style.background='#f8fafc';
+    });
+    _admSaveSet(_NK_LIDAS,lidas);
+    const badge=document.getElementById('notifBadge');
+    badge.textContent='0'; badge.style.display='none';
+}
+
+function limparAdm(){
+    const desc=_admGetSet(_NK_DESC);
+    document.querySelectorAll('#notifList .notif-item').forEach(function(item){
+        const key=item.dataset.notifKey; if(key) desc.add(key);
+    });
+    _admSaveSet(_NK_DESC,desc);
+    document.getElementById('notifList').innerHTML='<div class="notif-vazia"><i class="bi bi-bell-slash d-block fs-4 mb-1"></i>Nenhuma pendência</div>';
+    const badge=document.getElementById('notifBadge'); badge.textContent='0'; badge.style.display='none';
+}
+
 function atualizarBadge(){
-    fetch('pages-adm/api-notificacoes.php?acao=total',{cache:'no-store'}).then(r=>r.json()).then(d=>{ const b=document.getElementById('notifBadge'),q=d.total||0; b.style.display=q>0?'flex':'none'; b.textContent=q>9?'9+':q; }).catch(()=>{});
+    fetch('pages-adm/api-notificacoes.php?acao=total',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+        const lidas=_admGetSet(_NK_LIDAS), desc=_admGetSet(_NK_DESC);
+        // O badge real é controlado pelo carregarNotifs; aqui só atualiza se o painel estiver fechado
+        if(!document.getElementById('notifDrop').classList.contains('show')) carregarNotifs();
+    }).catch(()=>{});
 }
 
 // ── Perfil ───────────────────────────────────────────────────

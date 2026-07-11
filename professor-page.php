@@ -110,7 +110,10 @@ if (!empty($_GET['ajax'])) {
                         <div class="tb-dropdown tb-dropdown-notif" id="dropNotif">
                             <div class="tb-drop-header">
                                 <span class="fw-semibold" style="font-size:0.85rem;color:#1e293b;">Notificações</span>
-                                <button class="tb-btn-lerall" id="btnLerTodas">Marcar todas como lidas</button>
+                                <div style="display:flex;gap:8px;">
+                                    <button class="tb-btn-lerall" id="btnLerTodas">Marcar todas como lidas</button>
+                                    <button class="tb-btn-lerall" id="btnLimpar" style="color:#ef4444;">Limpar</button>
+                                </div>
                             </div>
                             <div id="listaNotif">
                                 <div class="tb-notif-vazia">
@@ -974,16 +977,23 @@ if (!empty($_GET['ajax'])) {
 
         // ── NOTIFICAÇÕES (polling assíncrono) ───────────────────────────────────
         (function () {
-            const INTERVALO      = 5000;
-            const STORAGE_KEY    = 'notif_lidas_prof_<?= (int)($_SESSION['id_usuario'] ?? 0) ?>';
-            const STORAGE_KEY_TS = 'notif_lidas_prof_ts_<?= (int)($_SESSION['id_usuario'] ?? 0) ?>';
-            const QUINZE_DIAS_MS = 15 * 24 * 60 * 60 * 1000;
+            const INTERVALO       = 5000;
+            const STORAGE_KEY     = 'notif_lidas_prof_<?= (int)($_SESSION['id_usuario'] ?? 0) ?>';
+            const STORAGE_KEY_TS  = 'notif_lidas_prof_ts_<?= (int)($_SESSION['id_usuario'] ?? 0) ?>';
+            const STORAGE_KEY_DESC = 'notif_desc_prof_<?= (int)($_SESSION['id_usuario'] ?? 0) ?>';
+            const QUINZE_DIAS_MS  = 15 * 24 * 60 * 60 * 1000;
 
             const btnNotif    = document.getElementById('btnNotif');
             const dropNotif   = document.getElementById('dropNotif');
             const badgeNotif  = document.getElementById('badgeNotif');
             const btnLerTodas = document.getElementById('btnLerTodas');
+            const btnLimpar   = document.getElementById('btnLimpar');
             const listaNotif  = document.getElementById('listaNotif');
+
+            function encodeAttr(str) {
+                return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+            }
+            function getKey(item) { return item.dataset.notifKey || ''; }
 
             function getLidas() {
                 try {
@@ -1003,21 +1013,31 @@ if (!empty($_GET['ajax'])) {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify([...set].slice(-200)));
                 localStorage.setItem(STORAGE_KEY_TS, JSON.stringify(ts));
             }
+            function getDescartadas() {
+                try { return new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_DESC) || '[]')); }
+                catch(e) { return new Set(); }
+            }
+            function salvarDescartadas(set) {
+                try { localStorage.setItem(STORAGE_KEY_DESC, JSON.stringify([...set].slice(-500))); }
+                catch(e) {}
+            }
 
             function renderNotificacoes(lista) {
-                const lidas = getLidas();
-                if (lista.length === 0) {
+                const lidas      = getLidas();
+                const descartadas = getDescartadas();
+                const visiveis   = lista.filter(function(n) { return !descartadas.has(n.texto.trim()); });
+                if (visiveis.length === 0) {
                     listaNotif.innerHTML = `
                         <div class="tb-notif-vazia">
                             <i class="bi bi-bell-slash" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
                             Nenhuma notificação
                         </div>`;
                 } else {
-                    listaNotif.innerHTML = lista.map(function(n) {
+                    listaNotif.innerHTML = visiveis.map(function(n) {
                         const texto  = n.texto.trim();
                         const jaLida = lidas.has(texto) ? '1' : '0';
                         const btnTxt = jaLida === '1' ? 'Marcar como não lida' : 'Marcar como lida';
-                        return `<div class="tb-notif-item" data-lida="${jaLida}">
+                        return `<div class="tb-notif-item" data-lida="${jaLida}" data-notif-key="${encodeAttr(texto)}">
                             <div class="tb-notif-texto">
                                 <i class="bi ${n.icone}" style="color:${n.cor};margin-right:6px;flex-shrink:0;"></i>
                                 <span>${texto}</span>
@@ -1042,9 +1062,8 @@ if (!empty($_GET['ajax'])) {
                 const btn = e.target.closest('.tb-notif-toggle');
                 if (!btn) return;
                 const item  = btn.closest('.tb-notif-item');
-                const span  = item.querySelector('span');
-                if (!span) return;
-                const texto = span.innerHTML.trim();
+                const texto = getKey(item);
+                if (!texto) return;
                 const lidas = getLidas();
                 if (item.dataset.lida === '1') {
                     lidas.delete(texto);
@@ -1063,15 +1082,31 @@ if (!empty($_GET['ajax'])) {
 
             btnLerTodas.addEventListener('click', function() {
                 const lidas = getLidas();
-                listaNotif.querySelectorAll('.tb-notif-item span').forEach(function(s) {
-                    lidas.add(s.innerHTML.trim());
-                });
-                salvarLidas(lidas);
                 listaNotif.querySelectorAll('.tb-notif-item').forEach(function(item) {
+                    const texto = getKey(item);
+                    if (!texto) return;
+                    lidas.add(texto);
                     item.dataset.lida = '1';
                     const btn = item.querySelector('.tb-notif-toggle');
                     if (btn) btn.textContent = 'Marcar como não lida';
                 });
+                salvarLidas(lidas);
+                badgeNotif.textContent   = '0';
+                badgeNotif.style.display = 'none';
+            });
+
+            btnLimpar.addEventListener('click', function() {
+                const desc = getDescartadas();
+                listaNotif.querySelectorAll('.tb-notif-item').forEach(function(item) {
+                    const texto = getKey(item);
+                    if (texto) desc.add(texto);
+                });
+                salvarDescartadas(desc);
+                listaNotif.innerHTML = `
+                    <div class="tb-notif-vazia">
+                        <i class="bi bi-bell-slash" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>
+                        Nenhuma notificação
+                    </div>`;
                 badgeNotif.textContent   = '0';
                 badgeNotif.style.display = 'none';
             });
