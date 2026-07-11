@@ -66,6 +66,9 @@
         });
     }
 
+    // Expõe loadPage globalmente para que notificações possam navegar
+    window.navProf = loadPage;
+
     bindLinks();
 
     window.addEventListener('popstate', function (e) {

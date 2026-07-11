@@ -23,6 +23,7 @@ try {
         $notificacoes[] = [
             'icone' => 'bi-file-earmark-arrow-up-fill',
             'cor'   => '#3b82f6',
+            'acao'  => 'documentos',
             'texto' => $quem . ' enviou um documento: <strong>' . htmlspecialchars($r['doc_titulo']) . '</strong>',
         ];
     }
@@ -47,6 +48,7 @@ try {
         $notificacoes[] = [
             'icone' => 'bi-alarm-fill',
             'cor'   => '#f97316',
+            'acao'  => 'tarefas',
             'texto' => 'Prazo hoje: <strong>' . htmlspecialchars($r['titulo']) . '</strong>' . $quem,
         ];
     }
@@ -73,6 +75,7 @@ try {
         $notificacoes[] = [
             'icone' => 'bi-exclamation-triangle-fill',
             'cor'   => '#ef4444',
+            'acao'  => 'tarefas',
             'texto' => 'Tarefa em atraso: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (venceu em ' . $dt->format('d/m/Y') . ')' . $quem,
         ];
     }
@@ -99,9 +102,11 @@ try {
         $notificacoes[] = [
             'icone' => 'bi-calendar-check',
             'cor'   => '#f59e0b',
+            'acao'  => 'tarefas',
             'texto' => 'Prazo em breve: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (vence em ' . $dt->format('d/m/Y') . ')' . $quem,
         ];
     }
 } catch (Exception $e) {}
 
 $notificacoes = array_slice($notificacoes, 0, 30);
+$notificacoes = array_map(fn($n) => ['icone' => $n['icone'], 'cor' => $n['cor'], 'texto' => $n['texto'], 'acao' => $n['acao'] ?? ''], $notificacoes);

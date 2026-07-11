@@ -44,25 +44,6 @@
     dropNotif.addEventListener('click',  function (e) { e.stopPropagation(); });
     dropPerfil.addEventListener('click', function (e) { e.stopPropagation(); });
 
-    /* ── Toggle individual de notificação ───────────────────────── */
-    listaNotif.addEventListener('click', function (e) {
-        const btn = e.target.closest('.tb-notif-toggle');
-        if (!btn) return;
-        const item  = btn.closest('.tb-notif-item');
-        const lida  = item.dataset.lida === '1';
-        item.dataset.lida  = lida ? '0' : '1';
-        btn.textContent    = lida ? 'Marcar como lida' : 'Marcar como não lida';
-        atualizarBadge();
-    });
-
-    /* ── Ler todas ──────────────────────────────────────────────── */
-    btnLerTodas.addEventListener('click', function () {
-        listaNotif.querySelectorAll('.tb-notif-item').forEach(function (item) {
-            item.dataset.lida = '1';
-            item.querySelector('.tb-notif-toggle').textContent = 'Marcar como não lida';
-        });
-        atualizarBadge();
-    });
 
     /* ── Modal de perfil ────────────────────────────────────────── */
     window.abrirModalPerfil = function () {

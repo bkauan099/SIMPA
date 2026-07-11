@@ -108,7 +108,7 @@ $_totalNotif   = count($_notificacoes);
                                 Nenhuma notificação
                             </div>
                             <?php else: foreach ($_notificacoes as $_n): ?>
-                            <div class="tb-notif-item" data-lida="0" data-notif-key="<?= htmlspecialchars($_n['texto'], ENT_QUOTES) ?>">
+                            <div class="tb-notif-item" data-lida="0" data-notif-key="<?= htmlspecialchars($_n['texto'], ENT_QUOTES) ?>" data-acao="<?= htmlspecialchars($_n['acao'] ?? '', ENT_QUOTES) ?>">
                                 <div class="tb-notif-icon" style="background:<?= $_n['cor'] ?>26;color:<?= $_n['cor'] ?>"><i class="bi <?= $_n['icone'] ?>"></i></div>
                                 <div style="flex:1;font-size:.82rem;color:#1e293b;line-height:1.4"><?= $_n['texto'] ?></div>
                                 <i class="bi bi-chevron-right text-muted" style="font-size:.78rem;flex-shrink:0;margin-top:4px"></i>
@@ -1490,26 +1490,28 @@ function showDay(el) {
         return item.dataset.notifKey || '';
     }
 
-    // ── Clique no item marca como lida (toggle) ──────────────────
+    // ── Clique no item: marca como lida + navega ─────────────────
     document.getElementById('listaNotif').addEventListener('click', function(e) {
         const item = e.target.closest('.tb-notif-item');
         if (!item) return;
         const texto = getKey(item);
         if (!texto) return;
+        // Marca como lida no localStorage
         const lidas = getLidas();
-        if (item.dataset.lida === '1') {
-            lidas.delete(texto);
-            item.dataset.lida = '0';
-        } else {
-            lidas.add(texto);
-            item.dataset.lida = '1';
-        }
+        lidas.add(texto);
+        item.dataset.lida = '1';
         salvarLidas(lidas);
         const naoLidos = document.querySelectorAll('#listaNotif .tb-notif-item[data-lida="0"]').length;
         const badge = document.getElementById('badgeNotif');
         if (badge) {
             badge.textContent = naoLidos;
             badge.style.display = naoLidos > 0 ? '' : 'none';
+        }
+        // Navega para a página correta e fecha o dropdown
+        const acao = item.dataset.acao;
+        if (acao) {
+            if (typeof fecharDropdowns === 'function') fecharDropdowns();
+            carregarPagina(acao);
         }
     });
 
@@ -1550,7 +1552,7 @@ function showDay(el) {
             listaEl.innerHTML = visiveis.map(function(n) {
                 const texto  = n.texto.trim();
                 const jaLida = lidas.has(texto) ? '1' : '0';
-                return `<div class="tb-notif-item" data-lida="${jaLida}" data-notif-key="${encodeAttr(texto)}">
+                return `<div class="tb-notif-item" data-lida="${jaLida}" data-notif-key="${encodeAttr(texto)}" data-acao="${n.acao || ''}">
                     <div class="tb-notif-icon" style="background:${n.cor}26;color:${n.cor}"><i class="bi ${n.icone}"></i></div>
                     <div style="flex:1;font-size:.82rem;color:#1e293b;line-height:1.4">${texto}</div>
                     <i class="bi bi-chevron-right text-muted" style="font-size:.78rem;flex-shrink:0;margin-top:4px"></i>

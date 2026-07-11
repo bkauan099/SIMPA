@@ -21,6 +21,7 @@ try {
         $notificacoes[] = [
             'icone' => 'bi-plus-circle-fill',
             'cor'   => '#ef4444',
+            'acao'  => 'tarefas',
             'texto' => 'Nova tarefa: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (prazo: ' . $dt->format('d/m/Y') . ')',
             'ts'    => strtotime($r['created_at']),
         ];
@@ -43,6 +44,7 @@ try {
         $notificacoes[] = [
             'icone' => 'bi-exclamation-triangle-fill',
             'cor'   => '#ef4444',
+            'acao'  => 'tarefas',
             'texto' => 'Tarefa em atraso: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (venceu em ' . $dt->format('d/m/Y') . ')',
             'ts'    => strtotime($r['data']),
         ];
@@ -63,6 +65,7 @@ try {
         $notificacoes[] = [
             'icone' => 'bi-alarm-fill',
             'cor'   => '#f97316',
+            'acao'  => 'tarefas',
             'texto' => 'Prazo hoje: <strong>' . htmlspecialchars($r['titulo']) . '</strong> — entregue antes da meia-noite!',
             'ts'    => time(),
         ];
@@ -85,6 +88,7 @@ try {
         $notificacoes[] = [
             'icone' => 'bi-calendar-check',
             'cor'   => '#f59e0b',
+            'acao'  => 'tarefas',
             'texto' => 'Tarefa próxima: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (vence em ' . $dt->format('d/m/Y') . ')',
             // Data é futura — espelha a distância como se fosse passada, senão
             // uma tarefa que vence em 5 dias ficaria "mais recente" que algo
@@ -112,6 +116,7 @@ try {
         $notificacoes[] = [
             'icone' => 'bi-calendar-event-fill',
             'cor'   => '#3b82f6',
+            'acao'  => 'cronograma',
             'texto' => 'Evento esta semana: <strong>' . htmlspecialchars($r['titulo']) . '</strong> (' . $label . ')',
             'ts'    => time() - (strtotime($r['data']) - time()),
         ];
@@ -135,6 +140,7 @@ if ($_matricula_notif) {
                 $notificacoes[] = [
                     'icone' => 'bi-check-circle-fill',
                     'cor'   => '#22c55e',
+                    'acao'  => 'tarefas',
                     'texto' => 'Documento <strong>' . $titulo . '</strong> foi aprovado',
                     'ts'    => $ts,
                 ];
@@ -142,6 +148,7 @@ if ($_matricula_notif) {
                 $notificacoes[] = [
                     'icone' => 'bi-arrow-repeat',
                     'cor'   => '#ea580c',
+                    'acao'  => 'tarefas',
                     'texto' => 'Documento <strong>' . $titulo . '</strong> foi reprovado. Acesse a página de tarefas para reenviar com as correções',
                     'ts'    => $ts,
                 ];
@@ -149,6 +156,7 @@ if ($_matricula_notif) {
                 $notificacoes[] = [
                     'icone' => 'bi-x-circle-fill',
                     'cor'   => '#ef4444',
+                    'acao'  => 'tarefas',
                     'texto' => 'Documento <strong>' . $titulo . '</strong> foi reprovado sem direito à correção',
                     'ts'    => $ts,
                 ];
@@ -163,4 +171,4 @@ if ($_matricula_notif) {
 usort($notificacoes, fn($a, $b) => ($b['ts'] ?? 0) <=> ($a['ts'] ?? 0));
 
 $notificacoes = array_slice($notificacoes, 0, 30);
-$notificacoes = array_map(fn($n) => ['icone' => $n['icone'], 'cor' => $n['cor'], 'texto' => $n['texto']], $notificacoes);
+$notificacoes = array_map(fn($n) => ['icone' => $n['icone'], 'cor' => $n['cor'], 'texto' => $n['texto'], 'acao' => $n['acao'] ?? ''], $notificacoes);
