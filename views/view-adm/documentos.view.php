@@ -120,9 +120,9 @@
                         <td><?= $doc['data_registro'] ? date('d/m/Y', strtotime($doc['data_registro'])) : '—' ?></td>
                         <td>
                             <?php match($doc['status']) {
-                                'ativo'    => print('<span class="status-ativo">Aprovado</span>'),
+                                'ativo'    => print('<span class="badge bg-success text-white">Aprovado</span>'),
                                 'pendente' => print('<span class="badge bg-warning text-dark">Pendente</span>'),
-                                default    => print('<span class="status-inativo">Rejeitado</span>'),
+                                default    => print('<span class="badge bg-danger text-white">Rejeitado</span>'),
                             }; ?>
                         </td>
                         <td class="text-center">

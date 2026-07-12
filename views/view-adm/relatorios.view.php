@@ -64,7 +64,7 @@
                         $cor = match($item['status']) {
                             'ativo'    => 'bg-success',
                             'pendente' => 'bg-warning',
-                            'concluido'=> 'bg-info',
+                            'concluido'=> 'bg-success',
                             default    => 'bg-secondary',
                         };
                     ?>
@@ -201,10 +201,10 @@
             <tbody>
                 <?php foreach ($topProjetos as $i => $proj):
                     $badgeSt = match($proj['status']) {
-                        'ativo'    => 'status-ativo',
-                        'concluido'=> 'badge bg-info text-dark',
+                        'ativo'    => 'badge bg-success-subtle text-success fw-semibold',
+                        'concluido'=> 'badge bg-success text-white',
                         'pendente' => 'badge bg-warning text-dark',
-                        default    => 'status-inativo',
+                        default    => 'badge bg-danger text-white',
                     };
                     $labelSt = match($proj['status']) {
                         'ativo'    => 'Ativo',

@@ -104,10 +104,10 @@
                                 <?php
                                     $s = $projeto['status'];
                                     $badge = match($s) {
-                                        'ativo'    => 'status-ativo',
+                                        'ativo'    => 'badge bg-success-subtle text-success fw-semibold',
                                         'pendente' => 'badge bg-warning text-dark',
-                                        'concluido'=> 'badge bg-success',
-                                        default    => 'status-inativo',
+                                        'concluido'=> 'badge bg-success text-white',
+                                        default    => 'badge bg-danger text-white',
                                     };
                                     $label = match($s) {
                                         'ativo'    => 'Ativo',

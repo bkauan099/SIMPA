@@ -99,8 +99,14 @@ $alunos = array_filter($listaUsuariosAtivos, fn($u) =>
     <div class="row g-3" id="gridProjetos">
         <?php foreach ($listaProjetosEquipe as $proj):
             $stCor = match($proj['status']) {
-                'ativo'    => 'success', 'concluido' => 'info',
-                'pendente' => 'warning', default      => 'secondary'
+                'ativo'    => 'success', 'concluido' => 'success',
+                'pendente' => 'warning', default      => 'danger'
+            };
+            $stBadge = match($proj['status']) {
+                'ativo'    => 'badge bg-success-subtle text-success fw-semibold',
+                'concluido'=> 'badge bg-success text-white',
+                'pendente' => 'badge bg-warning text-dark',
+                default    => 'badge bg-danger text-white',
             };
             $stLabel = match($proj['status']) {
                 'ativo'    => 'Ativo', 'concluido' => 'Concluído',
@@ -112,7 +118,7 @@ $alunos = array_filter($listaUsuariosAtivos, fn($u) =>
             <div class="content-card h-100 d-flex flex-column" style="border-top:3px solid var(--bs-<?= $stCor ?>)">
                 <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-1">
                     <h6 class="fw-bold mb-0" style="font-size:.88rem;flex:1"><?= htmlspecialchars($proj['titulo']) ?></h6>
-                    <span class="badge bg-<?= $stCor ?> text-<?= $stCor === 'warning' ? 'dark' : 'white' ?>"><?= $stLabel ?></span>
+                    <span class="<?= $stBadge ?>"><?= $stLabel ?></span>
                 </div>
 
                 <div class="text-muted small mb-3">
