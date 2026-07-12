@@ -72,7 +72,7 @@ try {
 $prioLabels  = ['alta' => 'Alta', 'media' => 'Média', 'baixa' => 'Baixa'];
 $prioClasses = ['alta' => 'bg-danger', 'media' => 'bg-warning text-dark', 'baixa' => 'bg-secondary'];
 $stLabels    = ['pendente' => 'Pendente', 'concluido' => 'Concluída', 'cancelado' => 'Cancelada', 'ativo' => 'Ativo', 'inativo' => 'Inativo'];
-$stClasses   = ['pendente' => 'bg-warning-subtle text-warning fw-semibold', 'concluido' => 'bg-success-subtle text-success fw-semibold', 'cancelado' => 'bg-danger-subtle text-danger fw-semibold', 'ativo' => 'bg-success-subtle text-success fw-semibold', 'inativo' => 'bg-danger-subtle text-danger fw-semibold'];
+$stClasses   = ['pendente' => 'bg-warning text-dark', 'concluido' => 'bg-success text-white', 'cancelado' => 'bg-danger text-white', 'ativo' => 'bg-primary text-white', 'inativo' => 'bg-danger text-white'];
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -521,7 +521,7 @@ window.avaliarDoc = function (idProducao, acao, btn) {
             if (!card) return;
             const novoStatus  = data.novo_status;
             const statusLabel = { concluido: 'Aprovado', cancelado: 'Reprovado', pendente: 'Pendente', ativo: 'Aprovado', inativo: 'Reprovado' };
-            const statusClass = { concluido: 'bg-success-subtle text-success fw-semibold', cancelado: 'bg-danger-subtle text-danger fw-semibold', pendente: 'bg-warning-subtle text-warning fw-semibold', ativo: 'bg-success-subtle text-success fw-semibold', inativo: 'bg-danger-subtle text-danger fw-semibold' };
+            const statusClass = { concluido: 'bg-success text-white', cancelado: 'bg-danger text-white', pendente: 'bg-warning text-dark', ativo: 'bg-success text-white', inativo: 'bg-danger text-white' };
             card.querySelector('.doc-status-badge').className = 'badge doc-status-badge ' + (statusClass[novoStatus] ?? 'bg-secondary');
             card.querySelector('.doc-status-badge').textContent = statusLabel[novoStatus] ?? novoStatus;
             // Reconstrói os botões de ação

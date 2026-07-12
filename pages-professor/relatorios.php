@@ -212,9 +212,9 @@ try {
                             // Cores
                             $barColor = $progresso >= 75 ? 'bg-success' : ($progresso >= 50 ? 'bg-info' : ($progresso >= 25 ? 'bg-warning' : 'bg-danger'));
 
-                            $tarBadge = $total_tar === 0 ? 'bg-secondary-subtle text-secondary fw-semibold'
-                                : ($conc_tar === $total_tar ? 'bg-success-subtle text-success fw-semibold'
-                                : ($conc_tar > $total_tar / 2 ? 'bg-warning-subtle text-warning fw-semibold' : 'bg-danger-subtle text-danger fw-semibold'));
+                            $tarBadge = $total_tar === 0 ? 'bg-secondary text-white'
+                                : ($conc_tar === $total_tar ? 'bg-success text-white'
+                                : ($conc_tar > $total_tar / 2 ? 'bg-warning text-dark' : 'bg-danger text-white'));
 
                             $docBadge = 'bg-secondary';
 

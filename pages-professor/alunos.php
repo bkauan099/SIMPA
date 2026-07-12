@@ -179,8 +179,8 @@ try {
                                 <?php
                                 $status = strtolower($aluno['status_usuario'] ?? 'inativo');
                                 $classe = ($status === 'ativo')
-                                    ? 'badge bg-success-subtle text-success fw-semibold'
-                                    : 'badge bg-danger-subtle text-danger fw-semibold';
+                                    ? 'badge bg-success text-white'
+                                    : 'badge bg-danger text-white';
                                 ?>
                                 <span class="<?= $classe ?> status-txt"><?= ucfirst($status) ?></span>
                             </td>

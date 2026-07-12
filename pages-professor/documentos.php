@@ -47,9 +47,9 @@ function getIconeArquivo($nome) {
 
 // Mesmo vocabulário usado pelo lado do aluno (model/Aluno.php, toggle-concluido.php)
 $status_class = [
-    'pendente'  => 'bg-warning-subtle text-warning fw-semibold',
-    'concluido' => 'bg-success-subtle text-success fw-semibold',
-    'cancelado' => 'bg-danger-subtle text-danger fw-semibold',
+    'pendente'  => 'bg-warning text-dark',
+    'concluido' => 'bg-success text-white',
+    'cancelado' => 'bg-danger text-white',
     'refazer'   => 'text-white fw-semibold',
 ];
 $status_style = [
