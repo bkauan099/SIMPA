@@ -139,7 +139,7 @@
                             <td><?= $p['carga_horaria'] ?>h</td>
                             <td>
                                 <?php if ($p['status'] === 'ativo'): ?>
-                                    <span class="badge bg-primary text-white">Ativo</span>
+                                    <span class="badge bg-success-subtle text-success fw-semibold">Ativo</span>
                                 <?php elseif ($p['status'] === 'concluido'): ?>
                                     <span class="badge bg-success text-white"><i class="bi bi-check-circle-fill me-1"></i>Concluído</span>
                                 <?php else: ?>

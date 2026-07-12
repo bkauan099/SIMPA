@@ -126,7 +126,7 @@ $estatisticas = $projetoModel->obterEstatisticasProfessor($id_logado);
                             <td>
                                 <?php $status_atual = strtolower($projeto['status'] ?? ''); ?>
                                 <?php if ($status_atual == 'ativo'): ?>
-                                    <span class="badge bg-primary text-white projeto-status-badge">Ativo</span>
+                                    <span class="badge bg-success-subtle text-success fw-semibold projeto-status-badge">Ativo</span>
                                 <?php elseif ($status_atual == 'pendente'): ?>
                                     <span class="badge bg-warning text-dark projeto-status-badge">Pendente</span>
                                 <?php else: ?>
