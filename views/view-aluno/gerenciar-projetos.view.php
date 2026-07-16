@@ -3,7 +3,6 @@
         <h3 class="fw-bold mb-1">Gerenciar Projetos</h3>
         <p class="text-muted mb-0">Projetos em que você participa</p>
     </div>
-    <button class="btn btn-primary" onclick="carregarPagina('seletivos')"><i class="bi bi-megaphone me-2"></i>Solicitar Participação em Projeto</button>
 </div>
 
 <style>

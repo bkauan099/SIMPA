@@ -338,21 +338,6 @@ html, body { height:100%; margin:0; background-color:var(--fundo-cinza); color:v
 .so-valor { font-size: 0.88rem; color: #1e293b; line-height: 1.5; }
 .so-divider { border: none; border-top: 1px solid #f1f5f9; margin: 16px 0; }
 
-/* ══ SELETIVOS (exclusivo aluno) ══ */
-.seletivo-card {
-    background:var(--branco); border-radius:12px; padding:20px;
-    box-shadow:0 2px 12px rgba(0,0,0,0.05);
-    border-left:4px solid #3b82f6; margin-bottom:16px;
-    transition:box-shadow 0.2s;
-}
-.seletivo-card:hover { box-shadow:0 4px 20px rgba(0,0,0,0.1); }
-.seletivo-card.ic  { border-left-color:#7c3aed; }
-.seletivo-card.ext { border-left-color:#059669; }
-.seletivo-card.esp { border-left-color:#d97706; }
-.prazo-badge { font-size:0.75rem; font-weight:600; padding:3px 10px; border-radius:20px; }
-.prazo-urgente { background:#fee2e2; color:#dc2626; }
-.prazo-normal  { background:#dcfce7; color:#16a34a; }
-.prazo-breve   { background:#ffedd5; color:#ea580c; }
 
 /* ══ TOPBAR — BOTÕES DE ÍCONE ══ */
 .tb-icon-btn {

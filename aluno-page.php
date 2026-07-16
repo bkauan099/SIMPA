@@ -61,10 +61,6 @@ $_totalNotif   = count($_notificacoes);
                 <i class="bi bi-clipboard-check"></i><span class="nav-label">Minhas Tarefas</span></a></li>
             <li><a href="javascript:void(0)" id="menu-cronograma" onclick="carregarPagina('cronograma')" title="Cronograma">
                 <i class="bi bi-calendar-event"></i><span class="nav-label">Cronograma</span></a></li>
-            <li><a href="javascript:void(0)" id="menu-seletivos" onclick="carregarPagina('seletivos')" title="Seletivos">
-                <i class="bi bi-megaphone"></i>
-                <span class="nav-label">Seletivos</span>
-            </a></li>
             <li><a href="javascript:void(0)" id="menu-documentos" onclick="carregarPagina('documentos')" title="Documentos">
                 <i class="bi bi-file-earmark-text"></i><span class="nav-label">Documentos</span></a></li>
             <li><a href="javascript:void(0)" id="menu-certificados" onclick="carregarPagina('certificados')" title="Certificados">
@@ -287,7 +283,6 @@ function carregarPagina(abaSolicitada, pushState = true) {
         case 'participacoes':      arquivo = 'pages-aluno/participacoes.php';       break;
         case 'tarefas':            arquivo = 'pages-aluno/tarefas.php';             break;
         case 'cronograma':         arquivo = 'pages-aluno/cronograma.php';          break;
-        case 'seletivos':          arquivo = 'pages-aluno/seletivos.php';           break;
         case 'documentos':         arquivo = 'pages-aluno/documentos.php';          break;
         case 'certificados':       arquivo = 'pages-aluno/certificados.php';        break;
         default:                   arquivo = 'pages-aluno/pagina-inicial.php'; abaSolicitada = 'pagina-inicial'; break;
